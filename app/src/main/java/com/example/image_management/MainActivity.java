@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.camera_application.R;
+
 import static java.sql.DriverManager.println;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
     }
-    void main_menu_onclick(View view) {
+
+    public void main_menu_onclick(View view) {
         switch ((view.getId())) {
             case R.id.mn_camera: {
                 break;
