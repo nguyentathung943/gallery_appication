@@ -104,12 +104,11 @@ public class CameraActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-
-        //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM).toString() + File.separator + "Camera");
-//        File storageDir = new File( Environment.getExternalStoragePublicDirectory(
-//                Environment.DIRECTORY_DCIM), "Camera");
+        String filepath = Environment.getExternalStorageDirectory().getPath();
+        //File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        //
+        File storageDir = new File(filepath + "/DCIM/Camera");
+        System.out.println(filepath);
         System.out.println(storageDir);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
