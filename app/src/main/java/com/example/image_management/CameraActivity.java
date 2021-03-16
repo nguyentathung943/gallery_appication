@@ -9,8 +9,10 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -25,15 +27,17 @@ import com.example.image_management.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Permission;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import android.Manifest;
 import static java.sql.DriverManager.println;
 
-public class MainActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity {
     String currentPhotoPath;
-    int REQUEST_IMAGE_CAPTURE = 1;
-    int CAMERA_PERM_CODE=101;
+    int REQUEST_IMAGE_CAPTURE = 1; //OPEN CAMERA CODE
+    int CAMERA_PERM_CODE=101; // CAMERA PERMISSION CODE
+    int REQUEST_SAVE_FILE = 2; // SAVE FILE CODE
     CardView camera;
 
     @Override
@@ -42,20 +46,52 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_menu);
     }
 
-        public void askCameraPermission(){
-            int permissionCheck = ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.CAMERA);
-            if (permissionCheck== PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+    public void askCameraPermission(){
+        int permissionCheckCam = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA);
+        int permissionCheckWrite = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionCheckRead = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        System.out.println(permissionCheckCam + permissionCheckRead + permissionCheckWrite);
+        if((permissionCheckCam + permissionCheckRead + permissionCheckWrite) != PackageManager.PERMISSION_GRANTED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.CAMERA) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)
+            ){
+                AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+                builder.setTitle("Please grant those permissions");
+                builder.setMessage("Camera, Storage read/write access!");
+                builder.setPositiveButton("Ok", (dialog, which) ->
+                        ActivityCompat.requestPermissions(CameraActivity.this,
+                        new String[]{
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        },
+                        CAMERA_PERM_CODE));
+                builder.setNegativeButton("No",null);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
             else{
-                openCamera();
+                        ActivityCompat.requestPermissions(this,
+                        new String[]{
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        },
+                        CAMERA_PERM_CODE);
             }
+//            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, CAMERA_PERM_CODE);
+        }
+        else{
+            Toast.makeText(this,"Permission granted!",Toast.LENGTH_LONG).show();
+            openCamera();
+        }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==CAMERA_PERM_CODE){
-            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if(grantResults.length > 0 && (grantResults[0]+grantResults[1]+grantResults[2]) == PackageManager.PERMISSION_GRANTED){
                 openCamera();
             }
             else{
@@ -69,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
 
-//        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM).toString() + File.separator + "Camera");
 //        File storageDir = new File( Environment.getExternalStoragePublicDirectory(
@@ -80,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
