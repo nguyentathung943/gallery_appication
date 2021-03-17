@@ -45,6 +45,10 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
     }
+    @Override
+    public void onBackPressed() {
+        this.finishAffinity();
+    }
     public void askCameraPermission(){
         int permissionCheckCam = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA);
         int permissionCheckWrite = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -169,12 +173,15 @@ public class CameraActivity extends AppCompatActivity {
                 setContentView(R.layout.password);
                 break;
             }
-//            case R.id.mn_album: {
-//                break;
-//            }
-//            case R.id.mn_archive: {
-//                break;
-//            }
+            case R.id.mn_album: {
+                break;
+            }
+            case R.id.mn_archive: {
+                Intent x = new Intent(CameraActivity.this, Archive.class);
+                startActivity(x);
+
+                break;
+            }
             case R.id.mn_theme: {
                 setContentView(R.layout.theme);
                 break;
