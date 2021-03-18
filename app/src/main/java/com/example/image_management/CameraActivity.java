@@ -42,14 +42,16 @@ public class CameraActivity extends AppCompatActivity {
     CardView camera;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        askPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
+
     }
     @Override
     public void onBackPressed() {
         this.finishAffinity();
     }
-    public void askCameraPermission(){
+    public void askPermission(){
         int permissionCheckCam = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA);
         int permissionCheckWrite = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheckRead = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -60,8 +62,8 @@ public class CameraActivity extends AppCompatActivity {
                     ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)
             ){
                 AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
-                builder.setTitle("Please grant those permissions");
-                builder.setMessage("Camera, Storage read/write access!");
+                builder.setTitle("Please grant those permissions to continue using this app!");
+                builder.setMessage("Camera, Storage");
                 builder.setPositiveButton("Ok", (dialog, which) ->
                         ActivityCompat.requestPermissions(CameraActivity.this,
                         new String[]{
@@ -70,7 +72,9 @@ public class CameraActivity extends AppCompatActivity {
                                 Manifest.permission.READ_EXTERNAL_STORAGE
                         },
                         CAMERA_PERM_CODE));
-                builder.setNegativeButton("No",null);
+                builder.setNegativeButton("No",(dialog, which) ->
+                        askPermission()
+                 );
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
@@ -87,17 +91,18 @@ public class CameraActivity extends AppCompatActivity {
         }
         else{
             Toast.makeText(this,"Permission granted!",Toast.LENGTH_LONG).show();
-            openCamera();
+            //openCamera();
         }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==CAMERA_PERM_CODE){
             if(grantResults.length > 0 && (grantResults[0]+grantResults[1]+grantResults[2]) == PackageManager.PERMISSION_GRANTED){
-                openCamera();
+                Toast.makeText(this, "Permissions are granted",Toast.LENGTH_LONG).show();
             }
             else{
-                Toast.makeText(this, "Camera permission is required!",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Permissions are required!",Toast.LENGTH_LONG).show();
+                askPermission();
             }
         }
     }
@@ -162,7 +167,7 @@ public class CameraActivity extends AppCompatActivity {
     public void main_menu_onclick(View view) {
         switch (view.getId()) {
             case R.id.mn_camera: {
-                askCameraPermission();
+                openCamera();
                 break;
             }
             case R.id.mn_setting: {
@@ -179,7 +184,6 @@ public class CameraActivity extends AppCompatActivity {
             case R.id.mn_archive: {
                 Intent x = new Intent(CameraActivity.this, Archive.class);
                 startActivity(x);
-
                 break;
             }
             case R.id.mn_theme: {

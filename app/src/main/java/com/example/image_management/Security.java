@@ -1,24 +1,69 @@
 package com.example.image_management;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.hanks.passcodeview.PasscodeView;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class Security extends AppCompatActivity {
     PasscodeView passcodeView;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.password);
+
+    protected boolean checkPasswordSet(){
+        try{
+            String a = getPassword();
+            return (a.length()==4);
+        }
+        catch (Exception e){
+            Log.e("Exception", "Read write failed: " + e.toString());
+        }
+        return false;
+    }
+    protected String getPassword(){
+        String filename = "PIN.txt";
+        Context context = getApplicationContext();
+        FileInputStream fis = null;
+        try {
+            fis = context.openFileInput(filename);
+            InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            StringBuilder stringBuilder = new StringBuilder();
+            try (BufferedReader reader = new BufferedReader(inputStreamReader)) {
+                String line = reader.readLine();
+                while (line != null) {
+                    stringBuilder.append(line);
+                    line = reader.readLine();
+                }
+                return  stringBuilder.toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        } catch (IOException e) {
+            // Error occurred when opening raw file for reading.
+        }
+        return "";
+    };
+    protected void showKeyboard(){
+        String pass = getPassword();
         passcodeView = findViewById(R.id.passcodeView);
-        passcodeView.setPasscodeLength(4).setLocalPasscode("1234").setListener(new PasscodeView.PasscodeViewListener() {
+        passcodeView.setPasscodeLength(4).setLocalPasscode(pass).setListener(new PasscodeView.PasscodeViewListener() {
             @Override
             public void onFail() {
-                Toast.makeText(getApplicationContext(),"WRONG PIN",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"WRONG PIN!",Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onSuccess(String number) {
@@ -27,6 +72,58 @@ public class Security extends AppCompatActivity {
             }
         });
     }
-
-
+    public void show_fillCode(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Security.this);
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
+        builder.setTitle("First time logging in?, please initialize your PIN");
+        builder.setMessage("4 digits are required");
+        builder.setView(input);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                if (value.length() == 4){
+                    System.out.println(value);
+                    savePassword(value);
+                    Toast.makeText(Security.this, "PIN Created successfully",Toast.LENGTH_SHORT).show();
+//                    setContentView(R.layout.password);
+                    showKeyboard();
+                }
+                else{
+                    show_fillCode();
+                }
+            }});
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                show_fillCode();
+            }});
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    protected void savePassword(String pass){
+        Context context = getApplicationContext();
+        try {
+            FileOutputStream fout = context.openFileOutput("PIN.txt", Context.MODE_PRIVATE);
+            fout.write(pass.getBytes());
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } ;
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.password);
+        boolean check = checkPasswordSet();
+        System.out.println(check);
+        if (!check){
+            show_fillCode();
+        }
+        else{
+            showKeyboard();
+        }
+    }
 }
