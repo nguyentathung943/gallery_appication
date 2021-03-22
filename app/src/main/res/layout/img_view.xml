@@ -60,7 +60,7 @@
             android:id="@+id/img_show"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical">
+            >
         </ImageView>
     </LinearLayout>
     <LinearLayout
