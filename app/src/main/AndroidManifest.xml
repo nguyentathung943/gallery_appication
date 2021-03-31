@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name = ".CameraActivity"  android:exported="true"> </activity>
-
+        <activity android:name = ".Archive"  android:exported="true"> </activity>
+        <activity android:name = ".Image"  android:exported="true"> </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
