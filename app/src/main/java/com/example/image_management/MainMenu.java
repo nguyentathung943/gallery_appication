@@ -2,70 +2,132 @@ package com.example.image_management;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.image_management.R;
-
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Permission;
-import java.util.Date;
 import java.text.SimpleDateFormat;
-import android.Manifest;
-import static java.sql.DriverManager.println;
+import java.util.Date;
 
-public class CameraActivity extends AppCompatActivity {
+public class MainMenu extends AppCompatActivity {
     String currentPhotoPath;
     int REQUEST_IMAGE_CAPTURE = 1; //OPEN CAMERA CODE
     int CAMERA_PERM_CODE=101; // CAMERA PERMISSION CODE
-    int REQUEST_SAVE_FILE = 2; // SAVE FILE CODE
+    int REQUEST_VIDEO_RECORD = 3;
+    Configuration config;
     CardView camera;
+    Switch sw;
+    int REQUEST_SAVE_FILE = 2; // SAVE FILE CODE
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        config = new Configuration(getApplicationContext());
+        config.getConfig();
+        System.out.println("DARK MODE " + config.isDarkMode);
         askPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
-
+        sw = findViewById(R.id.themeSwitch);
+        if(config.ThemeMode()==1){
+            sw.setChecked(true);
+            sw.setText("Dark");
+        }
+        else{
+            sw.setChecked(false);
+            sw.setText("Light");
+        }
+        sw.setOnCheckedChangeListener((compoundButton, checked) -> {
+            if(checked){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                config.saveConfig(1,config.language);
+                sw.setText("Dark");
+                sw.setChecked(true);
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                config.saveConfig(0,config.language);
+                sw.setText("Light");
+                sw.setChecked(false);
+            }
+            finish();
+            startActivity(new Intent(MainMenu.this, MainMenu.this.getClass()));
+        });
     }
     @Override
     public void onBackPressed() {
         this.finishAffinity();
     }
+    public void ShowChangePIN(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
+        builder.setTitle("CHANGE YOUR PIN");
+        builder.setMessage("4 digits are required");
+        builder.setView(input);
+        builder.setPositiveButton("Ok", (dialog, which) ->{
+                    String a = input.getText().toString();
+                    if (a.length() < 4){
+                        Toast.makeText(this,"PIN must contains 4 digits", Toast.LENGTH_SHORT).show();
+                        ShowChangePIN();
+                    }
+                    else{
+                        Context context = getApplicationContext();
+                        try {
+                            FileOutputStream fout = context.openFileOutput("PIN.txt", Context.MODE_PRIVATE);
+                            fout.write(input.getText().toString().getBytes());
+                            Toast.makeText(this, "PIN Changed Successfully",Toast.LENGTH_SHORT).show();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+        });
+        builder.setNegativeButton("No",null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
     public void askPermission(){
-        int permissionCheckCam = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.CAMERA);
-        int permissionCheckWrite = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int permissionCheckRead = ContextCompat.checkSelfPermission(CameraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionCheckCam = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.CAMERA);
+        int permissionCheckWrite = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionCheckRead = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.READ_EXTERNAL_STORAGE);
         System.out.println(permissionCheckCam + permissionCheckRead + permissionCheckWrite);
         if((permissionCheckCam + permissionCheckRead + permissionCheckWrite) != PackageManager.PERMISSION_GRANTED){
-            if(ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.CAMERA) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(CameraActivity.this,Manifest.permission.READ_EXTERNAL_STORAGE)
+            if(ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.CAMERA) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.READ_EXTERNAL_STORAGE)
             ){
-                AlertDialog.Builder builder = new AlertDialog.Builder(CameraActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
                 builder.setTitle("Please grant those permissions to continue using this app!");
                 builder.setMessage("Camera, Storage");
                 builder.setPositiveButton("Ok", (dialog, which) ->
-                        ActivityCompat.requestPermissions(CameraActivity.this,
+                        ActivityCompat.requestPermissions(MainMenu.this,
                         new String[]{
                                 Manifest.permission.CAMERA,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -89,10 +151,11 @@ public class CameraActivity extends AppCompatActivity {
             }
 //            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, CAMERA_PERM_CODE);
         }
-        else{
-            Toast.makeText(this,"Permission granted!",Toast.LENGTH_LONG).show();
-            //openCamera();
-        }
+//        else{
+//
+////            Toast.makeText(this,"Permission granted!",Toast.LENGTH_LONG).show();
+//            //openCamera();
+//        }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -106,7 +169,26 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     }
+    public void openCamera() {
+//        Intent open = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(open,REQUEST_IMAGE_CAPTURE);
 
+        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.example.android.fileprovider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -138,31 +220,6 @@ public class CameraActivity extends AppCompatActivity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
-    private void openCamera() {
-//        Intent open = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(open,REQUEST_IMAGE_CAPTURE);
-
-        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        File photoFile = null;
-        try {
-            photoFile = createImageFile();
-        } catch (IOException ex) {
-            // Error occurred while creating the File
-        }
-        // Continue only if the File was successfully created
-        if (photoFile != null) {
-            Uri photoURI = FileProvider.getUriForFile(this,
-                    "com.example.android.fileprovider",
-                    photoFile);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//
-//        }
-    }
     public void main_menu_onclick(View view) {
         switch (view.getId()) {
             case R.id.mn_camera: {
@@ -174,19 +231,15 @@ public class CameraActivity extends AppCompatActivity {
                 break;
             }
             case R.id.mn_PIN: {
-                setContentView(R.layout.password);
+                ShowChangePIN();
                 break;
             }
             case R.id.mn_album: {
                 break;
             }
             case R.id.mn_archive: {
-                Intent x = new Intent(CameraActivity.this, Archive.class);
+                Intent x = new Intent(MainMenu.this, Archive.class);
                 startActivity(x);
-                break;
-            }
-            case R.id.mn_theme: {
-                setContentView(R.layout.theme);
                 break;
             }
             case R.id.btn_back: {

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.image_management">
     <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -13,18 +15,17 @@
         android:label= "@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Image_management">
+        android:theme="@style/Theme.AppTheme">
         <activity android:name = ".Security"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name = ".CameraActivity"  android:exported="true"> </activity>
-        <activity android:name = ".Archive"  android:exported="true"> </activity>
+        <activity android:name = ".MainMenu"  android:exported="true"> </activity>
         <activity android:name = ".Image"  android:exported="true"> </activity>
+        <activity android:name = ".Archive"  android:exported="true"> </activity>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
@@ -32,7 +33,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths"/>
         </provider>
     </application>
 

@@ -66,4 +66,5 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public interface ClickImageListener{
         void onClick(int position);
     }
+
 }

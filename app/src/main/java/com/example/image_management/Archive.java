@@ -24,7 +24,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             MediaStore.Files.FileColumns.DATE_ADDED,
             MediaStore.Files.FileColumns.MEDIA_TYPE,
             MediaStore.Files.FileColumns.MIME_TYPE,
-            MediaStore.Files.FileColumns.TITLE
+            MediaStore.Files.FileColumns.TITLE,
+            MediaStore.Files.FileColumns.HEIGHT,
+            MediaStore.Files.FileColumns.WIDTH,
     };
     String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
             + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
@@ -71,12 +73,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
         cursor.close();
     }
-
     @Override
     public void onClick(int position) {
         System.out.println("pos" + position);
         Intent intent = new Intent(this, Image.class);
         intent.putExtra("path", path.get(position));
         startActivity(intent);
+
     }
 }

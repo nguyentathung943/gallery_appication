@@ -4,25 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CameraActivity">
+    tools:context=".MainMenu"
+    android:background="?attr/backgroundcolor">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/background">
+        android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:paddingLeft="20dp"
             android:paddingTop="25dp"
             android:paddingRight="20dp"
-            android:background="#4030a6">
+            android:background="?attr/tintcolor">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Your Gallery"
                 android:textStyle="bold"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/textcolor"
                 android:layout_marginLeft="20dp"
                 android:textSize="24dp">
             </TextView>
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="100 items"
-                android:textColor="#52BAFF"
+                android:textColor="?attr/textcolor"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp">
 
@@ -63,7 +63,8 @@
                 android:layout_margin="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="6dp"
-                android:clickable="true">
+                android:clickable="true"
+                android:background="?attr/cardbackground">
 
                 <LinearLayout
                     android:id="@+id/mn_archive"
@@ -87,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Archive"
-                        android:textColor="@color/black"></TextView>
+                        android:textColor="?attr/textcolor"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -122,7 +123,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Camera"
-                        android:textColor="@color/black"></TextView>
+
+                        android:textColor="?attr/textcolor"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -155,8 +157,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Album"
-                        android:textColor="@color/black"></TextView>
+                        android:textColor="?attr/textcolor"
+                        android:text="Album"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -191,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Setting"
-                        android:textColor="@color/black"></TextView>
+                        android:textColor="?attr/textcolor"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -206,6 +208,7 @@
                 android:clickable="true">
 
                 <LinearLayout
+                    android:id="@+id/mn_PIN"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -214,19 +217,16 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:id="@+id/mn_PIN"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src="@drawable/lock">
-
                     </ImageView>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Security (PIN)"
-                        android:textColor="@color/black"></TextView>
+                        android:textColor="?attr/textcolor"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -245,42 +245,40 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:onClick="main_menu_onclick"
                     android:orientation="vertical"
                     android:padding="16dp">
-
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:src="@drawable/theme">
-
                     </ImageView>
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Theme (Light)"
-                        android:textColor="@color/black"></TextView>
+                        android:orientation="horizontal">
+                        <Switch
+                            android:id="@+id/themeSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="?attr/textcolor" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
         </GridLayout>
         <RelativeLayout
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ANDROID DEVELOPMENT GROUP 14 HCMUS"
                 android:textSize="12dp"
                 android:textStyle="bold"
-
-                android:textColor="@color/black">
+                android:textColor="?attr/textcolor">
             </TextView>
-        </RelativeLayout>
+        </RelativeLayout >
     </LinearLayout>
-
     </ScrollView>

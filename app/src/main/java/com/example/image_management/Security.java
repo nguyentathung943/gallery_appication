@@ -1,29 +1,35 @@
 package com.example.image_management;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
+import com.google.android.material.color.MaterialColors;
 import com.hanks.passcodeview.PasscodeView;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.AttributedCharacterIterator;
 
 public class Security extends AppCompatActivity {
     PasscodeView passcodeView;
-
     protected boolean checkPasswordSet(){
         try{
             String a = getPassword();
@@ -67,7 +73,7 @@ public class Security extends AppCompatActivity {
             }
             @Override
             public void onSuccess(String number) {
-                Intent go = new Intent(Security.this, CameraActivity.class);
+                Intent go = new Intent(Security.this, MainMenu.class);
                 startActivity(go);
             }
         });
@@ -76,6 +82,7 @@ public class Security extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(Security.this);
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setTransformationMethod(PasswordTransformationMethod.getInstance());
         input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
         builder.setTitle("First time logging in?, please initialize your PIN");
         builder.setMessage("4 digits are required");
@@ -87,7 +94,6 @@ public class Security extends AppCompatActivity {
                     System.out.println(value);
                     savePassword(value);
                     Toast.makeText(Security.this, "PIN Created successfully",Toast.LENGTH_SHORT).show();
-//                    setContentView(R.layout.password);
                     showKeyboard();
                 }
                 else{
@@ -111,10 +117,24 @@ public class Security extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } ;
+        };
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Configuration config = new Configuration(getApplicationContext());
+        Boolean checkConfig = config.getConfig();
+        if (!checkConfig){
+            config.saveConfig(0,1);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        else{
+            if(config.isDarkMode==1){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password);
         boolean check = checkPasswordSet();

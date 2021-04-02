@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-    android:background="@drawable/background">
+    android:background="?attr/backgroundcolor">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="#4030a6"
+        android:background="?attr/tintcolor"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
@@ -19,16 +19,17 @@
             android:src="@drawable/back_icon" />
 
         <TextView
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="Video Name"
-            android:textColor="#FFFFFF"
-            android:textSize="24dp"
-            android:textStyle="bold"
             android:layout_gravity="center"
-            android:gravity="center"></TextView>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Video Name"
+            android:textColor="?attr/textcolor"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -37,18 +38,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Edit"
-            android:textColor="#52BAFF"
+            android:textColor="?attr/colorOnPrimary"
             android:textStyle="bold"
             android:gravity="right"
             android:layout_gravity="center"
-            android:textSize="20dp"></TextView>
+            android:textSize="20dp"/>
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/info"
                 android:layout_marginLeft="10dp"
-                ></ImageView></LinearLayout>
+                /></LinearLayout>
 
     </LinearLayout>
     <LinearLayout
@@ -65,7 +66,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="#4030a6"
+        android:background="?attr/tintcolor"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
@@ -74,19 +75,19 @@
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/share_icon"></ImageView>
+            android:src="@drawable/share_icon"/>
         <ImageView
             android:layout_weight="6"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:src="@drawable/like_icon"
-            ></ImageView>
+            />
         <ImageView
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/delete_icon"></ImageView>
+            android:src="@drawable/delete_icon"/>
     </LinearLayout>
 </LinearLayout>
