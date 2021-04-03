@@ -1,0 +1,93 @@
+package com.example.image_management;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.DisplayMetrics;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Set;
+//
+//import io.paperdb.Paper;
+
+public class Setting extends AppCompatActivity{
+    ListView listView;
+    Context context;
+    TextView languageText, languageDefault, language;
+    ArrayList<String> listCode;
+    ArrayAdapter arrayAdapter;
+    ArrayList<String> listLanguage;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.setting);
+        languageText = (TextView) findViewById(R.id.language_text);
+        languageDefault = (TextView) findViewById(R.id.language_default);
+        language = (TextView) findViewById(R.id.language);
+        listLanguage = new ArrayList<>();
+        listLanguage.add("English");
+        listLanguage.add("Tiếng Việt");
+        listCode = new ArrayList<>();
+        listCode.add("en");
+        listCode.add("vi");
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listLanguage);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChangeLanguage();
+            }
+        });
+    }
+    public void ChangeLanguage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Setting.this);
+        builder.setTitle(R.string.language_text);
+        builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int position) {
+                ChangeLanguage(listCode.get(position));
+                languageText.setText(R.string.language_text);
+                languageDefault.setText(R.string.language_default);
+                language.setText(listLanguage.get(position));
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    public void ChangeLanguage(String language){
+        Resources resources = getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(language.toLowerCase()));
+        resources.updateConfiguration(configuration, displayMetrics);
+    }
+
+    public void back(View v){
+        this.finish();
+    }
+}

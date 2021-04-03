@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -34,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainMenu extends AppCompatActivity {
+    private static final int SETTING_CONSTANT = 10;
     String currentPhotoPath;
     int REQUEST_IMAGE_CAPTURE = 1; //OPEN CAMERA CODE
     int CAMERA_PERM_CODE=101; // CAMERA PERMISSION CODE
@@ -42,6 +44,10 @@ public class MainMenu extends AppCompatActivity {
     CardView camera;
     Switch sw;
     int REQUEST_SAVE_FILE = 2; // SAVE FILE CODE
+    private int requestCode;
+    private int resultCode;
+    private Intent data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,11 +60,11 @@ public class MainMenu extends AppCompatActivity {
         sw = findViewById(R.id.themeSwitch);
         if(config.ThemeMode()==1){
             sw.setChecked(true);
-            sw.setText("Dark");
+            sw.setText(R.string.dark);
         }
         else{
             sw.setChecked(false);
-            sw.setText("Light");
+            sw.setText(R.string.light);
         }
         sw.setOnCheckedChangeListener((compoundButton, checked) -> {
             if(checked){
@@ -87,7 +93,7 @@ public class MainMenu extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setTransformationMethod(PasswordTransformationMethod.getInstance());
         input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
-        builder.setTitle("CHANGE YOUR PIN");
+        builder.setTitle(R.string.change_pin);
         builder.setMessage("4 digits are required");
         builder.setView(input);
         builder.setPositiveButton("Ok", (dialog, which) ->{
@@ -211,6 +217,9 @@ public class MainMenu extends AppCompatActivity {
             galleryAddPic();
             Toast.makeText(this,"Image saved",Toast.LENGTH_SHORT).show();
         }
+        else if(requestCode == SETTING_CONSTANT){
+            recreate();
+        }
     }
     private void galleryAddPic() {
         System.out.println("Hello");
@@ -227,7 +236,7 @@ public class MainMenu extends AppCompatActivity {
                 break;
             }
             case R.id.mn_setting: {
-                setContentView(R.layout.setting);
+                startActivityForResult(new Intent(MainMenu.this, Setting.class), SETTING_CONSTANT);
                 break;
             }
             case R.id.mn_PIN: {

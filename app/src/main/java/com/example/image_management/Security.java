@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import com.hanks.passcodeview.PasscodeView;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.AttributedCharacterIterator;
+import java.util.Locale;
 
 public class Security extends AppCompatActivity {
     PasscodeView passcodeView;
@@ -145,5 +147,12 @@ public class Security extends AppCompatActivity {
         else{
             showKeyboard();
         }
+    }
+    public void ChangeLanguage(String language){
+        Resources resources = getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        android.content.res.Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(language.toLowerCase()));
+        resources.updateConfiguration(configuration, displayMetrics);
     }
 }

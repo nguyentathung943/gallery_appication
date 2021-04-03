@@ -52,17 +52,27 @@
                 /></LinearLayout>
 
     </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="600dp"
+        android:id="@+id/video_screen"
+        android:onClick="click"
         >
-        <ImageView
+        <VideoView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/video"
-            android:layout_gravity="center_vertical">
-        </ImageView>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/video"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:minHeight="100dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/play_icon"
+            android:id="@+id/play_btn"
+            />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"

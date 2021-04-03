@@ -87,8 +87,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Archive"
-                        android:textColor="?attr/textcolor"/>
+                        android:text="@string/archive"
+                        android:textColor="?attr/textcolor"
+                        android:id="@+id/archive"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -122,8 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Camera"
-
+                        android:text="@string/camera"
                         android:textColor="?attr/textcolor"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -192,8 +192,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Setting"
-                        android:textColor="?attr/textcolor"/>
+                        android:text="@string/setting"
+                        android:textColor="?attr/textcolor" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -225,7 +225,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Security (PIN)"
+                        android:text="@string/security"
                         android:textColor="?attr/textcolor"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

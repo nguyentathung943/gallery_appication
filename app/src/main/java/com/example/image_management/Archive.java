@@ -75,10 +75,19 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
     @Override
     public void onClick(int position) {
-        System.out.println("pos" + position);
-        Intent intent = new Intent(this, Image.class);
-        intent.putExtra("path", path.get(position));
-        startActivity(intent);
+        if(path.get(position).contains("jpg"))
+        {
+            Intent intent = new Intent(this, Image.class);
+            intent.putExtra("path", path.get(position));
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(this, Video.class);
+            intent.putExtra("path", path.get(position));
+            startActivity(intent);
+        }
 
     }
+
 }
