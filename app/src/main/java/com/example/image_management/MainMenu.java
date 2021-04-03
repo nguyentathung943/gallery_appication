@@ -17,12 +17,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -44,7 +49,6 @@ public class MainMenu extends AppCompatActivity {
     int REQUEST_SAVE_FILE = 2; // SAVE FILE CODE
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         config = new Configuration(getApplicationContext());
         config.getConfig();
         System.out.println("DARK MODE " + config.isDarkMode);
@@ -169,14 +173,30 @@ public class MainMenu extends AppCompatActivity {
             }
         }
     }
+    void openVideo(){
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createMediaFile(".mp4");
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takeVideoIntent .putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            }
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_RECORD );
+        }
+    }
     public void openCamera() {
-//        Intent open = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(open,REQUEST_IMAGE_CAPTURE);
-
         Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         File photoFile = null;
         try {
-            photoFile = createImageFile();
+            photoFile = createMediaFile(".jpg");
         } catch (IOException ex) {
             // Error occurred while creating the File
         }
@@ -189,7 +209,36 @@ public class MainMenu extends AppCompatActivity {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
-    private File createImageFile() throws IOException {
+    public void optionCamera(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
+        builder.setTitle("Camera Option");
+        builder.setMessage("Do you want to use camera for image or video");
+        LinearLayout layout= new LinearLayout(this);
+        layout.setGravity(Gravity.CENTER);
+        Button Camera = new Button(this);
+        Camera.setText("Camera");
+        Button Video = new Button(this);
+        Video.setText("Video");
+        layout.addView(Camera);
+        layout.addView(Video);
+        builder.setView(layout);
+        builder.setNegativeButton("CANCEL",null);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        Camera.setOnClickListener(view ->{
+            alertDialog.hide();
+            openCamera();
+        });
+        Video.setOnClickListener(view ->{
+            alertDialog.hide();
+            openVideo();
+        });
+    }
+    private File createMediaFile(String suffix) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = timeStamp;
@@ -197,7 +246,7 @@ public class MainMenu extends AppCompatActivity {
         File storageDir = new File(filepath + "/DCIM/Camera");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                suffix,         /* suffix */
                 storageDir      /* directory */
         );
         // Save a file: path for use with ACTION_VIEW intents
@@ -208,11 +257,15 @@ public class MainMenu extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            galleryAddPic();
+            galleryAddFile();
             Toast.makeText(this,"Image saved",Toast.LENGTH_SHORT).show();
         }
+        else if  (requestCode == REQUEST_VIDEO_RECORD  && resultCode == RESULT_OK){
+            galleryAddFile();
+            Toast.makeText(this,"Video saved",Toast.LENGTH_SHORT).show();
+        }
     }
-    private void galleryAddPic() {
+    private void galleryAddFile() {
         System.out.println("Hello");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(currentPhotoPath);
@@ -223,11 +276,22 @@ public class MainMenu extends AppCompatActivity {
     public void main_menu_onclick(View view) {
         switch (view.getId()) {
             case R.id.mn_camera: {
-                openCamera();
+                optionCamera();
                 break;
             }
             case R.id.mn_setting: {
-                setContentView(R.layout.setting);
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setType("video/*, images/*");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+//                Intent intent = new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+//                if (requestCode != -1)
+//                    act.startActivityForResult(intent, requestCode);
+//                else
+//                    act.startActivity(intent);
                 break;
             }
             case R.id.mn_PIN: {

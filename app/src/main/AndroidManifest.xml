@@ -21,20 +21,47 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:mimeType="application/jpg"
+                    android:host="*"
+                    android:pathPattern=".*\\.jpg"
+                    />
+                <data
+                    android:mimeType="application/mp4"
+                    android:host="*"
+                    android:pathPattern=".*\\.mp4"
+                    />
             </intent-filter>
+
         </activity>
         <activity android:name = ".MainMenu"  android:exported="true"> </activity>
         <activity android:name = ".Image"  android:exported="true"> </activity>
-        <activity android:name = ".Archive"  android:exported="true"> </activity>
+        <activity android:name = ".Archive"  android:exported="true">
+            <intent-filter>
+                <data android:mimeType="video/*" />
+                <data android:mimeType="video/mp4" />
+                <data android:mimeType="video/3gp" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="application/sdp" />
+            <category android:name="android.intent.category.DEFAULT"/>
+            <data android:mimeType="text/plain"/>
+        </intent-filter></activity>
+        <provider
+            android:name=".ImageProvider"
+            android:authorities="com.example.Test"
+            android:exported="true"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            android:enabled="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
+
     </application>
 
 
