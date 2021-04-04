@@ -289,7 +289,10 @@ public class MainMenu extends AppCompatActivity {
                 break;
             }
             case R.id.mn_setting: {
-                startActivityForResult(new Intent(MainMenu.this, Setting.class), SETTING_CONSTANT);
+                Intent intent = new Intent(MainMenu.this, Setting.class);
+                intent.putExtra("theme", config.ThemeMode());
+                intent.putExtra("language", config.languageState());
+                startActivityForResult(intent, SETTING_CONSTANT);
                 break;
             }
             case R.id.mn_PIN: {

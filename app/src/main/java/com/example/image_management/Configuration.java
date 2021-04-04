@@ -12,7 +12,7 @@ public class Configuration {
 
     Context context;
     int isDarkMode;
-    int language;
+    String language;
     Configuration(Context a) {
         context = a;
     }
@@ -20,7 +20,7 @@ public class Configuration {
         return isDarkMode;
     }
 
-    public int languageState() {
+    public String languageState() {
         return language;
     }
     protected boolean getConfig(){
@@ -32,18 +32,17 @@ public class Configuration {
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line = reader.readLine();
             isDarkMode = Integer.parseInt(line);
-            line = reader.readLine();
-            language = Integer.parseInt(line);
+            language = reader.readLine();
             return true;
         } catch (IOException e) {
             return false;
         }
     }
-    protected void saveConfig(int Theme, int Lan) {
+    protected void saveConfig(int Theme, String Lan) {
         try {
             FileOutputStream fout = context.openFileOutput("config.txt", Context.MODE_PRIVATE);
             fout.write((String.valueOf(Theme) + '\n').getBytes());
-            fout.write((String.valueOf(Lan) + '\n').getBytes());
+            fout.write((Lan + '\n').getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

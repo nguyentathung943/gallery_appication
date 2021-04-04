@@ -126,7 +126,7 @@ public class Security extends AppCompatActivity {
         Configuration config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();
         if (!checkConfig){
-            config.saveConfig(0,1);
+            config.saveConfig(0,"en");
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         else{
@@ -136,6 +136,7 @@ public class Security extends AppCompatActivity {
             else{
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
+            ChangeLanguage(config.language);
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password);

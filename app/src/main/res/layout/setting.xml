@@ -30,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="20dp">
+        android:layout_marginVertical="20dp"
+        android:id="@+id/language_layout">
         <TextView
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -47,6 +48,7 @@
             android:textSize="24dp"
             android:textColor="?attr/textcolor"
             android:id="@+id/language"
+            android:textAlignment="textEnd"
             />
     </LinearLayout>
     <TextView

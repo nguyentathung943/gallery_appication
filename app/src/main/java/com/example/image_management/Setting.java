@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,25 +39,39 @@ public class Setting extends AppCompatActivity{
     ListView listView;
     Context context;
     TextView languageText, languageDefault, language;
+    LinearLayout languageLayout;
     ArrayList<String> listCode;
     ArrayAdapter arrayAdapter;
     ArrayList<String> listLanguage;
+    int theme;
+    String lang;
+    com.example.image_management.Configuration config;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting);
-        languageText = (TextView) findViewById(R.id.language_text);
-        languageDefault = (TextView) findViewById(R.id.language_default);
-        language = (TextView) findViewById(R.id.language);
+
         listLanguage = new ArrayList<>();
         listLanguage.add("English");
         listLanguage.add("Tiếng Việt");
         listCode = new ArrayList<>();
         listCode.add("en");
         listCode.add("vi");
+
+        Intent intent = getIntent();
+        theme = intent.getIntExtra("theme", 0);
+        lang = intent.getStringExtra("language");
+
+        config = new com.example.image_management.Configuration(getApplication());
+
+        languageLayout = (LinearLayout) findViewById(R.id.language_layout);
+        languageText = (TextView) findViewById(R.id.language_text);
+        languageDefault = (TextView) findViewById(R.id.language_default);
+        language = (TextView) findViewById(R.id.language);
+        language.setText(listLanguage.get(listCode.indexOf(lang)));
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listLanguage);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        languageText.setOnClickListener(new View.OnClickListener() {
+        languageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ChangeLanguage();
@@ -85,6 +100,7 @@ public class Setting extends AppCompatActivity{
         Configuration configuration = resources.getConfiguration();
         configuration.setLocale(new Locale(language.toLowerCase()));
         resources.updateConfiguration(configuration, displayMetrics);
+        config.saveConfig(theme, language);
     }
 
     public void back(View v){
