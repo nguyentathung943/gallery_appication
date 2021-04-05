@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.content.CursorLoader;
@@ -88,6 +89,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             startActivity(intent);
         }
 
+    }
+    public void back(View v){
+        this.finish();
     }
 
 }
