@@ -2,6 +2,10 @@ package com.example.image_management;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +18,7 @@ import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -70,7 +75,6 @@ public class Image extends Activity {
         }
     }
     public void ImageInfo(String path){
-
         File a = new File(path);
         BasicFileAttributes attr = null;
         try {
@@ -87,7 +91,14 @@ public class Image extends Activity {
         TextView name = new TextView(this);
         TextView date = new TextView(this);
         TextView size = new TextView(this);
-        TextView walllpp = new Button(this);
+
+        Button walllpp = new Button(this);
+        Button cpy = new Button(this);
+        LinearLayout btnLay = new LinearLayout(this);
+        btnLay.setOrientation(LinearLayout.VERTICAL);
+        btnLay.setGravity(Gravity.CENTER_HORIZONTAL);
+        btnLay.addView(walllpp);
+        btnLay.addView(cpy);
         name.setText("Name: " + a.getName());
         name.setTextSize(20);
         date.setText("Creation date: " + attr.creationTime());
@@ -97,10 +108,11 @@ public class Image extends Activity {
         layout.addView(name);
         layout.addView(date);
         layout.addView(size);
-        layout.addView(walllpp);
+        layout.addView(btnLay);
         builder.setView(layout);
         builder.setNegativeButton("OK",null);
         walllpp.setText("Set image as wallpaper");
+        cpy.setText("Copy to clipboard");
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         walllpp.setOnClickListener(view ->{
@@ -109,6 +121,16 @@ public class Image extends Activity {
             intent.setDataAndType(Uri.parse(path),"image/*");
             intent.putExtra("mimeType", "image/*");
             startActivity(Intent.createChooser(intent, "Set as:"));
+        });
+        cpy.setOnClickListener(view ->{
+            Uri uri = FileProvider.getUriForFile(
+                    this,
+                    "com.example.android.fileprovider",
+                    new File(path));
+            ClipboardManager mClipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newUri(getApplicationContext().getContentResolver(), "a Photo", uri);
+            mClipboard.setPrimaryClip(clip);
+            Toast.makeText(this,"Image copied to clipboard",Toast.LENGTH_SHORT).show();
         });
     }
 
