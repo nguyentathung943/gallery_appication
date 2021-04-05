@@ -300,6 +300,7 @@ public class MainMenu extends AppCompatActivity {
                 break;
             }
             case R.id.mn_album: {
+                startActivity(new Intent(MainMenu.this, Album.class));
                 break;
             }
             case R.id.mn_archive: {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Quản lý hình ảnh</string>
-    <string name="archive">Hình ảnh</string>
+    <string name="archive">Kho ảnh</string>
     <string name="camera">Máy ảnh</string>
     <string name="setting">Cài đặt</string>
     <string name="security">Bảo mật (PIN)</string>
@@ -11,4 +11,8 @@
     <string name="dark">Tối</string>
     <string name="light">Sáng</string>
     <string name="change_pin">ĐỔI MÃ PIN</string>
+    <string name="image">Ảnh</string>
+    <string name="edit">Sửa</string>
+    <string name="your_gallery">Kho ảnh của bạn</string>
+    <string name="number_item">100 ảnh</string>
 </resources>

@@ -20,7 +20,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your Gallery"
+                android:text="@string/your_gallery"
                 android:textStyle="bold"
                 android:textColor="?attr/textcolor"
                 android:layout_marginLeft="20dp"
@@ -30,7 +30,7 @@
                 android:textStyle="italic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100 items"
+                android:text="@string/number_item"
                 android:textColor="?attr/textcolor"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp">
@@ -46,7 +46,6 @@
         </RelativeLayout>
 
         <GridLayout
-            android:id="@+id/mn_album"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -54,7 +53,6 @@
             android:columnCount="2"
             android:columnOrderPreserved="true"
             android:rowCount="3">
-
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -144,7 +142,9 @@
                     android:gravity="center"
                     android:onClick="main_menu_onclick"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:id="@+id/mn_album"
+                    >
 
                     <ImageView
                         android:layout_width="80dp"
