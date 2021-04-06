@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Setting"
+            android:text="@string/setting"
             android:textStyle="bold"
             android:textSize="30dp"
             android:textColor="?attr/textcolor"

@@ -1,60 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="?attr/backgroundcolor">
     <LinearLayout
+        android:id="@+id/start"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="?attr/tintcolor"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
-
         <ImageView
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:onClick="main_menu_onclick"
             android:src="@drawable/back_icon" />
 
         <TextView
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Video Name"
+            android:text="Video"
             android:textColor="?attr/textcolor"
             android:textSize="24dp"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Edit"
-            android:textColor="?attr/colorOnPrimary"
-            android:textStyle="bold"
-            android:gravity="right"
-            android:layout_gravity="center"
-            android:textSize="20dp"/>
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/edit"
+                android:textColor="?attr/colorOnPrimary"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:layout_gravity="center"
+                android:textSize="20dp"/>
             <ImageView
+                android:id="@+id/info"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/info"
                 android:layout_marginLeft="10dp"
-                /></LinearLayout>
+                />
+        </LinearLayout>
 
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start"
+        android:layout_above="@id/end"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:id="@+id/video_screen"
         android:onClick="click"
         >
@@ -74,6 +82,8 @@
             />
     </RelativeLayout>
     <LinearLayout
+        android:id="@+id/end"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="?attr/tintcolor"
@@ -81,10 +91,13 @@
         android:paddingRight="10dp">
 
         <ImageView
+            android:id="@+id/btn_share"
+            android:onClick="imageViewMenu"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_weight="1"
+
             android:src="@drawable/share_icon"/>
         <ImageView
             android:layout_weight="6"
@@ -100,4 +113,4 @@
             android:layout_gravity="center"
             android:src="@drawable/delete_icon"/>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
