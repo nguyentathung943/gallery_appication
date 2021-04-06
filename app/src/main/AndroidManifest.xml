@@ -40,6 +40,7 @@
         <activity android:name = ".Video"  android:exported="true"> </activity>
         <activity android:name = ".Setting"  android:exported="true"> </activity>
         <activity android:name = ".Album"  android:exported="true"/>
+        <activity android:name = ".ImageEditor"  android:exported="true"/>
         <activity android:name = ".Archive"  android:exported="true">
             <intent-filter>
                 <data android:mimeType="video/*" />
@@ -66,7 +67,4 @@
         </provider>
 
     </application>
-
-
-
 </manifest>

@@ -1,6 +1,48 @@
 plugins {
     id 'com.android.application'
 }
+// Apply the PESDKPlugin
+apply plugin: 'ly.img.android.sdk'
+// Apply Kotlin Plugin
+apply plugin: 'kotlin-android'
+
+// Configure the PESDKPlugin
+imglyConfig {
+
+    pesdk {
+        enabled true
+        licencePath 'LICENSE'
+    }
+
+    // Define the modules you are need
+    modules {
+        // Add all the UI modules you are need
+        include 'ui:core'
+        include 'ui:text'
+        include 'ui:focus'
+        include 'ui:frame'
+        include 'ui:brush'
+        include 'ui:filter'
+        include 'ui:camera'
+        include 'ui:sticker'
+        include 'ui:overlay'
+        include 'ui:transform'
+        include 'ui:adjustment'
+        include 'ui:text-design'
+
+
+        // Add the serializer if you need
+        include 'backend:serializer'
+
+        // Add asset packs if you need
+        include 'assets:font-basic'
+        include 'assets:frame-basic'
+        include 'assets:filter-basic'
+        include 'assets:overlay-basic'
+        include 'assets:sticker-shapes'
+        include 'assets:sticker-emoticons'
+    }
+}
 
 android {
     defaultConfig.applicationId = "com.company.image_management"
@@ -39,4 +81,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.hanks:passcodeview:0.1.2'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.burhanrashid52:photoeditor:1.1.1'
 }

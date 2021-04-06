@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -69,7 +70,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         Cursor cursor = cursorLoader.loadInBackground();
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-            System.out.println(absolutePathOfImage + "**************");
             path.add(absolutePathOfImage);
         }
         cursor.close();
@@ -80,7 +80,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         {
             Intent intent = new Intent(this, Image.class);
             intent.putExtra("path", path.get(position));
-            startActivity(intent);
+            startActivityForResult(intent, 1);
         }
         else
         {
@@ -94,4 +94,11 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         this.finish();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            recreate();
+        }
+    }
 }
