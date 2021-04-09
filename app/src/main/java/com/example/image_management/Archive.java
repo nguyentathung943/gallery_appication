@@ -68,6 +68,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         );
 
         Cursor cursor = cursorLoader.loadInBackground();
+        int column_image_type = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE);
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             path.add(absolutePathOfImage);
