@@ -9,11 +9,13 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Archive extends AppCompatActivity implements ListAdapter.ClickImageListener {
@@ -75,13 +77,24 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
         cursor.close();
     }
+    void open_with_photos(int position){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setDataAndType(
+                Uri.parse(path.get(position)),"image/*");
+        startActivity(intent);
+    }
+    void openwithThis(int position){
+        Intent intent = new Intent(this, Image.class);
+        intent.putExtra("path", path.get(position));
+        startActivityForResult(intent, 1);
+    }
     @Override
     public void onClick(int position) {
         if(path.get(position).contains("jpg"))
         {
-            Intent intent = new Intent(this, Image.class);
-            intent.putExtra("path", path.get(position));
-            startActivityForResult(intent, 1);
+            openwithThis(position);
         }
         else
         {
@@ -89,7 +102,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             intent.putExtra("path", path.get(position));
             startActivity(intent);
         }
-
     }
     public void back(View v){
         this.finish();
