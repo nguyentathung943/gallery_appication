@@ -2,12 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.image_management">
+
     <uses-feature android:name="android.hardware.camera"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <application
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
@@ -16,45 +21,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme">
-        <activity android:name = ".Security"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:mimeType="application/jpg"
-                    android:host="*"
-                    android:pathPattern=".*\\.jpg"
-                    />
-                <data
-                    android:mimeType="application/mp4"
-                    android:host="*"
-                    android:pathPattern=".*\\.mp4"
-                    />
-            </intent-filter>
-
+        <activity android:name = ".Security" android:exported="true"/>
+        <activity android:name = ".MainMenu"  android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
-        <activity android:name = ".MainMenu"  android:exported="true"> </activity>
-        <activity android:name = ".Image"  android:exported="true"> </activity>
-        <activity android:name = ".Video"  android:exported="true"> </activity>
-        <activity android:name = ".Setting"  android:exported="true"> </activity>
+        <activity android:name = ".Image"  android:exported="true"/>
+        <activity android:name = ".Video"  android:exported="true"/>
+        <activity android:name = ".Setting"  android:exported="true"/>
         <activity android:name = ".Album"  android:exported="true"/>
         <activity android:name = ".ImageEditor"  android:exported="true"/>
-        <activity android:name = ".Archive"  android:exported="true">
-            <intent-filter>
-                <data android:mimeType="video/*" />
-                <data android:mimeType="video/mp4" />
-                <data android:mimeType="video/3gp" />
-                <data android:mimeType="image/*" />
-                <data android:mimeType="application/sdp" />
-            <category android:name="android.intent.category.DEFAULT"/>
-            <data android:mimeType="text/plain"/>
-        </intent-filter></activity>
-        <provider
-            android:name=".ImageProvider"
-            android:authorities="com.example.Test"
-            android:exported="true"/>
+        <activity
+            android:name=".Archive"
+            android:exported="true" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.android.fileprovider"

@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -127,21 +128,32 @@ public class MainMenu extends AppCompatActivity {
         int permissionCheckCam = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.CAMERA);
         int permissionCheckWrite = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheckRead = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionLocation1 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionLocation2 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionLocation3 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         System.out.println(permissionCheckCam + permissionCheckRead + permissionCheckWrite);
         if((permissionCheckCam + permissionCheckRead + permissionCheckWrite) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.CAMERA) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.READ_EXTERNAL_STORAGE)
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.ACCESS_COARSE_LOCATION)||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.ACCESS_FINE_LOCATION)||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.ACCESS_BACKGROUND_LOCATION) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.INTERNET)
             ){
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
                 builder.setTitle("Please grant those permissions to continue using this app!");
-                builder.setMessage("Camera, Storage");
+                builder.setMessage("Camera, Storage, Location, Internet");
                 builder.setPositiveButton("Ok", (dialog, which) ->
                         ActivityCompat.requestPermissions(MainMenu.this,
                         new String[]{
                                 Manifest.permission.CAMERA,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                                Manifest.permission.INTERNET
                         },
                         CAMERA_PERM_CODE));
                 builder.setNegativeButton("No",(dialog, which) ->
@@ -155,7 +167,11 @@ public class MainMenu extends AppCompatActivity {
                         new String[]{
                                 Manifest.permission.CAMERA,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                                Manifest.permission.INTERNET
                         },
                         CAMERA_PERM_CODE);
             }
@@ -265,6 +281,9 @@ public class MainMenu extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             galleryAddFile();
             Toast.makeText(this,"Image saved",Toast.LENGTH_SHORT).show();
+            
+//            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//            System.out.println(locationManager);
         }
         else if(requestCode == SETTING_CONSTANT){
             recreate();

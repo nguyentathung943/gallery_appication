@@ -160,10 +160,12 @@ public class Image extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.img_view);
         info = findViewById(R.id.info);
         path = getIntent().getStringExtra("path");
+        System.out.println(path);
         Bitmap myBitmap = BitmapFactory.decodeFile(path);
         myImage = findViewById(R.id.img_show);
         myImage.setImageBitmap(myBitmap);

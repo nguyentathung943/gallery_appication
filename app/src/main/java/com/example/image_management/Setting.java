@@ -102,7 +102,6 @@ public class Setting extends AppCompatActivity{
         resources.updateConfiguration(configuration, displayMetrics);
         config.saveConfig(theme, language);
     }
-
     public void back(View v){
         this.finish();
     }
