@@ -1,5 +1,6 @@
 package com.example.image_management;
 
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class Video extends AppCompatActivity {
         playBtn = (ImageView) findViewById(R.id.play_btn);
         Uri uri = Uri.parse(path);
         video.setVideoURI(uri);
+        video.setBackground(Drawable.createFromPath(path));
     }
 
     public void click(View v){
