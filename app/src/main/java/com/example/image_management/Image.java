@@ -180,13 +180,7 @@ public class Image extends Activity {
     public static int PESDK_RESULT = 1;
 
     private SettingsList createPesdkSettingsList() {
-
-        // Create a empty new SettingsList and apply the changes on this referance.
         PhotoEditorSettingsList settingsList = new PhotoEditorSettingsList();
-
-        // If you include our asset Packs and you use our UI you also need to add them to the UI,
-        // otherwise they are only available for the backend
-        // See the specific feature sections of our guides if you want to know how to add our own Assets.
 
         settingsList.getSettingsModel(UiConfigFilter.class).setFilterList(
                 FilterPackBasic.getFilterPack()

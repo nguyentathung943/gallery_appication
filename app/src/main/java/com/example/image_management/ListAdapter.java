@@ -41,7 +41,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         Glide.with(context)
-                .load(BitmapFactory.decodeFile(list.get(position).getImage()))
+                .load(list.get(position).getImage())
                 .centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(viewHolder.imageView);
