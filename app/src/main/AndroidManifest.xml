@@ -33,6 +33,7 @@
         <activity android:name = ".Setting"  android:exported="true"/>
         <activity android:name = ".Album"  android:exported="true"/>
         <activity android:name = ".ImageEditor"  android:exported="true"/>
+        <activity android:name = ".SecureFolder"  android:exported="true"/>
         <activity
             android:name=".Archive"
             android:exported="true" />

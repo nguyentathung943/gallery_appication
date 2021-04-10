@@ -20,11 +20,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,6 +41,7 @@ public class Setting extends AppCompatActivity{
     ListView listView;
     Context context;
     TextView languageText, languageDefault, language;
+    Switch sw;
     LinearLayout languageLayout;
     ArrayList<String> listCode;
     ArrayAdapter arrayAdapter;
@@ -46,6 +49,7 @@ public class Setting extends AppCompatActivity{
     int theme;
     String lang;
     com.example.image_management.Configuration config;
+    int DefaultMode;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +62,39 @@ public class Setting extends AppCompatActivity{
         listCode.add("en");
         listCode.add("vi");
 
-        Intent intent = getIntent();
-        theme = intent.getIntExtra("theme", 0);
-        lang = intent.getStringExtra("language");
+//        Intent intent = getIntent();
+//        theme = intent.getIntExtra("theme", 0);
+//        lang = intent.getStringExtra("language");
 
-        config = new com.example.image_management.Configuration(getApplication());
-
+        config = new com.example.image_management.Configuration(getApplicationContext());
+        config.getConfig();
+        theme =  config.isDarkMode;
+        lang = config.language;
+        sw = findViewById(R.id.defaultSwitch);
+        if(config.isDefault==1){
+            DefaultMode = 1;
+            sw.setText("On");
+            sw.setChecked(true);
+        }
+        else{
+            DefaultMode = 0;
+            sw.setText("Off");
+            sw.setChecked(false);
+        }
+        sw.setOnCheckedChangeListener((compoundButton, checked) -> {
+            if(checked){
+                config.saveConfig(config.isDarkMode,config.language,1);
+                sw.setText("On");
+                DefaultMode = 1;
+                sw.setChecked(true);
+            }
+            else{
+                config.saveConfig(config.isDarkMode,config.language,0);
+                sw.setText("Off");
+                DefaultMode=0;
+                sw.setChecked(false);
+            }
+        });
         languageLayout = (LinearLayout) findViewById(R.id.language_layout);
         languageText = (TextView) findViewById(R.id.language_text);
         languageDefault = (TextView) findViewById(R.id.language_default);
@@ -100,7 +131,7 @@ public class Setting extends AppCompatActivity{
         Configuration configuration = resources.getConfiguration();
         configuration.setLocale(new Locale(language.toLowerCase()));
         resources.updateConfiguration(configuration, displayMetrics);
-        config.saveConfig(theme, language);
+        config.saveConfig(theme, language,DefaultMode);
     }
     public void back(View v){
         this.finish();
