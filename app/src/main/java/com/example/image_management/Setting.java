@@ -33,18 +33,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Set;
-//
-//import io.paperdb.Paper;
 
 public class Setting extends AppCompatActivity{
+    TextView languageText, languageDefault, language, headerTitle;
     ListView listView;
     Context context;
-    TextView languageText, languageDefault, language;
     Switch sw;
     LinearLayout languageLayout;
     ArrayList<String> listCode;
-    ArrayAdapter arrayAdapter;
+    LanguageAdapter languageAdapter;
     ArrayList<String> listLanguage;
     int theme;
     String lang;
@@ -97,10 +94,11 @@ public class Setting extends AppCompatActivity{
         languageLayout = (LinearLayout) findViewById(R.id.language_layout);
         languageText = (TextView) findViewById(R.id.language_text);
         languageDefault = (TextView) findViewById(R.id.language_default);
+        headerTitle = (TextView) findViewById(R.id.header_title);
         language = (TextView) findViewById(R.id.language);
         language.setText(listLanguage.get(listCode.indexOf(lang)));
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listLanguage);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        languageAdapter = new LanguageAdapter(this, listLanguage);
+
         languageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,12 +109,13 @@ public class Setting extends AppCompatActivity{
     public void ChangeLanguage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(Setting.this);
         builder.setTitle(R.string.language_text);
-        builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+        builder.setAdapter(languageAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int position) {
                 ChangeLanguage(listCode.get(position));
                 languageText.setText(R.string.language_text);
                 languageDefault.setText(R.string.language_default);
+                headerTitle.setText(R.string.setting);
                 language.setText(listLanguage.get(position));
                 dialog.dismiss();
             }
