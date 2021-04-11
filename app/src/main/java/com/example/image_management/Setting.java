@@ -65,7 +65,6 @@ public class Setting extends AppCompatActivity{
 //        Intent intent = getIntent();
 //        theme = intent.getIntExtra("theme", 0);
 //        lang = intent.getStringExtra("language");
-
         config = new com.example.image_management.Configuration(getApplicationContext());
         config.getConfig();
         theme =  config.isDarkMode;
