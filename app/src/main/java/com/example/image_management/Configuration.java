@@ -13,16 +13,18 @@ public class Configuration {
     Context context;
     int isDarkMode;
     String language;
+    int isDefault;
     Configuration(Context a) {
         context = a;
     }
     public int ThemeMode() {
         return isDarkMode;
     }
-
     public String languageState() {
         return language;
     }
+    public int DefaultMode(){return isDefault;}
+
     protected boolean getConfig(){
         String filename = "config.txt";
         FileInputStream fis = null;
@@ -33,16 +35,19 @@ public class Configuration {
             String line = reader.readLine();
             isDarkMode = Integer.parseInt(line);
             language = reader.readLine();
+            line = reader.readLine();
+            isDefault = Integer.parseInt(line);
             return true;
         } catch (IOException e) {
             return false;
         }
     }
-    protected void saveConfig(int Theme, String Lan) {
+    protected void saveConfig(int Theme, String Lan,int Default) {
         try {
             FileOutputStream fout = context.openFileOutput("config.txt", Context.MODE_PRIVATE);
             fout.write((String.valueOf(Theme) + '\n').getBytes());
-            fout.write((Lan + '\n').getBytes());
+            fout.write((Lan + "\n").getBytes());
+            fout.write((String.valueOf(Default) + '\n').getBytes());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

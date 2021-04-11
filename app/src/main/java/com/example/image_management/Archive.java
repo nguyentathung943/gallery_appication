@@ -28,6 +28,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     ArrayList<String> path;
     ArrayList<Integer> type;
     ArrayList<DateTimeFormatter> duration;
+    Configuration config;
     String[] projection = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -51,6 +52,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.archive);
         init();
+        config = new Configuration(getApplicationContext());
+        config.getConfig();
         getAllImages();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -126,7 +129,13 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         System.out.println("Image type " + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
         if(type.get(position) == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
         {
-            openwithThis(position);
+            System.out.println("Image show: " + config.isDefault);
+            if(config.isDefault==1){
+                openwithThis(position);
+            }
+            else {
+                open_with_photos(position);
+            }
         }
         else if(type.get(position) == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
         {

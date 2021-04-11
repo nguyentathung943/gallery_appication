@@ -121,23 +121,14 @@ public class Security extends AppCompatActivity {
             e.printStackTrace();
         };
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Configuration config = new Configuration(getApplicationContext());
-        Boolean checkConfig = config.getConfig();
-        if (!checkConfig){
-            config.saveConfig(0,"en");
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        else{
-            if(config.isDarkMode==1){
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }
-            else{
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-            ChangeLanguage(config.language);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password);
         boolean check = checkPasswordSet();
@@ -149,11 +140,5 @@ public class Security extends AppCompatActivity {
             showKeyboard();
         }
     }
-    public void ChangeLanguage(String language){
-        Resources resources = getResources();
-        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-        android.content.res.Configuration configuration = resources.getConfiguration();
-        configuration.setLocale(new Locale(language.toLowerCase()));
-        resources.updateConfiguration(configuration, displayMetrics);
-    }
+
 }

@@ -13,6 +13,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +23,7 @@ import android.provider.Settings;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainMenu extends AppCompatActivity {
     private static final int SETTING_CONSTANT = 10;
@@ -52,34 +56,42 @@ public class MainMenu extends AppCompatActivity {
     private int requestCode;
     private int resultCode;
     private Intent data;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        config = new Configuration(getApplicationContext());
-        config.getConfig();
-        System.out.println("DARK MODE " + config.isDarkMode);
-        askPermission();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         sw = findViewById(R.id.themeSwitch);
-        if(config.ThemeMode()==1){
-            sw.setChecked(true);
-            sw.setText(R.string.dark);
+        config = new Configuration(getApplicationContext());
+        Boolean checkConfig = config.getConfig();
+        if (!checkConfig){
+            config.saveConfig(0,"en",0);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
         else{
-            sw.setChecked(false);
-            sw.setText(R.string.light);
+            if(config.isDarkMode==1){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                sw.setChecked(true);
+                sw.setText(R.string.dark);
+            }
+            else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                sw.setChecked(false);
+                sw.setText(R.string.light);
+            }
+            ChangeLanguage(config.language);
         }
+        askPermission();
+
         sw.setOnCheckedChangeListener((compoundButton, checked) -> {
             if(checked){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                config.saveConfig(1,config.language);
+                config.saveConfig(1,config.language,config.isDarkMode);
                 sw.setText("Dark");
                 sw.setChecked(true);
             }
             else{
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                config.saveConfig(0,config.language);
+                config.saveConfig(0,config.language,config.isDarkMode);
                 sw.setText("Light");
                 sw.setChecked(false);
             }
@@ -87,61 +99,48 @@ public class MainMenu extends AppCompatActivity {
             startActivity(new Intent(MainMenu.this, MainMenu.this.getClass()));
         });
     }
+    public void ChangeLanguage(String language){
+        Resources resources = getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        android.content.res.Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(language.toLowerCase()));
+        resources.updateConfiguration(configuration, displayMetrics);
+    }
     @Override
     public void onBackPressed() {
         this.finishAffinity();
     }
-    public void ShowChangePIN(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-        input.setTransformationMethod(PasswordTransformationMethod.getInstance());
-        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
-        builder.setTitle(R.string.change_pin);
-        builder.setMessage("4 digits are required");
-        builder.setView(input);
-        builder.setPositiveButton("Ok", (dialog, which) ->{
-                    String a = input.getText().toString();
-                    if (a.length() < 4){
-                        Toast.makeText(this,"PIN must contains 4 digits", Toast.LENGTH_SHORT).show();
-                        ShowChangePIN();
-                    }
-                    else{
-                        Context context = getApplicationContext();
-                        try {
-                            FileOutputStream fout = context.openFileOutput("PIN.txt", Context.MODE_PRIVATE);
-                            fout.write(input.getText().toString().getBytes());
-                            Toast.makeText(this, "PIN Changed Successfully",Toast.LENGTH_SHORT).show();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-        });
-        builder.setNegativeButton("No",null);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
+
     public void askPermission(){
         int permissionCheckCam = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.CAMERA);
         int permissionCheckWrite = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int permissionCheckRead = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int permissionLocation1 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionLocation2 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionLocation3 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         System.out.println(permissionCheckCam + permissionCheckRead + permissionCheckWrite);
         if((permissionCheckCam + permissionCheckRead + permissionCheckWrite) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.CAMERA) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.READ_EXTERNAL_STORAGE)
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.ACCESS_COARSE_LOCATION)||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.ACCESS_FINE_LOCATION)||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.ACCESS_BACKGROUND_LOCATION) ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.INTERNET)
             ){
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
                 builder.setTitle("Please grant those permissions to continue using this app!");
-                builder.setMessage("Camera, Storage");
+                builder.setMessage("Camera, Storage, Location, Internet");
                 builder.setPositiveButton("Ok", (dialog, which) ->
                         ActivityCompat.requestPermissions(MainMenu.this,
                         new String[]{
                                 Manifest.permission.CAMERA,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                                Manifest.permission.INTERNET
                         },
                         CAMERA_PERM_CODE));
                 builder.setNegativeButton("No",(dialog, which) ->
@@ -155,7 +154,11 @@ public class MainMenu extends AppCompatActivity {
                         new String[]{
                                 Manifest.permission.CAMERA,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                                Manifest.permission.INTERNET
                         },
                         CAMERA_PERM_CODE);
             }
@@ -265,6 +268,9 @@ public class MainMenu extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             galleryAddFile();
             Toast.makeText(this,"Image saved",Toast.LENGTH_SHORT).show();
+            
+//            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//            System.out.println(locationManager);
         }
         else if(requestCode == SETTING_CONSTANT){
             recreate();
@@ -290,13 +296,14 @@ public class MainMenu extends AppCompatActivity {
             }
             case R.id.mn_setting: {
                 Intent intent = new Intent(MainMenu.this, Setting.class);
-                intent.putExtra("theme", config.ThemeMode());
-                intent.putExtra("language", config.languageState());
+//                intent.putExtra("theme", config.ThemeMode());
+//                intent.putExtra("language", config.languageState());
                 startActivityForResult(intent, SETTING_CONSTANT);
                 break;
             }
             case R.id.mn_PIN: {
-                ShowChangePIN();
+                startActivity(new Intent(MainMenu.this, SecureFolder.class));
+//                ShowChangePIN();
                 break;
             }
             case R.id.mn_album: {
