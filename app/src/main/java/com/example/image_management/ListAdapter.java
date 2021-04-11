@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,11 +41,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
+        Item item = list.get(position);
         Glide.with(context)
-                .load(list.get(position).getImage())
+                .load(item.getPath())
                 .centerCrop()
-                .transition(DrawableTransitionOptions.withCrossFade(500))
+//                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(viewHolder.imageView);
+        if(!item.getTime().equals("")){
+            viewHolder.duration.setText(item.getTime());
+            viewHolder.duration.setPadding(3, 3, 3, 3);
+        }
+
     }
 
     @Override
@@ -54,9 +61,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
+        TextView duration;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imgView);
+            duration = itemView.findViewById(R.id.duration);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

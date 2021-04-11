@@ -1,17 +1,21 @@
 package com.example.image_management;
 
+import java.time.format.DateTimeFormatter;
+
 public class Item {
-    private String image;
+    private String path;
+    private String time;
 
-    public Item(String image) {
-        this.image = image;
+    public String getTime() {
+        return time;
     }
 
-    public String getImage() {
-        return image;
+    public Item(String path, String time) {
+        this.path = path;
+        this.time = time;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public String getPath() {
+        return path;
     }
 }

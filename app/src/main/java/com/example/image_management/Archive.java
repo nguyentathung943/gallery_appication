@@ -27,6 +27,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     ArrayList<Item> listItem;
     ArrayList<String> path;
     ArrayList<Integer> type;
+    ArrayList<DateTimeFormatter> duration;
     String[] projection = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -52,12 +53,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         init();
         getAllImages();
         recyclerView = findViewById(R.id.recyclerView);
-        listItem = new ArrayList<>();
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        for(String i : path){
-            listItem.add(new Item(i));
-        }
         ListAdapter listAdapter = new ListAdapter(listItem, path, this, this);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -66,6 +63,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     public void init() {
         path = new ArrayList<>();
         type = new ArrayList<>();
+        duration = new ArrayList<>();
+        listItem = new ArrayList<>();
     }
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
@@ -82,18 +81,29 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         int columnDuration = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DURATION);
         int columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE);
         while (cursor.moveToNext()) {
-            long duration = cursor.getLong(columnDuration);
-            Instant instant = Instant.ofEpochMilli(duration);
+            Long durationData =  cursor.getLong(columnDuration);
+            Instant instant = Instant.ofEpochMilli(durationData);
             ZonedDateTime zdt = ZonedDateTime.ofInstant ( instant , ZoneOffset.UTC );
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern ( "HH:mm:ss" );
-            String output = formatter.format ( zdt );
+            DateTimeFormatter formatter;
+            String durationTime = "";
+            if(durationData >= 3600000)
+            {
+                formatter = DateTimeFormatter.ofPattern ( "HH:mm:ss" );
+                durationTime = formatter.format(zdt);
+            }
+            else if(durationData > 0)
+            {
+                formatter = DateTimeFormatter.ofPattern("mm:ss");
+                durationTime = formatter.format(zdt);
+            }
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             System.out.println("Data");
-            System.out.println("Duration " + output);
+            System.out.println("Duration " + durationTime);
             System.out.println("Size " + cursor.getString(columnSize));
             System.out.println("Type " + cursor.getString(columnMediaType));
             path.add(absolutePathOfImage);
             type.add(cursor.getInt(columnMediaType));
+            listItem.add(new Item(absolutePathOfImage, durationTime));
         }
         cursor.close();
     }

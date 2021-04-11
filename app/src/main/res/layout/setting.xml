@@ -5,27 +5,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/backgroundcolor"
     android:orientation="vertical">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/tintcolor">
         <ImageView
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_height="wrap_content"
             android:onClick="back"
-            android:src="@drawable/back_icon" />
+            android:src="@drawable/back_icon"
+            android:layout_marginTop="3dp"/>
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/setting"
             android:textStyle="bold"
             android:textSize="30dp"
             android:textColor="?attr/textcolor"
             android:gravity="center"
-            android:layout_gravity="center"/>
-    </LinearLayout>
+            android:id="@+id/header_title"
+          />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
