@@ -17,25 +17,17 @@
             android:paddingTop="25dp"
             android:paddingRight="20dp"
             android:background="?attr/tintcolor">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/your_gallery"
-                android:textStyle="bold"
-                android:textColor="?attr/textcolor"
-                android:layout_marginLeft="20dp"
-                android:textSize="24dp">
-            </TextView>
-            <TextView
-                android:textStyle="italic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/number_item"
-                android:textColor="?attr/textcolor"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp">
 
-            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:text="@string/your_gallery"
+                android:textColor="?attr/textcolor"
+                android:textSize="24dp"
+                android:textStyle="bold"></TextView>
+
             <ImageView
                 android:layout_width="88dp"
                 android:layout_height="88dp"

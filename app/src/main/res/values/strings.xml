@@ -17,4 +17,6 @@
     <string name="secure_folder">Secure Archive</string>
     <string name="secure_pin">PIN</string>
     <string name="mark_default">Mark as default image view</string>
+    <string name="display">Display Setting</string>
+    <string name="cancel">Cancel</string>
 </resources>

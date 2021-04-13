@@ -35,11 +35,11 @@
 
                 <ImageView
                     android:id="@+id/btn_view"
-                    android:layout_width="36dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
                     android:layout_gravity="center"
-                    android:onClick="back"
-                    android:src="@drawable/eye_icon"/>
+                    android:src="@drawable/eye_icon"
+                    android:onClick="ChangeDisplay"/>
 
         </LinearLayout>
         <LinearLayout

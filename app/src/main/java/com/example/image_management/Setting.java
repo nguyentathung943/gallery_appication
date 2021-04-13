@@ -109,6 +109,7 @@ public class Setting extends AppCompatActivity{
     public void ChangeLanguage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(Setting.this);
         builder.setTitle(R.string.language_text);
+        builder.setNegativeButton(R.string.cancel,null);
         builder.setAdapter(languageAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int position) {

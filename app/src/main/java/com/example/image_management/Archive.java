@@ -1,10 +1,14 @@
 package com.example.image_management;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -22,13 +26,15 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class Archive extends AppCompatActivity implements ListAdapter.ClickImageListener {
+public class Archive extends AppCompatActivity implements ListAdapter.ClickImageListener{
     RecyclerView recyclerView;
     ArrayList<Item> listItem;
     ArrayList<String> path;
     ArrayList<Integer> type;
     ArrayList<DateTimeFormatter> duration;
+    DisplayAdapter displayAdapter;
     Configuration config;
+    ListAdapter listAdapter;
     String[] projection = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -58,8 +64,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        ListAdapter listAdapter = new ListAdapter(listItem, path, this, this);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        listAdapter = new ListAdapter(listItem, path, this, this);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdapter);
     }
@@ -68,6 +74,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         type = new ArrayList<>();
         duration = new ArrayList<>();
         listItem = new ArrayList<>();
+        displayAdapter = new DisplayAdapter(this);
     }
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
@@ -155,4 +162,20 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recreate();
         }
     }
+    public void ChangeDisplay(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(Archive.this);
+        builder.setTitle(R.string.display);
+        builder.setNegativeButton(R.string.cancel,null);
+        builder.setAdapter(displayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int position) {
+                recyclerView.setLayoutManager(new GridLayoutManager(Archive.this, position + 1));
+                recyclerView.setAdapter(listAdapter);
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 }

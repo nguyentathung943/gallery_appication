@@ -18,4 +18,6 @@
     <string name="secure_folder">Kho ảnh an toàn</string>
     <string name="secure_pin">Quản lý mã PIN</string>
     <string name="mark_default">Ứng dụng mặc định khi xem ảnh</string>
+    <string name="display">Cài đặt hiển thị</string>
+    <string name="cancel">Thoát</string>
 </resources>

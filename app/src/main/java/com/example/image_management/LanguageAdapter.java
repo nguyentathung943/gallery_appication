@@ -10,13 +10,12 @@ import java.util.List;
 
 public class LanguageAdapter extends BaseAdapter {
     Context context;
-
+    List<String> languageList;
     public LanguageAdapter(Context context, List<String> languageList) {
         this.context = context;
         this.languageList = languageList;
     }
 
-    List<String> languageList;
     @Override
     public int getCount() {
         return languageList.size();
