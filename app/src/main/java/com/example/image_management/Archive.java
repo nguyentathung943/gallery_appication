@@ -35,6 +35,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     DisplayAdapter displayAdapter;
     Configuration config;
     ListAdapter listAdapter;
+    int VIEW_REQUEST = 555;
     String[] projection = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -64,6 +65,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        for(String p:path){
+            System.out.println(p);
+        }
         listAdapter = new ListAdapter(listItem, path, this, this);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -128,7 +132,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     void openwithThis(int position){
         Intent intent = new Intent(this, Image.class);
         intent.putExtra("path", path.get(position));
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, VIEW_REQUEST);
     }
     @Override
     public void onClick(int position) {
@@ -159,6 +163,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
+            recreate();
+        }
+        else if(requestCode==VIEW_REQUEST){
             recreate();
         }
     }

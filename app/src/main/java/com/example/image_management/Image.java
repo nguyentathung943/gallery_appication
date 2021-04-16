@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -84,8 +85,20 @@ public class Image extends Activity {
         shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
         shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-        shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(shareIntent, "Share File"));
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
+//        startActivity(shareIntent);
+    }
+    public void callScanItent(Context context,String path) {
+        MediaScannerConnection.scanFile(context,
+                new String[] { path }, null,null);
+    }
+    private void deleteOn(){
+        File a = new File(path);
+        a.delete();
+        callScanItent(getApplicationContext(),path);
+        Toast.makeText(this,"Image deleted",Toast.LENGTH_SHORT).show();
+        finish();
     }
     @Override
     public void onBackPressed(){
@@ -95,6 +108,9 @@ public class Image extends Activity {
         switch (view.getId()){
             case R.id.btn_share:
                 shareOn();
+                break;
+            case R.id.btn_delete:
+                deleteOn();
                 break;
         }
     }
@@ -118,11 +134,13 @@ public class Image extends Activity {
 
         Button walllpp = new Button(this);
         Button cpy = new Button(this);
+        Button secureFolder = new Button(this);
         LinearLayout btnLay = new LinearLayout(this);
         btnLay.setOrientation(LinearLayout.VERTICAL);
         btnLay.setGravity(Gravity.CENTER_HORIZONTAL);
         btnLay.addView(walllpp);
         btnLay.addView(cpy);
+        btnLay.addView(secureFolder);
         name.setText("Name: " + a.getName());
         name.setTextSize(20);
         date.setText("Creation date: " + attr.creationTime());
@@ -137,6 +155,7 @@ public class Image extends Activity {
         builder.setNegativeButton("OK",null);
         walllpp.setText("Set image as wallpaper");
         cpy.setText("Copy to clipboard");
+        secureFolder.setText("Move to Secure Folder");
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         walllpp.setOnClickListener(view ->{
@@ -156,11 +175,20 @@ public class Image extends Activity {
             mClipboard.setPrimaryClip(clip);
             Toast.makeText(this,"Image copied to clipboard",Toast.LENGTH_SHORT).show();
         });
+        secureFolder.setOnClickListener(view -> {
+            File old_file = new File(path);
+            String old = new File(path).getName();
+            String newFilename = old.replaceAll("\\.jpg|.png|.jpeg$", ".txt");
+            File f1 = new File(new File(path).getParentFile(),newFilename);
+            old_file.renameTo(f1);
+            callScanItent(getApplicationContext(),path);
+            Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.img_view);
         info = findViewById(R.id.info);
