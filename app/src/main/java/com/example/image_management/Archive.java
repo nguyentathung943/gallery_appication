@@ -122,11 +122,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         cursor.close();
     }
     void open_with_photos(int position){
+        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(path.get(position)));
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setDataAndType(
-                Uri.parse(path.get(position)),"image/*");
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        intent.setDataAndType(photoURI, "image/*");
         startActivity(intent);
     }
     void openwithThis(int position){

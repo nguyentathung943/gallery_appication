@@ -118,8 +118,8 @@ public class MainMenu extends AppCompatActivity {
         int permissionLocation1 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_COARSE_LOCATION);
         int permissionLocation2 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_FINE_LOCATION);
         int permissionLocation3 = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-        System.out.println(permissionCheckCam + permissionCheckRead + permissionCheckWrite);
-        if((permissionCheckCam + permissionCheckRead + permissionCheckWrite) != PackageManager.PERMISSION_GRANTED){
+        int permissionInternet = ContextCompat.checkSelfPermission(MainMenu.this, Manifest.permission.INTERNET);
+        if((permissionCheckCam + permissionCheckRead + permissionCheckWrite+permissionLocation1+permissionLocation2+permissionLocation3+permissionInternet ) != PackageManager.PERMISSION_GRANTED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.CAMERA) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.READ_EXTERNAL_STORAGE) ||
@@ -173,7 +173,7 @@ public class MainMenu extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==CAMERA_PERM_CODE){
-            if(grantResults.length > 0 && (grantResults[0]+grantResults[1]+grantResults[2]) == PackageManager.PERMISSION_GRANTED){
+            if(grantResults.length > 0 && (grantResults[0]+grantResults[1]+grantResults[2]+grantResults[3]+grantResults[4]+grantResults[5]+grantResults[6]) == PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(this, "Permissions are granted",Toast.LENGTH_LONG).show();
             }
             else{
