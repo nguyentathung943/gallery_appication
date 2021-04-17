@@ -20,12 +20,10 @@ import java.util.ArrayList;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     ArrayList<Item> list;
-    ArrayList<String> path;
     private ClickImageListener clickImageListener;
-    public ListAdapter(ArrayList<Item> list, ArrayList<String> path, Context context, ClickImageListener clickImageListener) {
+    public ListAdapter(ArrayList<Item> list, Context context, ClickImageListener clickImageListener) {
         this.list = list;
         this.context = context;
-        this.path = path;
         this.clickImageListener = clickImageListener;
     }
 

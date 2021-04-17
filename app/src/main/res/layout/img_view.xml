@@ -87,13 +87,13 @@
             android:layout_weight="1"
 
             android:src="@drawable/share_icon"/>
+
         <ImageView
-            android:layout_weight="6"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
-            android:src="@drawable/like_icon"
-            />
+            android:layout_weight="6"
+            android:src="@drawable/like_icon"/>
         <ImageView
             android:layout_weight="1"
             android:layout_width="wrap_content"

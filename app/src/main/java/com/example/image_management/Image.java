@@ -165,6 +165,7 @@ public class Image extends Activity {
         setContentView(R.layout.img_view);
         info = findViewById(R.id.info);
         path = getIntent().getStringExtra("path");
+        System.out.println("Path " + path);
         System.out.println(path);
         Bitmap myBitmap = BitmapFactory.decodeFile(path);
         myImage = findViewById(R.id.img_show);
@@ -216,11 +217,7 @@ public class Image extends Activity {
         settingsList.getSettingsModel(LoadSettings.class).setSource(inputImage);
 
         settingsList.getSettingsModel(PhotoEditorSaveSettings.class).setOutputToUri(inputImage);
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(path);
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        this.sendBroadcast(mediaScanIntent);
+
         settingsList.getSettingsModel(PhotoEditorSaveSettings.class).setOutputToGallery(Environment.DIRECTORY_DCIM);
 
         new EditorBuilder(this)

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -20,11 +21,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Archive extends AppCompatActivity implements ListAdapter.ClickImageListener{
     RecyclerView recyclerView;
@@ -46,7 +51,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             MediaStore.Files.FileColumns.WIDTH,
             MediaStore.Files.FileColumns.DURATION,
             MediaStore.Files.FileColumns.SIZE,
-//            MediaStore.Files.FileColumns.ALBUM
     };
     String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
             + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
@@ -64,7 +68,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        listAdapter = new ListAdapter(listItem, path, this, this);
+        for(Item i : listItem)
+            System.out.println("Item data " + i.getPath());
+        listAdapter = new ListAdapter(listItem, this, this);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdapter);
@@ -83,15 +89,15 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 queryUri,
                 projection,
                 selection,
-                null, // Selection args (none).
-                MediaStore.Files.FileColumns.DATE_ADDED + " DESC" // Sort order.
+                null,
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
         );
         Cursor cursor = cursorLoader.loadInBackground();
         int columnMediaType = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE);
         int columnDuration = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DURATION);
         int columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE);
         while (cursor.moveToNext()) {
-            Long durationData =  cursor.getLong(columnDuration);
+            Long durationData = cursor.getLong(columnDuration);
             Instant instant = Instant.ofEpochMilli(durationData);
             ZonedDateTime zdt = ZonedDateTime.ofInstant ( instant , ZoneOffset.UTC );
             DateTimeFormatter formatter;
@@ -114,8 +120,18 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             path.add(absolutePathOfImage);
             type.add(cursor.getInt(columnMediaType));
             listItem.add(new Item(absolutePathOfImage, durationTime));
+
         }
         cursor.close();
+
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        File f = new File(path.get(0));
+//        Uri contentUri = Uri.fromFile(f);
+//        Uri contentUri2 = Uri.fromFile(new File(path.get(1)));
+////        contentUri = Base64.encodeBa
+////        mediaScanIntent.setData
+//        mediaScanIntent.setData(contentUri2);
+//        this.sendBroadcast(mediaScanIntent);
     }
     void open_with_photos(int position){
         Intent intent = new Intent();
@@ -132,8 +148,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
     @Override
     public void onClick(int position) {
-        System.out.println("Type " + type.get(position));
-        System.out.println("Image type " + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
         if(type.get(position) == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
         {
             System.out.println("Image show: " + config.isDefault);

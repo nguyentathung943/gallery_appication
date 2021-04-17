@@ -9,7 +9,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Configuration {
-
     Context context;
     int isDarkMode;
     String language;
