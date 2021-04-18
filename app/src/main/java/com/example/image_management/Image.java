@@ -76,9 +76,9 @@ import ly.img.android.serializer._3.IMGLYFileWriter;
 
 public class Image extends Activity {
     String path;
+    Boolean isSecure;
     ImageView back;
     ImageView myImage;
-    boolean isSecure;
     ImageView info;
     public void shareOn(){
         File file = new File(path);
@@ -132,7 +132,30 @@ public class Image extends Activity {
         Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
         finish();
     }
-    private void MoveFile(String oldPath,String suffix) throws IOException {
+    private void RemoveFromSecure(String oldPath, String suffix) throws  IOException{
+        // Create an image file name
+        File oldFile = new File(oldPath);
+        String newPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera";
+        File storageDir = new File(newPath);
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
+        int dot = oldFile.getName().lastIndexOf(".");
+        String fileName = oldFile.getName().substring(0,dot);
+        File image = File.createTempFile(
+                fileName,  /* prefix */
+                suffix,         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(image.getAbsolutePath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+        DeleteFile(this.path);
+    }
+    private void MoveFileToSecure(String oldPath,String suffix) throws IOException {
         // Create an image file name
         File oldFile = new File(oldPath);
         String newPath = getApplicationInfo().dataDir + "/files/Secure";
@@ -177,7 +200,6 @@ public class Image extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         System.out.println("creationTime: " + attr.creationTime());
         System.out.println("lastAccessTime: " + attr.lastAccessTime());
         System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
@@ -187,7 +209,6 @@ public class Image extends Activity {
         TextView name = new TextView(this);
         TextView date = new TextView(this);
         TextView size = new TextView(this);
-
         Button walllpp = new Button(this);
         Button cpy = new Button(this);
         Button secureFolder = new Button(this);
@@ -213,7 +234,12 @@ public class Image extends Activity {
         builder.setNegativeButton("OK",null);
         walllpp.setText("Set image as wallpaper");
         cpy.setText("Copy to clipboard");
-        secureFolder.setText("Move to Secure Folder");
+        if(isSecure){
+
+        }
+        else{
+            secureFolder.setText("Move to Secure Folder");
+        }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         walllpp.setOnClickListener(view ->{
@@ -235,8 +261,12 @@ public class Image extends Activity {
         });
         secureFolder.setOnClickListener(view -> {
             try {
-
-                MoveFile(path,".jpg");
+                if (isSecure){
+                    RemoveFromSecure(path,".jpg");
+                }
+                else {
+                    MoveFileToSecure(path, ".jpg");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -250,6 +280,7 @@ public class Image extends Activity {
         setContentView(R.layout.img_view);
         info = findViewById(R.id.info);
         path = getIntent().getStringExtra("path");
+        isSecure = getIntent().getBooleanExtra("secure", false);
         System.out.println(path);
         Bitmap myBitmap = BitmapFactory.decodeFile(path);
         myImage = findViewById(R.id.img_show);

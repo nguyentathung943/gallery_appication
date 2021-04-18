@@ -133,6 +133,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     void openwithThis(int position){
         Intent intent = new Intent(this, Image.class);
         intent.putExtra("path", path.get(position));
+        intent.putExtra("secure", false);
         startActivityForResult(intent, VIEW_REQUEST);
     }
     @Override
@@ -153,6 +154,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         {
             Intent intent = new Intent(this, Video.class);
             intent.putExtra("path", path.get(position));
+            intent.putExtra("secure", false);
             startActivity(intent);
         }
     }
