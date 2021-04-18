@@ -134,7 +134,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
     void openwithThis(int position){
         Intent intent = new Intent(this, Image.class);
-        intent.putExtra("path", path.get(position));
+        intent.putExtra("path", listItem.get(position).getPath());
         intent.putExtra("secure", false);
         startActivityForResult(intent, VIEW_REQUEST);
     }
@@ -153,7 +153,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         else if(listItem.get(position).getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
         {
             Intent intent = new Intent(this, Video.class);
-            intent.putExtra("path", path.get(position));
+            intent.putExtra("path", listItem.get(position).getPath());
             intent.putExtra("secure", false);
             startActivity(intent);
         }
