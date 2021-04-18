@@ -66,6 +66,7 @@ public class Album extends AppCompatActivity implements AlbumAdapter.ClickItemLi
         System.out.println("POS" + position);
         System.out.println("Ablum " + listFile.get(position));
         Intent intent = new Intent(this, Archive.class);
+        intent.putExtra("secure",false);
         intent.putExtra("album", listFile.get(position));
         startActivity(intent);
     }

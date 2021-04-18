@@ -65,6 +65,7 @@ public class MainMenu extends AppCompatActivity {
         likeImage = ((LikeImage)getApplicationContext());
         likeImage.init();
 
+
         sw = findViewById(R.id.themeSwitch);
         config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();
@@ -313,6 +314,7 @@ public class MainMenu extends AppCompatActivity {
             }
             case R.id.mn_archive: {
                 Intent x = new Intent(MainMenu.this, Archive.class);
+                x.putExtra("secure",false);
                 startActivity(x);
                 break;
             }

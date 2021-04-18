@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -36,6 +38,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     ArrayList<Item> listItem;
     DisplayAdapter displayAdapter;
     Configuration config;
+    Boolean isSecure;
     ListAdapter listAdapter;
     int VIEW_REQUEST = 555;
     String album;
@@ -61,9 +64,15 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.archive);
         init();
+        isSecure = getIntent().getBooleanExtra("secure",false);
         config = new Configuration(getApplicationContext());
         config.getConfig();
-        getAllImages();
+        if(isSecure){
+            getSecureFolder();
+        }
+        else{
+            getAllImages();
+        }
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -79,8 +88,50 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         if(album == null)
             album = "";
     }
+    public static boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.startsWith("image");
+    }
+    public void getSecureFolder(){
+        String securePath = getApplicationInfo().dataDir + "/files/Secure";
+        File storageDir = new File(securePath);
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
+        for (File media : storageDir.listFiles()){
+            System.out.println(media.getAbsolutePath());
+            if(isImageFile(media.getAbsolutePath())){
+                listItem.add(new Item(media.getAbsolutePath(),"",1));// IMAGE
+            }
+            else{
+                MediaPlayer mp = new MediaPlayer();
+                try {
+                    mp.setDataSource(getApplicationContext(), Uri.parse(String.valueOf(new File(media.getAbsolutePath()))));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                long duration=  mp.getDuration();
+                Instant instant = Instant.ofEpochMilli(duration);
+                DateTimeFormatter formatter;
+                String durationTime = "";
+                ZonedDateTime zdt = ZonedDateTime.ofInstant ( instant , ZoneOffset.UTC );
+                if(duration >= 3600000)
+                {
+                    formatter = DateTimeFormatter.ofPattern ( "HH:mm:ss" );
+                    durationTime = formatter.format(zdt);
+                }
+                else if(duration > 0)
+                {
+                    formatter = DateTimeFormatter.ofPattern("mm:ss");
+                    durationTime = formatter.format(zdt);
+                }
+                listItem.add(new Item(media.getAbsolutePath(),durationTime,3));// VIDEO
+            }
+        }
+    }
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
+        System.out.println(queryUri.getPath());
         CursorLoader cursorLoader = new CursorLoader(
                 this,
                 queryUri,
@@ -138,7 +189,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     void openwithThis(int position){
         Intent intent = new Intent(this, Image.class);
         intent.putExtra("path", listItem.get(position).getPath());
-        intent.putExtra("secure", false);
+        intent.putExtra("secure", isSecure);
         startActivityForResult(intent, VIEW_REQUEST);
     }
     @Override
@@ -157,7 +208,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         {
             Intent intent = new Intent(this, Video.class);
             intent.putExtra("path", listItem.get(position).getPath());
-            intent.putExtra("secure", false);
+            intent.putExtra("secure", isSecure);
             startActivity(intent);
         }
     }

@@ -75,7 +75,8 @@ public class Security extends AppCompatActivity {
             }
             @Override
             public void onSuccess(String number) {
-                Intent go = new Intent(Security.this, MainMenu.class);
+                Intent go = new Intent(Security.this, Archive.class);
+                go.putExtra("secure",true);
                 startActivity(go);
             }
         });
@@ -125,6 +126,12 @@ public class Security extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        finish();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("BACK BACK BACK 1");
         finish();
     }
     @Override

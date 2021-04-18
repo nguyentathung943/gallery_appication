@@ -10,7 +10,10 @@
     <string name="language_default">Cài đặt mặc định</string>
     <string name="dark">Tối</string>
     <string name="light">Sáng</string>
-    <string name="change_pin">ĐỔI MÃ PIN</string>
+    <string name="change_pin1">ĐỔI MÃ PIN</string>
+    <string name="validate_pin1">XÁC THỰC LÀ BẠN</string>
+    <string name="change_pin2">4 chữ số</string>
+    <string name="validate_pin2">Điền mã PIN cũ của bạn</string>
     <string name="image">Ảnh</string>
     <string name="edit">Sửa</string>
     <string name="your_gallery">Kho ảnh của bạn</string>

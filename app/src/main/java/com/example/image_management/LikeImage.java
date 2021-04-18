@@ -15,8 +15,15 @@ import java.util.List;
 
 public class LikeImage extends Application {
     Context context;
-    List<String> listImage = new ArrayList<>();
+    List<String> listImage;
+    public boolean checkLiked(String path){
+        if (this.listImage.isEmpty()){
+            return false;
+        }
+        return listImage.contains(path);
+    }
     public void init(){
+        listImage = new ArrayList<>();
         context = getApplicationContext();
         String filename = "like.txt";
         FileInputStream fis = null;

@@ -18,6 +18,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.provider.MediaStore;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -44,6 +45,7 @@ import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -116,7 +118,12 @@ public class Image extends Activity {
     }
     @Override
     public void onBackPressed(){
-        finish();
+        if(isSecure){
+            startActivity(new Intent(Image.this, SecureFolder.class));
+        }
+        else {
+            finish();
+        }
     }
     public void imageViewMenu(View view){
         switch (view.getId()){
@@ -148,21 +155,21 @@ public class Image extends Activity {
         }
         int dot = oldFile.getName().lastIndexOf(".");
         String fileName = oldFile.getName().substring(0,dot);
-        File image = File.createTempFile(
-                fileName,  /* prefix */
-                suffix,         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(image.getAbsolutePath());
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
+        String source = newPath + "/" + fileName+suffix;
+        copyFile(new File(this.path),new File(source));
+        callScanItent(getApplicationContext(),source);
         DeleteFile(this.path);
+    }
+    public void copyFile(File source, File destination) throws IOException {
+        FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
     }
     private void MoveFileToSecure(String oldPath,String suffix) throws IOException {
         // Create an image file name
+        likeImage = ((LikeImage)getApplicationContext());
+        if(likeImage.checkLiked(oldPath)){
+            likeImage.removeLikeImage(oldPath);
+            likeImage.saveData();
+        }
         File oldFile = new File(oldPath);
         String newPath = getApplicationInfo().dataDir + "/files/Secure";
         File storageDir = new File(newPath);
@@ -171,18 +178,14 @@ public class Image extends Activity {
         }
         int dot = oldFile.getName().lastIndexOf(".");
         String fileName = oldFile.getName().substring(0,dot);
-        File image = File.createTempFile(
-                fileName,  /* prefix */
-                suffix,         /* suffix */
-                storageDir      /* directory */
-        );
-        // Save a file: path for use with ACTION_VIEW intents
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(image.getAbsolutePath());
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-        DeleteFile(this.path);
+        String source = newPath + "/"+ fileName+suffix;
+        copyFile(new File(oldPath),new File(source));
+        DeleteFile(oldPath);
+    }
+    private String getExtension(String path){
+        File a = new File(path);
+        int dot = a.getName().lastIndexOf(".");
+        return a.getName().substring(dot);
     }
     public void ImageInfo(String path){
         File a = new File(path);
@@ -241,9 +244,10 @@ public class Image extends Activity {
         walllpp.setText("Set image as wallpaper");
         cpy.setText("Copy to clipboard");
         if(isSecure){
-
+            secureFolder.setText("Remove from Secure Folder");
         }
         else{
+
             secureFolder.setText("Move to Secure Folder");
         }
         AlertDialog alertDialog = builder.create();
@@ -267,11 +271,12 @@ public class Image extends Activity {
         });
         secureFolder.setOnClickListener(view -> {
             try {
+                String exten = getExtension(path);
                 if (isSecure){
-                    RemoveFromSecure(path,".jpg");
+                    RemoveFromSecure(path,exten);
                 }
                 else {
-                    MoveFileToSecure(path, ".jpg");
+                    MoveFileToSecure(path, exten);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -295,36 +300,46 @@ public class Image extends Activity {
         info.setOnClickListener(view->{
             ImageInfo(path);
         });
-        back = findViewById(R.id.btn_back);
+        back = findViewById(R.id.btn_back_img_view);
         back.setOnClickListener(view->{
-            this.finish();
+            if(isSecure){
+                System.out.println("BACK BACK BACK 3");
+                startActivity(new Intent(Image.this, SecureFolder.class));
+            }
+            else {
+                finish();
+            }
         });
-
-        likeImage = ((LikeImage)getApplicationContext());
-        if(likeImage.listImage.contains(path))
-        {
-            likeIcon.setImageResource(R.drawable.liked_icon);
-            isLiked = true;
-        }
-        else
-        {
-            likeIcon.setImageResource(R.drawable.non_liked_icon);
-            isLiked = false;
-        }
-
-        likeIcon.setOnClickListener(view->{
-            isLiked = !isLiked;
-            if(isLiked)
+        if(!isSecure){
+            likeImage = ((LikeImage)getApplicationContext());
+            if(likeImage.listImage.contains(path))
             {
                 likeIcon.setImageResource(R.drawable.liked_icon);
-                likeImage.addLikeImage(path);
+                isLiked = true;
             }
             else
             {
                 likeIcon.setImageResource(R.drawable.non_liked_icon);
-                likeImage.removeLikeImage(path);
+                isLiked = false;
             }
-        });
+            likeIcon.setOnClickListener(view->{
+                isLiked = !isLiked;
+                if(isLiked)
+                {
+                    likeIcon.setImageResource(R.drawable.liked_icon);
+                    likeImage.addLikeImage(path);
+                }
+                else
+                {
+                    likeIcon.setImageResource(R.drawable.non_liked_icon);
+                    likeImage.removeLikeImage(path);
+                }
+            });
+        }
+        else{
+            likeIcon.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     public static int PESDK_RESULT = 1;
@@ -379,7 +394,6 @@ public class Image extends Activity {
 //        intent.putExtra("uri", path);
 //        startActivityForResult(intent, 1);
 //    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -9,7 +9,11 @@
     <string name="language_default">Mark as default</string>
     <string name="dark">Dark</string>
     <string name="light">Light</string>
-    <string name="change_pin">CHANGE YOUR PIN</string>
+    <string name="change_pin1">CHANGE YOUR PIN</string>
+
+    <string name="validate_pin1">VALIDATION</string>
+    <string name="change_pin2">4 digits are required</string>
+    <string name="validate_pin2">Please fill in your old pin</string>
     <string name="image">Image</string>
     <string name="edit">Edit</string>
     <string name="your_gallery">Your Gallery</string>
