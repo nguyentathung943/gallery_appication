@@ -81,7 +81,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
-//        System.out.println("Path " + queryUri.getPath());
         CursorLoader cursorLoader = new CursorLoader(
                 this,
                 queryUri,
@@ -96,6 +95,10 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         int columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE);
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            File temp = new File(absolutePathOfImage);
+            if(!temp.exists()){
+                continue;
+            }
             if(!absolutePathOfImage.contains(album))
                 continue;
             Long durationData = cursor.getLong(columnDuration);

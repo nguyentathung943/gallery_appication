@@ -86,7 +86,6 @@ public class MainMenu extends AppCompatActivity {
             ChangeLanguage(config.language);
         }
         askPermission();
-
         sw.setOnCheckedChangeListener((compoundButton, checked) -> {
             if(checked){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -167,22 +166,16 @@ public class MainMenu extends AppCompatActivity {
                         },
                         CAMERA_PERM_CODE);
             }
-//            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, CAMERA_PERM_CODE);
         }
-//        else{
-//
-////            Toast.makeText(this,"Permission granted!",Toast.LENGTH_LONG).show();
-//            //openCamera();
-//        }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==CAMERA_PERM_CODE){
             if(grantResults.length > 0 && (grantResults[0]+grantResults[1]+grantResults[2]+grantResults[3]+grantResults[4]+grantResults[5]+grantResults[6]) == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Permissions are granted",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Permissions are granted",Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(this, "Permissions are required!",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Permissions are required!",Toast.LENGTH_SHORT).show();
                 askPermission();
             }
         }
@@ -258,6 +251,9 @@ public class MainMenu extends AppCompatActivity {
         String imageFileName = timeStamp;
         String filepath = Environment.getExternalStorageDirectory().getPath();
         File storageDir = new File(filepath + "/DCIM/Camera");
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 suffix,         /* suffix */
