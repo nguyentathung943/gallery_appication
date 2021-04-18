@@ -48,15 +48,6 @@ public class Album extends AppCompatActivity implements AlbumAdapter.ClickItemLi
                 listFile.add(i.getName());
             }
         }
-//        for(int i = 1; i < listFile.size(); i++){
-//            File dir = new File(Environment.getExternalStorageDirectory().toString()+"/DCIM/" + listFile.get(i));
-////            List<File> filezz = new ArrayList<>();
-////            filezz.addAll(Arrays.asList(dir.listFiles()));
-//            File[] filezz = dir.listFiles();
-//            for(File x : filezz){
-//                System.out.println("zzz " + x);
-//            }
-//        }
         recyclerView = findViewById(R.id.album_recyclerView);
         recyclerView.setHasFixedSize(true);
         albumAdapter = new AlbumAdapter(listFile, this, this);
@@ -73,11 +64,9 @@ public class Album extends AppCompatActivity implements AlbumAdapter.ClickItemLi
     @Override
     public void onClick(int position) {
         System.out.println("POS" + position);
-
-        Intent intent = new Intent(this, AlbumDetail.class);
-        if(position != 0)
-            intent.putExtra("position", position);
-        intent.putExtra("path", listFile.get(position));
-        startActivityForResult(intent, 1);
+        System.out.println("Ablum " + listFile.get(position));
+        Intent intent = new Intent(this, Archive.class);
+        intent.putExtra("album", listFile.get(position));
+        startActivity(intent);
     }
 }

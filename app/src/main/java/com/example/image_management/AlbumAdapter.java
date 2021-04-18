@@ -44,7 +44,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public int getItemCount() {
         return listFile.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView albumText;
         public ViewHolder(@NonNull View itemView) {

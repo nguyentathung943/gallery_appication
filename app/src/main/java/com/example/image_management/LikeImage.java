@@ -48,11 +48,16 @@ public class LikeImage extends Application {
     }
     public void addLikeImage(String imagePath){
         listImage.add(imagePath);
+        for(String i : listImage)
+            System.out.println("LIKE " + i);
         saveData();
     }
     public void removeLikeImage(String imagePath){
         int index = listImage.indexOf(imagePath);
         listImage.remove(index);
+        System.out.println("INDEX " + index);
+        for(String i : listImage)
+            System.out.println("LIKE " + i);
         saveData();
     }
 }

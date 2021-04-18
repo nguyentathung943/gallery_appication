@@ -18,7 +18,6 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:onClick="main_menu_onclick"
             android:src="@drawable/back_icon" />
 
         <TextView
@@ -88,24 +87,23 @@
         <ImageView
             android:id="@+id/btn_share"
             android:onClick="imageViewMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
             android:layout_weight="1"
-
-            android:src="@drawable/share_icon"/>
+            android:src="@drawable/shared_icon"/>
         <ImageView
             android:layout_weight="6"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
-            android:src="@drawable/like_icon"
-            />
+           android:src="@drawable/non_liked_icon"
+            android:id="@+id/like_video"/>
         <ImageView
             android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
-            android:src="@drawable/delete_icon"/>
+            android:src="@drawable/trash_icon"/>
     </LinearLayout>
 </RelativeLayout>
