@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -77,6 +79,7 @@ public class Image extends Activity {
     String path;
     ImageView back;
     ImageView myImage;
+    boolean isSecure;
     ImageView info;
     ImageView likeIcon;
     Boolean isLiked;
@@ -91,9 +94,8 @@ public class Image extends Activity {
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
-//        startActivity(shareIntent);
     }
-    public void callScanItent(Context context,String path) {
+    public void  callScanItent(Context context,String path) {
         MediaScannerConnection.scanFile(context,
                 new String[] { path }, null,null);
     }
@@ -105,12 +107,13 @@ public class Image extends Activity {
         finish();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        callScanItent(getApplicationContext(),path);
-    }
 
+    private void DeleteFile(String path){
+        File a = new File(path);
+        a.delete();
+        callScanItent(getApplicationContext(),path);
+        finish();
+    }
     @Override
     public void onBackPressed(){
         finish();
@@ -125,14 +128,62 @@ public class Image extends Activity {
                 break;
         }
     }
+    public void changeFileExtension(String path){
+        File old_file = new File(path);
+        String old = new File(path).getName();
+        String newFilename = old.replaceAll("\\.jpg|.png|.jpeg$", ".txt");
+        File f1 = new File(new File(path).getParentFile(),newFilename);
+        old_file.renameTo(f1);
+        callScanItent(getApplicationContext(),path);
+        Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
+        finish();
+    }
+    private void MoveFile(String oldPath,String suffix) throws IOException {
+        // Create an image file name
+        File oldFile = new File(oldPath);
+        String newPath = getApplicationInfo().dataDir + "/files/Secure";
+        File storageDir = new File(newPath);
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
+        int dot = oldFile.getName().lastIndexOf(".");
+        String fileName = oldFile.getName().substring(0,dot);
+        File image = File.createTempFile(
+                fileName,  /* prefix */
+                suffix,         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(image.getAbsolutePath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+        DeleteFile(this.path);
+    }
     public void ImageInfo(String path){
         File a = new File(path);
+        TextView location = new TextView(this);
         BasicFileAttributes attr = null;
         try {
             attr = Files.readAttributes(a.toPath(), BasicFileAttributes.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        try {
+            ExifInterface exif = new ExifInterface(a);
+            float[] latLong = new float[2];
+            boolean hasLatLong = exif.getLatLong(latLong);
+            if (hasLatLong) {
+                location.setText("Latitude: " + latLong[0] +"\n" +"Longitude: "+latLong[1]);
+            }
+            else{
+                location.setText("Location: None");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         System.out.println("creationTime: " + attr.creationTime());
         System.out.println("lastAccessTime: " + attr.lastAccessTime());
         System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
@@ -158,9 +209,11 @@ public class Image extends Activity {
         date.setTextSize(20);
         size.setText("Size: " + attr.size() + " bytes");
         size.setTextSize(20);
+        location.setTextSize(20);
         layout.addView(name);
         layout.addView(date);
         layout.addView(size);
+        layout.addView(location);
         layout.addView(btnLay);
         builder.setView(layout);
         builder.setNegativeButton("OK",null);
@@ -187,14 +240,13 @@ public class Image extends Activity {
             Toast.makeText(this,"Image copied to clipboard",Toast.LENGTH_SHORT).show();
         });
         secureFolder.setOnClickListener(view -> {
-            File old_file = new File(path);
-            String old = new File(path).getName();
-            String newFilename = old.replaceAll("\\.jpg|.png|.jpeg$", ".txt");
-            File f1 = new File(new File(path).getParentFile(),newFilename);
-            old_file.renameTo(f1);
-            callScanItent(getApplicationContext(),path);
-            Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
-            finish();
+            try {
+
+                MoveFile(path,".jpg");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            changeFileExtension(path);
         });
     }
 

@@ -58,7 +58,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("Selection " + selection);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.archive);
         init();
@@ -68,8 +67,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        for(Item i : listItem)
-            System.out.println("Item data " + i.getPath());
         listAdapter = new ListAdapter(listItem, this, this);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -126,11 +123,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
 
     void open_with_photos(int position){
+        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(listItem.get(position).getPath()));
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setDataAndType(
-                Uri.parse(listItem.get(position).getPath()),"image/*");
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        intent.setDataAndType(photoURI, "image/*");
         startActivity(intent);
     }
     void openwithThis(int position){
