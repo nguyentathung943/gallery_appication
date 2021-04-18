@@ -78,6 +78,7 @@ public class Image extends Activity {
     String path;
     ImageView back;
     ImageView myImage;
+    boolean isSecure;
     ImageView info;
     public void shareOn(){
         File file = new File(path);
@@ -89,9 +90,8 @@ public class Image extends Activity {
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
-//        startActivity(shareIntent);
     }
-    public void callScanItent(Context context,String path) {
+    public void  callScanItent(Context context,String path) {
         MediaScannerConnection.scanFile(context,
                 new String[] { path }, null,null);
     }
@@ -100,6 +100,12 @@ public class Image extends Activity {
         a.delete();
         callScanItent(getApplicationContext(),path);
         Toast.makeText(this,"Image deleted",Toast.LENGTH_SHORT).show();
+        finish();
+    }
+    private void DeleteFile(String path){
+        File a = new File(path);
+        a.delete();
+        callScanItent(getApplicationContext(),path);
         finish();
     }
     @Override
@@ -116,10 +122,42 @@ public class Image extends Activity {
                 break;
         }
     }
+    public void changeFileExtension(String path){
+        File old_file = new File(path);
+        String old = new File(path).getName();
+        String newFilename = old.replaceAll("\\.jpg|.png|.jpeg$", ".txt");
+        File f1 = new File(new File(path).getParentFile(),newFilename);
+        old_file.renameTo(f1);
+        callScanItent(getApplicationContext(),path);
+        Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
+        finish();
+    }
+    private void MoveFile(String oldPath,String suffix) throws IOException {
+        // Create an image file name
+        File oldFile = new File(oldPath);
+        String newPath = getApplicationInfo().dataDir + "/files/Secure";
+        File storageDir = new File(newPath);
+        if(!storageDir.exists()){
+            storageDir.mkdirs();
+        }
+        int dot = oldFile.getName().lastIndexOf(".");
+        String fileName = oldFile.getName().substring(0,dot);
+        File image = File.createTempFile(
+                fileName,  /* prefix */
+                suffix,         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(image.getAbsolutePath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+        DeleteFile(this.path);
+    }
     public void ImageInfo(String path){
         File a = new File(path);
         TextView location = new TextView(this);
-
         BasicFileAttributes attr = null;
         try {
             attr = Files.readAttributes(a.toPath(), BasicFileAttributes.class);
@@ -132,7 +170,6 @@ public class Image extends Activity {
             boolean hasLatLong = exif.getLatLong(latLong);
             if (hasLatLong) {
                 location.setText("Latitude: " + latLong[0] +"\n" +"Longitude: "+latLong[1]);
-
             }
             else{
                 location.setText("Location: None");
@@ -197,14 +234,13 @@ public class Image extends Activity {
             Toast.makeText(this,"Image copied to clipboard",Toast.LENGTH_SHORT).show();
         });
         secureFolder.setOnClickListener(view -> {
-            File old_file = new File(path);
-            String old = new File(path).getName();
-            String newFilename = old.replaceAll("\\.jpg|.png|.jpeg$", ".txt");
-            File f1 = new File(new File(path).getParentFile(),newFilename);
-            old_file.renameTo(f1);
-            callScanItent(getApplicationContext(),path);
-            Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
-            finish();
+            try {
+
+                MoveFile(path,".jpg");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+//            changeFileExtension(path);
         });
     }
 
