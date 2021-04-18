@@ -6,7 +6,7 @@
     <string name="setting">Cài đặt</string>
     <string name="security">Thư mục an toàn</string>
     <string name="theme">Chủ đề</string>
-    <string name="language_text">Ngôn ngữ:</string>
+    <string name="language_text">Ngôn ngữ</string>
     <string name="language_default">Cài đặt mặc định</string>
     <string name="dark">Tối</string>
     <string name="light">Sáng</string>
@@ -17,7 +17,7 @@
     <string name="number_item">100 ảnh</string>
     <string name="secure_folder">Kho ảnh an toàn</string>
     <string name="secure_pin">Quản lý mã PIN</string>
-    <string name="mark_default">Ứng dụng mặc định khi xem ảnh</string>
+    <string name="mark_default">Ứng dụng mặc định</string>
     <string name="display">Cài đặt hiển thị</string>
     <string name="cancel">Thoát</string>
 </resources>
