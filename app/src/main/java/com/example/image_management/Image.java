@@ -54,6 +54,7 @@ import java.security.acl.Permission;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TreeMap;
 
 import ly.img.android.pesdk.PhotoEditorSettingsList;
 import ly.img.android.pesdk.assets.filter.basic.FilterPackBasic;
@@ -80,6 +81,9 @@ public class Image extends Activity {
     ImageView back;
     ImageView myImage;
     ImageView info;
+    ImageView likeIcon;
+    Boolean isLiked;
+    LikeImage likeImage;
     public void shareOn(){
         File file = new File(path);
         Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", file);
@@ -102,6 +106,8 @@ public class Image extends Activity {
         Toast.makeText(this,"Image deleted",Toast.LENGTH_SHORT).show();
         finish();
     }
+
+
     private void DeleteFile(String path){
         File a = new File(path);
         a.delete();
@@ -278,6 +284,7 @@ public class Image extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.img_view);
+        likeIcon = (ImageView) findViewById(R.id.like_image);
         info = findViewById(R.id.info);
         path = getIntent().getStringExtra("path");
         isSecure = getIntent().getBooleanExtra("secure", false);
@@ -293,6 +300,31 @@ public class Image extends Activity {
             this.finish();
         });
 
+        likeImage = ((LikeImage)getApplicationContext());
+        if(likeImage.listImage.contains(path))
+        {
+            likeIcon.setImageResource(R.drawable.liked_icon);
+            isLiked = true;
+        }
+        else
+        {
+            likeIcon.setImageResource(R.drawable.non_liked_icon);
+            isLiked = false;
+        }
+
+        likeIcon.setOnClickListener(view->{
+            isLiked = !isLiked;
+            if(isLiked)
+            {
+                likeIcon.setImageResource(R.drawable.liked_icon);
+                likeImage.addLikeImage(path);
+            }
+            else
+            {
+                likeIcon.setImageResource(R.drawable.non_liked_icon);
+                likeImage.removeLikeImage(path);
+            }
+        });
     }
 
     public static int PESDK_RESULT = 1;
@@ -332,12 +364,8 @@ public class Image extends Activity {
         settingsList.getSettingsModel(LoadSettings.class).setSource(inputImage);
 
         settingsList.getSettingsModel(PhotoEditorSaveSettings.class).setOutputToUri(inputImage);
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(path);
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        this.sendBroadcast(mediaScanIntent);
-        settingsList.getSettingsModel(PhotoEditorSaveSettings.class).setOutputToGallery(Environment.DIRECTORY_DCIM);
+
+        settingsList.getSettingsModel(PhotoEditorSaveSettings.class).setOutputToGallery(Environment.DIRECTORY_DCIM + "/Camera");
 
         new EditorBuilder(this)
                 .setSettingsList(settingsList)

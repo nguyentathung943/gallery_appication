@@ -20,8 +20,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 public class Video extends AppCompatActivity {
     String path;
     VideoView video;
-    ImageView playBtn, videoImage;
+    ImageView playBtn, videoImage, likeIcon;
     MediaPlayer mediaPlayer;
+    LikeImage likeImage;
+    boolean isLiked;
+    ImageView back;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,37 @@ public class Video extends AppCompatActivity {
         Uri uri = Uri.parse(path);
         video.setVideoURI(uri);
 
+        back = findViewById(R.id.btn_back);
+        back.setOnClickListener(view->{
+            this.finish();
+        });
+
+        likeIcon = (ImageView) findViewById(R.id.like_video);
+        likeImage = ((LikeImage)getApplicationContext());
+        if(likeImage.listImage.contains(path))
+        {
+            likeIcon.setImageResource(R.drawable.liked_icon);
+            isLiked = true;
+        }
+        else
+        {
+            likeIcon.setImageResource(R.drawable.non_liked_icon);
+            isLiked = false;
+        }
+
+        likeIcon.setOnClickListener(view->{
+            isLiked = !isLiked;
+            if(isLiked)
+            {
+                likeIcon.setImageResource(R.drawable.liked_icon);
+//                likeImage.addLikeImage(path);
+            }
+            else
+            {
+                likeIcon.setImageResource(R.drawable.non_liked_icon);
+//                likeImage.removeLikeImage(path);
+            }
+        });
     }
 
     public void click(View v){

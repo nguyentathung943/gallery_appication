@@ -3,6 +3,8 @@ package com.example.image_management;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +22,10 @@ import java.util.ArrayList;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     ArrayList<Item> list;
-    ArrayList<String> path;
     private ClickImageListener clickImageListener;
-    public ListAdapter(ArrayList<Item> list, ArrayList<String> path, Context context, ClickImageListener clickImageListener) {
+    public ListAdapter(ArrayList<Item> list, Context context, ClickImageListener clickImageListener) {
         this.list = list;
         this.context = context;
-        this.path = path;
         this.clickImageListener = clickImageListener;
     }
 
@@ -45,20 +45,28 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         Glide.with(context)
                 .load(item.getPath())
                 .centerCrop()
-//                .transition(DrawableTransitionOptions.withCrossFade(500))
                 .into(viewHolder.imageView);
-        if(!item.getTime().equals("")){
+        if(item.getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO){
+            System.out.println("Index " + position + " duration " + item.getTime());
             viewHolder.duration.setText(item.getTime());
             viewHolder.duration.setPadding(3, 3, 3, 3);
+            viewHolder.duration.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
         TextView duration;

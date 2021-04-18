@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/end"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
@@ -81,27 +81,26 @@
         <ImageView
             android:id="@+id/btn_share"
             android:onClick="imageViewMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/shared_icon"/>
 
-            android:layout_gravity="center"
-            android:layout_weight="1"
-
-            android:src="@drawable/share_icon"/>
         <ImageView
-            android:layout_weight="6"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:src="@drawable/like_icon"
-            />
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/liked_icon"
+            android:id="@+id/like_image"/>
         <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:id="@+id/btn_delete"
             android:onClick="imageViewMenu"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/delete_icon"/>
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/trash_icon"/>
+    </RelativeLayout>
 </RelativeLayout>

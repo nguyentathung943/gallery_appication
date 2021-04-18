@@ -56,10 +56,15 @@ public class MainMenu extends AppCompatActivity {
     private int requestCode;
     private int resultCode;
     private Intent data;
+    LikeImage likeImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
+
+        likeImage = ((LikeImage)getApplicationContext());
+        likeImage.init();
+
         sw = findViewById(R.id.themeSwitch);
         config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();

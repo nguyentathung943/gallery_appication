@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -20,22 +21,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Archive extends AppCompatActivity implements ListAdapter.ClickImageListener{
     RecyclerView recyclerView;
     ArrayList<Item> listItem;
-    ArrayList<String> path;
-    ArrayList<Integer> type;
-    ArrayList<DateTimeFormatter> duration;
     DisplayAdapter displayAdapter;
     Configuration config;
     ListAdapter listAdapter;
     int VIEW_REQUEST = 555;
+    String album;
     String[] projection = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -47,7 +50,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             MediaStore.Files.FileColumns.WIDTH,
             MediaStore.Files.FileColumns.DURATION,
             MediaStore.Files.FileColumns.SIZE,
-//            MediaStore.Files.FileColumns.ALBUM
     };
     String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
             + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
@@ -65,37 +67,38 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        for(String p:path){
-            System.out.println(p);
-        }
-        listAdapter = new ListAdapter(listItem, path, this, this);
+        listAdapter = new ListAdapter(listItem, this, this);
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdapter);
     }
     public void init() {
-        path = new ArrayList<>();
-        type = new ArrayList<>();
-        duration = new ArrayList<>();
         listItem = new ArrayList<>();
         displayAdapter = new DisplayAdapter(this);
+        album = getIntent().getStringExtra("album");
+        if(album == null)
+            album = "";
     }
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
+//        System.out.println("Path " + queryUri.getPath());
         CursorLoader cursorLoader = new CursorLoader(
                 this,
                 queryUri,
                 projection,
                 selection,
-                null, // Selection args (none).
-                MediaStore.Files.FileColumns.DATE_ADDED + " DESC" // Sort order.
+                null,
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
         );
         Cursor cursor = cursorLoader.loadInBackground();
         int columnMediaType = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE);
         int columnDuration = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DURATION);
         int columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE);
         while (cursor.moveToNext()) {
-            Long durationData =  cursor.getLong(columnDuration);
+            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            if(!absolutePathOfImage.contains(album))
+                continue;
+            Long durationData = cursor.getLong(columnDuration);
             Instant instant = Instant.ofEpochMilli(durationData);
             ZonedDateTime zdt = ZonedDateTime.ofInstant ( instant , ZoneOffset.UTC );
             DateTimeFormatter formatter;
@@ -110,19 +113,18 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 formatter = DateTimeFormatter.ofPattern("mm:ss");
                 durationTime = formatter.format(zdt);
             }
-            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             System.out.println("Data");
             System.out.println("Duration " + durationTime);
             System.out.println("Size " + cursor.getString(columnSize));
             System.out.println("Type " + cursor.getString(columnMediaType));
-            path.add(absolutePathOfImage);
-            type.add(cursor.getInt(columnMediaType));
-            listItem.add(new Item(absolutePathOfImage, durationTime));
+            int typeData = cursor.getInt(columnMediaType);
+            listItem.add(new Item(absolutePathOfImage, durationTime, typeData));
         }
         cursor.close();
     }
+
     void open_with_photos(int position){
-        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(path.get(position)));
+        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(listItem.get(position).getPath()));
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -138,9 +140,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
     @Override
     public void onClick(int position) {
-        System.out.println("Type " + type.get(position));
-        System.out.println("Image type " + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-        if(type.get(position) == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+        if(listItem.get(position).getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
         {
             System.out.println("Image show: " + config.isDefault);
             if(config.isDefault==1){
@@ -150,7 +150,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 open_with_photos(position);
             }
         }
-        else if(type.get(position) == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+        else if(listItem.get(position).getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
         {
             Intent intent = new Intent(this, Video.class);
             intent.putExtra("path", path.get(position));
