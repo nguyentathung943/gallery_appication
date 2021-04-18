@@ -81,6 +81,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     }
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
+//        System.out.println("Path " + queryUri.getPath());
         CursorLoader cursorLoader = new CursorLoader(
                 this,
                 queryUri,
