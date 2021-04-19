@@ -118,12 +118,7 @@ public class Image extends Activity {
     }
     @Override
     public void onBackPressed(){
-        if(isSecure){
-            startActivity(new Intent(Image.this, SecureFolder.class));
-        }
-        else {
-            finish();
-        }
+        finish();
     }
     public void imageViewMenu(View view){
         switch (view.getId()){
@@ -135,18 +130,7 @@ public class Image extends Activity {
                 break;
         }
     }
-    public void changeFileExtension(String path){
-        File old_file = new File(path);
-        String old = new File(path).getName();
-        String newFilename = old.replaceAll("\\.jpg|.png|.jpeg$", ".txt");
-        File f1 = new File(new File(path).getParentFile(),newFilename);
-        old_file.renameTo(f1);
-        callScanItent(getApplicationContext(),path);
-        Toast.makeText(this,"Image moved to Secure Folder",Toast.LENGTH_SHORT).show();
-        finish();
-    }
     private void RemoveFromSecure(String oldPath, String suffix) throws  IOException{
-        // Create an image file name
         File oldFile = new File(oldPath);
         String newPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/Camera";
         File storageDir = new File(newPath);
@@ -164,7 +148,6 @@ public class Image extends Activity {
         FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
     }
     private void MoveFileToSecure(String oldPath,String suffix) throws IOException {
-        // Create an image file name
         likeImage = ((LikeImage)getApplicationContext());
         if(likeImage.checkLiked(oldPath)){
             likeImage.removeLikeImage(oldPath);
@@ -281,7 +264,6 @@ public class Image extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            changeFileExtension(path);
         });
     }
 
@@ -302,13 +284,7 @@ public class Image extends Activity {
         });
         back = findViewById(R.id.btn_back_img_view);
         back.setOnClickListener(view->{
-            if(isSecure){
-                System.out.println("BACK BACK BACK 3");
-                startActivity(new Intent(Image.this, SecureFolder.class));
-            }
-            else {
-                finish();
-            }
+            finish();
         });
         if(!isSecure){
             likeImage = ((LikeImage)getApplicationContext());
@@ -374,8 +350,6 @@ public class Image extends Activity {
     public void openEditor(View v) {
         Uri inputImage = Uri.fromFile(new File(path));
         SettingsList settingsList = createPesdkSettingsList();
-
-        // Set input image
         settingsList.getSettingsModel(LoadSettings.class).setSource(inputImage);
 
         settingsList.getSettingsModel(PhotoEditorSaveSettings.class).setOutputToUri(inputImage);
@@ -389,11 +363,6 @@ public class Image extends Activity {
         setResult(RESULT_OK, null);
         finish();
     }
-//    public void openEditor(View v){
-//        Intent intent = new Intent(this, ImageEditor.class);
-//        intent.putExtra("uri", path);
-//        startActivityForResult(intent, 1);
-//    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

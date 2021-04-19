@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -32,6 +33,7 @@ import java.util.Locale;
 
 public class Security extends AppCompatActivity {
     PasscodeView passcodeView;
+    int VIEW_REQUEST = 555;
     protected boolean checkPasswordSet(){
         try{
             String a = getPassword();
@@ -61,7 +63,7 @@ public class Security extends AppCompatActivity {
             e.printStackTrace();
         }
         } catch (IOException e) {
-            // Error occurred when opening raw file for reading.
+            e.printStackTrace();
         }
         return "";
     };
@@ -77,7 +79,7 @@ public class Security extends AppCompatActivity {
             public void onSuccess(String number) {
                 Intent go = new Intent(Security.this, Archive.class);
                 go.putExtra("secure",true);
-                startActivity(go);
+                startActivityForResult(go, VIEW_REQUEST);
             }
         });
     }
@@ -128,11 +130,16 @@ public class Security extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("BACK BACK BACK 1");
-        finish();
+        if(resultCode == RESULT_OK){
+            finish();
+        }
+        else if(requestCode==VIEW_REQUEST){
+            finish();
+        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

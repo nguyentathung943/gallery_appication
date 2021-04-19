@@ -13,9 +13,10 @@
         android:background="?attr/tintcolor"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
+
         <ImageView
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_back_video_view"
+            android:layout_width="24dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:src="@drawable/back_icon" />
@@ -62,7 +63,7 @@
             />
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/video_image"
             android:layout_centerInParent="true"/>
         <ImageView
@@ -86,12 +87,12 @@
 
         <ImageView
             android:id="@+id/btn_share"
-            android:onClick="imageViewMenu"
             android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/shared_icon"/>
+            android:onClick="videoViewMenu"
+            android:src="@drawable/shared_icon" />
         <ImageView
             android:layout_weight="6"
             android:layout_width="35dp"
@@ -104,6 +105,8 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="center"
-            android:src="@drawable/trash_icon"/>
+            android:src="@drawable/trash_icon"
+            android:id="@+id/btn_delete"
+            android:onClick="videoViewMenu"/>
     </LinearLayout>
 </RelativeLayout>

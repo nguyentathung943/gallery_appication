@@ -26,12 +26,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:text="@string/archive"
                     android:textColor="?attr/textcolor"
                     android:textSize="24dp"
                     android:textStyle="bold"
                     android:layout_gravity="center"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:id="@+id/header_title"/>
 
                 <ImageView
                     android:id="@+id/btn_view"
@@ -44,7 +44,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@id/start"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true">
@@ -52,6 +52,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:id="@+id/recyclerView"/>
+                    android:id="@+id/recyclerView" />
         </LinearLayout>
 </RelativeLayout>
