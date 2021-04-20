@@ -93,25 +93,50 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         config.getConfig();
         if(isSecure){
             getSecureFolder();
+            recyclerView = findViewById(R.id.group_photo_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            listPhotoGroup.add(listItem);
+            listDate.add("All time");
+            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(groupPhotoAdapter);
         }
         else if(album.equals("Favourite")){
             getFavouritePhoto();
+            recyclerView = findViewById(R.id.group_photo_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            listPhotoGroup.add(listItem);
+            listDate.add("All time");
+            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(groupPhotoAdapter);
         }else
         {
             getAllImages();
+            recyclerView = findViewById(R.id.group_photo_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(groupPhotoAdapter);
         }
+//        recyclerView = findViewById(R.id.group_photo_recyclerView);
+//        recyclerView.setHasFixedSize(true);
+//        groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+//        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+//        recyclerView.setLayoutManager(mLayoutManager);
+//        recyclerView.setAdapter(groupPhotoAdapter);
+
+//
 //        recyclerView = findViewById(R.id.recyclerView);
 //        recyclerView.setHasFixedSize(true);
 //        listAdapter = new ListAdapter(listItem, this, this);
 //        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
 //        recyclerView.setLayoutManager(mLayoutManager);
 //        recyclerView.setAdapter(listAdapter);
-        recyclerView = findViewById(R.id.group_photo_recyclerView);
-        recyclerView.setHasFixedSize(true);
-        groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(groupPhotoAdapter);
+
     }
     public void init() {
         listItem = new ArrayList<>();
