@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">image_management</string>
+    <string name="app_name">My Gallery</string>
     <string name="archive">Archive</string>
     <string name="camera">Camera</string>
     <string name="setting">Setting</string>
@@ -40,7 +40,8 @@
     <string name="no">No</string>
     <string name="ok">OK</string>
     <string name="digit_constraint">PIN must contains 4 digits</string>
-    <string name="wrong_pin">WRONG PIN</string>
+    <string name="wrong_pin">Invalid PIN!</string>
+    <string name="true_pin">PIN is correct!</string>
     <string name="pin_change_success">PIN Changed Successfully</string>
     <string name="initial_secure_folder">Please initialize your secure folder</string>
     <string name="init_pin_first_log_in">First time logging in?, please initialize your PIN</string>
@@ -53,4 +54,7 @@
     <string name="all_time">All time</string>
     <string name="grant_permission">Please grant those permissions to continue using this app!</string>
     <string name="list_type">Camera, Storage, Location, Internet</string>
+    <string name="copy_click">Image copied to clipboard</string>
+    <string name="location_re">No information</string>
+    <string name="empty">EMPTY</string>
 </resources>

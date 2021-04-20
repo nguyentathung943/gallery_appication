@@ -81,7 +81,7 @@ import ly.img.android.pesdk.ui.model.state.UiConfigSticker;
 import ly.img.android.pesdk.ui.model.state.UiConfigText;
 import ly.img.android.serializer._3.IMGLYFileWriter;
 
-public class Video extends Activity {
+public class Video extends AppCompatActivity {
     String path;
     VideoView video;
     ImageView playBtn, videoImage, likeIcon;

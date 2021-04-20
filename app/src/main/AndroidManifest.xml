@@ -30,8 +30,8 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
-        <activity android:name = ".Image"/>
-        <activity android:name = ".Video"/>
+        <activity android:name = ".Image" android:exported="true"/>
+        <activity android:name = ".Video" android:exported="true"/>
         <activity android:name = ".Setting"  android:exported="true"/>
         <activity android:name = ".Album"  android:exported="true"/>
         <activity android:name = ".SecureFolder"  android:exported="true"/>

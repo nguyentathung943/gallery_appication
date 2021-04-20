@@ -77,7 +77,7 @@ import ly.img.android.pesdk.ui.model.state.UiConfigSticker;
 import ly.img.android.pesdk.ui.model.state.UiConfigText;
 import ly.img.android.serializer._3.IMGLYFileWriter;
 
-public class Image extends Activity {
+public class Image extends AppCompatActivity {
     String path;
     Boolean isSecure;
     ImageView back;
@@ -184,10 +184,10 @@ public class Image extends Activity {
             float[] latLong = new float[2];
             boolean hasLatLong = exif.getLatLong(latLong);
             if (hasLatLong) {
-                location.setText(R.string.latitude + ": " + latLong[0] +"\n" + R.string.longitude + ": "+latLong[1]);
+                location.setText(getString(R.string.latitude) + ": " + latLong[0] +"\n" + getString(R.string.longitude) + ": "+latLong[1]);
             }
             else{
-                location.setText(R.string.location + ": None");
+                location.setText(getString(R.string.location) +": "+ getString(R.string.location_re));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,11 +210,11 @@ public class Image extends Activity {
         btnLay.addView(walllpp);
         btnLay.addView(cpy);
         btnLay.addView(secureFolder);
-        name.setText(R.string.name + ": " + a.getName());
+        name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
-        date.setText(R.string.create_date + ": " + attr.creationTime());
+        date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
         date.setTextSize(20);
-        size.setText(R.string.size + ": " + attr.size() + " bytes");
+        size.setText(getString(R.string.size) + ": " + attr.size() + " bytes");
         size.setTextSize(20);
         location.setTextSize(20);
         layout.addView(name);
@@ -249,7 +249,7 @@ public class Image extends Activity {
             ClipboardManager mClipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newUri(getApplicationContext().getContentResolver(), "a Photo", uri);
             mClipboard.setPrimaryClip(clip);
-            Toast.makeText(this,"Image copied to clipboard",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,R.string.copy_click,Toast.LENGTH_SHORT).show();
         });
         secureFolder.setOnClickListener(view -> {
             try {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Quản lý hình ảnh</string>
+    <string name="app_name">My Gallery</string>
     <string name="archive">Kho ảnh</string>
     <string name="camera">Máy ảnh</string>
     <string name="setting">Cài đặt</string>
@@ -31,8 +31,8 @@
     <string name="size">Kích thước</string>
     <string name="set_wallpaper">Đặt làm ảnh nền</string>
     <string name="copy">Sao chép vào bộ nhớ đệm</string>
-    <string name="remove_secure">Xóa khỏi thư mục bảo vệ</string>
-    <string name="move_secure">Di chuyển đến thư mục bảo vệ</string>
+    <string name="remove_secure">Xóa khỏi thư mục an toàn</string>
+    <string name="move_secure">Di chuyển đến thư mục an toàn</string>
     <string name="camera_option">Tùy chỉnh máy ảnh</string>
     <string name="choose_option">Bạn muốn sử dụng máy ảnh cho hình ảnh hay video</string>
     <string name="img_save">Đã lưu ảnh</string>
@@ -40,7 +40,8 @@
     <string name="no">Không</string>
     <string name="ok">Đồng ý</string>
     <string name="digit_constraint">PIN phải chứa 4 chữ số</string>
-    <string name="wrong_pin">SAI PIN</string>
+    <string name="wrong_pin">Mã PIN không hợp lệ!</string>
+    <string name="true_pin">PIN hợp lệ!</string>
     <string name="pin_change_success">PIN được đổi thành công</string>
     <string name="initial_secure_folder">Hãy tạo thư mục an toàn</string>
     <string name="init_pin_first_log_in">Lần đầu đăng nhập?, hãy tạo mã PIN</string>
@@ -53,4 +54,7 @@
     <string name="all_time">Tất cả thời gian</string>
     <string name="grant_permission">Hãy cấp quyền để tiếp tục sử dụng ứng dụng này!</string>
     <string name="list_type">Máy ảnh, Lưu trữ, Địa điểm, Mạng</string>
+    <string name="copy_click">Ảnh đã được sao chép vào bộ nhớ đệm</string>
+    <string name="location_re">Không có thông tin</string>
+    <string name="empty">Album này trống</string>
 </resources>
