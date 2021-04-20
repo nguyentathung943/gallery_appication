@@ -77,14 +77,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clickImageListener.onClick(getAdapterPosition());
+                    clickImageListener.onClick(list.get(getAdapterPosition()));
                 }
             });
         }
 
     }
     public interface ClickImageListener{
-        void onClick(int position);
+//        void onClick(int position);
+        void onClick(Item item);
     }
 
 }

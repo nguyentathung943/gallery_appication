@@ -49,9 +49,9 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true">
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/group_photo_recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:id="@+id/recyclerView" />
+                    android:layout_centerInParent="true" />
         </LinearLayout>
 </RelativeLayout>
