@@ -73,7 +73,7 @@ public class Security extends AppCompatActivity {
         passcodeView.setPasscodeLength(4).setLocalPasscode(pass).setListener(new PasscodeView.PasscodeViewListener() {
             @Override
             public void onFail() {
-                Toast.makeText(getApplicationContext(),"WRONG PIN!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),R.string.wrong_pin,Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onSuccess(String number) {
@@ -89,23 +89,23 @@ public class Security extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setTransformationMethod(PasswordTransformationMethod.getInstance());
         input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
-        builder.setTitle("First time logging in?, please initialize your PIN");
-        builder.setMessage("4 digits are required");
+        builder.setTitle(R.string.init_pin_first_log_in);
+        builder.setMessage(R.string.require_digit);
         builder.setView(input);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String value = input.getText().toString();
                 if (value.length() == 4){
                     System.out.println(value);
                     savePassword(value);
-                    Toast.makeText(Security.this, "PIN Created successfully",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Security.this, R.string.pin_create_success,Toast.LENGTH_SHORT).show();
                     showKeyboard();
                 }
                 else{
                     show_fillCode();
                 }
             }});
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 show_fillCode();
             }});

@@ -84,7 +84,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         isSecure = getIntent().getBooleanExtra("secure",false);
         TextView headerTitle = (TextView) findViewById(R.id.header_title);
         if(isSecure)
-            headerTitle.setText("Secure");
+            headerTitle.setText(R.string.secure_folder);
         else if(album.equals(""))
             headerTitle.setText(R.string.archive);
         else
@@ -96,7 +96,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            listDate.add("All time");
+            listDate.add(getString(R.string.all_time));
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -107,7 +107,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            listDate.add("All time");
+            listDate.add(getString(R.string.all_time));
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -122,21 +122,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(groupPhotoAdapter);
         }
-//        recyclerView = findViewById(R.id.group_photo_recyclerView);
-//        recyclerView.setHasFixedSize(true);
-//        groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
-//        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        recyclerView.setAdapter(groupPhotoAdapter);
-
-//
-//        recyclerView = findViewById(R.id.recyclerView);
-//        recyclerView.setHasFixedSize(true);
-//        listAdapter = new ListAdapter(listItem, this, this);
-//        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        recyclerView.setAdapter(listAdapter);
-
     }
     public void init() {
         listItem = new ArrayList<>();
@@ -161,7 +146,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             while((favouritePath = reader.readLine()) != null){
-                getCreationTime(favouritePath);
                 if(isImageFile(favouritePath)){
                     listItem.add(new Item(favouritePath,"",1));// IMAGE
                 }
@@ -196,29 +180,29 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
     }
 
-    void getCreationTime(String path){
-        BasicFileAttributes attributes = null;
-        try
-        {
-            attributes =
-                    Files.readAttributes(Paths.get(path), BasicFileAttributes.class);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        long milliseconds = attributes.creationTime().to(TimeUnit.MILLISECONDS);
-        if((milliseconds > Long.MIN_VALUE) && (milliseconds < Long.MAX_VALUE))
-        {
-            Date creationDate =
-                    new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
-
-            System.out.println("File favourite " + attributes.creationTime() + " " +
-                    creationDate.getDate() + "/" +
-                    (creationDate.getMonth() + 1) + "/" +
-                    (creationDate.getYear() + 1900));
-        }
-    }
+//    void getCreationTime(String path){
+//        BasicFileAttributes attributes = null;
+//        try
+//        {
+//            attributes =
+//                    Files.readAttributes(Paths.get(path), BasicFileAttributes.class);
+//        }
+//        catch (IOException e)67u;.
+//        {
+//            e.printStackTrace();
+//        }
+//        long milliseconds = attributes.creationTime().to(TimeUnit.MILLISECONDS);
+//        if((milliseconds > Long.MIN_VALUE) && (milliseconds < Long.MAX_VALUE))
+//        {
+//            Date creationDate =
+//                    new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
+//
+//            System.out.println("File favourite " + attributes.creationTime() + " " +
+//                    creationDate.getDate() + "/" +
+//                    (creationDate.getMonth() + 1) + "/" +
+//                    (creationDate.getYear() + 1900));
+//        }
+//    }
     public void getSecureFolder(){
         String securePath = getApplicationInfo().dataDir + "/files/Secure";
         File storageDir = new File(securePath);
@@ -310,8 +294,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             System.out.println("Size " + cursor.getString(columnSize));
             System.out.println("Type " + cursor.getString(columnMediaType));
             int typeData = cursor.getInt(columnMediaType);
-            listItem.add(new Item(absolutePathOfImage, durationTime, typeData));
-
             long timestampLong = cursor.getLong(columnDate);
             Date d = new Date(timestampLong);
             Calendar c = Calendar.getInstance();
@@ -353,19 +335,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
         System.out.println("Date length " + listDate.size() + " " + listPhotoGroup.size());
     }
-
-//    void open_with_photos(int position, int type){
-//        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(listItem.get(position).getPath()));
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_VIEW);
-//        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//        if(type == 1)
-//            intent.setDataAndType(photoURI, "image/*");
-//        else
-//            intent.setDataAndType(photoURI, "video/*");
-//        startActivity(intent);
-//    }
     void open_with_photos(Item item){
         Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(item.getPath()));
         Intent intent = new Intent();
@@ -379,16 +348,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         startActivity(intent);
     }
 
-//    void openwithThis(int position, int type){
-//        Intent intent;
-//        if(type == 1)
-//            intent = new Intent(this, Image.class);
-//        else
-//            intent = new Intent(this, Video.class);
-//        intent.putExtra("path", listItem.get(position).getPath());
-//        intent.putExtra("secure", isSecure);
-//        startActivityForResult(intent, VIEW_REQUEST);
-//    }
     void openwithThis(Item item){
         Intent intent;
         if(item.getType() == 1)
@@ -399,27 +358,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         intent.putExtra("secure", isSecure);
         startActivityForResult(intent, VIEW_REQUEST);
     }
-//    @Override
-//    public void onClick(int position) {
-//        if(listItem.get(position).getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-//        {
-//            if(config.isDefault==1){
-//                openwithThis(position, 1);
-//            }
-//            else {
-//                open_with_photos(position, 1);
-//            }
-//        }
-//        else if(listItem.get(position).getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
-//        {
-//            if(config.isDefault==1){
-//                openwithThis(position, 3);
-//            }
-//            else {
-//                open_with_photos(position, 3);
-//            }
-//        }
-//    }
 @Override
 public void onClick(Item item) {
     if(item.getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)

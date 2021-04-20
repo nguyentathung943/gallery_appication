@@ -45,11 +45,11 @@ public class SecureFolder extends AppCompatActivity {
         builder.setTitle(R.string.validate_pin1);
         builder.setMessage(R.string.validate_pin2);
         builder.setView(input);
-        builder.setNegativeButton("No",null);
-        builder.setPositiveButton("Ok", (dialog, which) ->{
+        builder.setNegativeButton(R.string.no,null);
+        builder.setPositiveButton(R.string.ok, (dialog, which) ->{
             String a = input.getText().toString();
             if (a.length() < 4){
-                Toast.makeText(this,"PIN must contains 4 digits", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,R.string.digit_constraint, Toast.LENGTH_SHORT).show();
                 ShowChangePIN();
             }
             else{
@@ -57,7 +57,7 @@ public class SecureFolder extends AppCompatActivity {
                         ShowChangePIN();
                     }
                     else{
-                        Toast.makeText(this,"WRONG PIN", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,R.string.wrong_pin, Toast.LENGTH_SHORT).show();
                         try {
                             showValidate();
                         } catch (IOException e) {
@@ -83,10 +83,10 @@ public class SecureFolder extends AppCompatActivity {
         builder.setTitle(R.string.change_pin1);
         builder.setMessage(R.string.change_pin2);
         builder.setView(input);
-        builder.setPositiveButton("Ok", (dialog, which) ->{
+        builder.setPositiveButton(R.string.ok, (dialog, which) ->{
             String a = input.getText().toString();
             if (a.length() < 4){
-                Toast.makeText(this,"PIN must contains 4 digits", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,R.string.digit_constraint, Toast.LENGTH_SHORT).show();
                 ShowChangePIN();
             }
             else{
@@ -94,7 +94,7 @@ public class SecureFolder extends AppCompatActivity {
                 try {
                     FileOutputStream fout = context.openFileOutput("PIN.txt", Context.MODE_PRIVATE);
                     fout.write(input.getText().toString().getBytes());
-                    Toast.makeText(this, "PIN Changed Successfully",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.pin_change_success,Toast.LENGTH_SHORT).show();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -102,7 +102,7 @@ public class SecureFolder extends AppCompatActivity {
                 }
             }
         });
-        builder.setNegativeButton("No",null);
+        builder.setNegativeButton(R.string.no,null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
@@ -111,7 +111,7 @@ public class SecureFolder extends AppCompatActivity {
             case R.id.sc_pin:
                 if(!checkFileExist()){
                     startActivity(new Intent(SecureFolder.this, Security.class));
-                    Toast.makeText(this, "Please initialize your secure folder",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.initial_secure_folder,Toast.LENGTH_SHORT).show();
                 }
                 else {
                     showValidate();

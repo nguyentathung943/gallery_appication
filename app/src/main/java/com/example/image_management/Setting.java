@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class Setting extends AppCompatActivity{
-    TextView languageText, languageDefault, language, headerTitle;
+    TextView languageText, markDefault, language, headerTitle;
     ListView listView;
     Context context;
     Switch sw;
@@ -69,31 +69,31 @@ public class Setting extends AppCompatActivity{
         sw = findViewById(R.id.defaultSwitch);
         if(config.isDefault==1){
             DefaultMode = 1;
-            sw.setText("On");
+            sw.setText(R.string.on);
             sw.setChecked(true);
         }
         else{
             DefaultMode = 0;
-            sw.setText("Off");
+            sw.setText(R.string.off);
             sw.setChecked(false);
         }
         sw.setOnCheckedChangeListener((compoundButton, checked) -> {
             if(checked){
                 config.saveConfig(config.isDarkMode,config.language,1);
-                sw.setText("On");
+                sw.setText(R.string.on);
                 DefaultMode = 1;
                 sw.setChecked(true);
             }
             else{
                 config.saveConfig(config.isDarkMode,config.language,0);
-                sw.setText("Off");
+                sw.setText(R.string.off);
                 DefaultMode=0;
                 sw.setChecked(false);
             }
         });
         languageLayout = (LinearLayout) findViewById(R.id.language_layout);
         languageText = (TextView) findViewById(R.id.language_text);
-        languageDefault = (TextView) findViewById(R.id.language_default);
+        markDefault = (TextView) findViewById(R.id.mark_default);
         headerTitle = (TextView) findViewById(R.id.header_title);
         language = (TextView) findViewById(R.id.language);
         language.setText(listLanguage.get(listCode.indexOf(lang)));
@@ -115,9 +115,18 @@ public class Setting extends AppCompatActivity{
             public void onClick(DialogInterface dialog, int position) {
                 ChangeLanguage(listCode.get(position));
                 languageText.setText(R.string.language_text);
-                languageDefault.setText(R.string.language_default);
+                markDefault.setText(R.string.mark_default);
                 headerTitle.setText(R.string.setting);
                 language.setText(listLanguage.get(position));
+
+                if(sw.getText().equals("On") || sw.getText().equals("Bật"))
+                {
+                    sw.setText(R.string.on);
+                }
+                else
+                    sw.setText(R.string.off);
+
+
                 dialog.dismiss();
             }
         });

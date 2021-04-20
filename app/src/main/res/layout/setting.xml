@@ -57,21 +57,23 @@
         android:orientation="horizontal"
         android:layout_marginHorizontal="25dp"
         android:layout_marginVertical="20dp"
-        android:layout_height="wrap_content">
+        android:layout_height="35dp">
+
         <TextView
-            android:layout_weight="1"
+            android:id="@+id/mark_default"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/mark_default"
-            android:textSize="24dp"
             android:textColor="?attr/textcolor"
-            android:id="@+id/language_default"
-            android:layout_gravity="center"/>
+            android:textSize="24dp" />
+
         <Switch
             android:layout_weight="1"
             android:id="@+id/defaultSwitch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textColor="?attr/textcolor" />
     </LinearLayout>
 </LinearLayout>

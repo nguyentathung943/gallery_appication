@@ -184,10 +184,10 @@ public class Image extends Activity {
             float[] latLong = new float[2];
             boolean hasLatLong = exif.getLatLong(latLong);
             if (hasLatLong) {
-                location.setText("Latitude: " + latLong[0] +"\n" +"Longitude: "+latLong[1]);
+                location.setText(R.string.latitude + ": " + latLong[0] +"\n" + R.string.longitude + ": "+latLong[1]);
             }
             else{
-                location.setText("Location: None");
+                location.setText(R.string.location + ": None");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,11 +210,11 @@ public class Image extends Activity {
         btnLay.addView(walllpp);
         btnLay.addView(cpy);
         btnLay.addView(secureFolder);
-        name.setText("Name: " + a.getName());
+        name.setText(R.string.name + ": " + a.getName());
         name.setTextSize(20);
-        date.setText("Creation date: " + attr.creationTime());
+        date.setText(R.string.create_date + ": " + attr.creationTime());
         date.setTextSize(20);
-        size.setText("Size: " + attr.size() + " bytes");
+        size.setText(R.string.size + ": " + attr.size() + " bytes");
         size.setTextSize(20);
         location.setTextSize(20);
         layout.addView(name);
@@ -223,15 +223,14 @@ public class Image extends Activity {
         layout.addView(location);
         layout.addView(btnLay);
         builder.setView(layout);
-        builder.setNegativeButton("OK",null);
-        walllpp.setText("Set image as wallpaper");
-        cpy.setText("Copy to clipboard");
+        builder.setNegativeButton(R.string.ok,null);
+        walllpp.setText(R.string.set_wallpaper);
+        cpy.setText(R.string.copy);
         if(isSecure){
-            secureFolder.setText("Remove from Secure Folder");
+            secureFolder.setText(R.string.remove_secure);
         }
         else{
-
-            secureFolder.setText("Move to Secure Folder");
+            secureFolder.setText(R.string.move_secure);
         }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();

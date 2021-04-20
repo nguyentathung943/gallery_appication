@@ -21,17 +21,18 @@
             android:layout_gravity="center"
             android:src="@drawable/back_icon"
             android:onClick="back"/>
+
         <TextView
-            android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="21dp"
             android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/security"
             android:textColor="?attr/textcolor"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            android:gravity="center"/>
+            android:textStyle="bold" />
     </LinearLayout>
         <GridLayout
             android:layout_width="match_parent"

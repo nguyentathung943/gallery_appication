@@ -74,12 +74,12 @@
                     </ImageView>
 
                     <TextView
+                        android:id="@+id/archive"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="@string/archive"
-                        android:textColor="?attr/textcolor"
-                        android:id="@+id/archive"/>
+                        android:textColor="?attr/textcolor" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

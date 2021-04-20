@@ -91,13 +91,13 @@ public class MainMenu extends AppCompatActivity {
             if(checked){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 config.saveConfig(1,config.language,config.isDarkMode);
-                sw.setText("Dark");
+                sw.setText(R.string.dark);
                 sw.setChecked(true);
             }
             else{
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 config.saveConfig(0,config.language,config.isDarkMode);
-                sw.setText("Light");
+                sw.setText(R.string.light);
                 sw.setChecked(false);
             }
             finish();
@@ -134,9 +134,9 @@ public class MainMenu extends AppCompatActivity {
                     ActivityCompat.shouldShowRequestPermissionRationale(MainMenu.this,Manifest.permission.INTERNET)
             ){
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenu.this);
-                builder.setTitle("Please grant those permissions to continue using this app!");
-                builder.setMessage("Camera, Storage, Location, Internet");
-                builder.setPositiveButton("Ok", (dialog, which) ->
+                builder.setTitle(R.string.grant_permission);
+                builder.setMessage(R.string.list_type);
+                builder.setPositiveButton(R.string.ok, (dialog, which) ->
                         ActivityCompat.requestPermissions(MainMenu.this,
                         new String[]{
                                 Manifest.permission.CAMERA,
@@ -148,7 +148,7 @@ public class MainMenu extends AppCompatActivity {
                                 Manifest.permission.INTERNET
                         },
                         CAMERA_PERM_CODE));
-                builder.setNegativeButton("No",(dialog, which) ->
+                builder.setNegativeButton(R.string.no,(dialog, which) ->
                         askPermission()
                  );
                 AlertDialog alertDialog = builder.create();
@@ -223,18 +223,18 @@ public class MainMenu extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_NUMBER);
         input.setTransformationMethod(PasswordTransformationMethod.getInstance());
         input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
-        builder.setTitle("Camera Option");
-        builder.setMessage("Do you want to use camera for image or video");
+        builder.setTitle(R.string.camera_option);
+        builder.setMessage(R.string.choose_option);
         LinearLayout layout= new LinearLayout(this);
         layout.setGravity(Gravity.CENTER);
         Button Camera = new Button(this);
-        Camera.setText("Camera");
+        Camera.setText(R.string.camera);
         Button Video = new Button(this);
         Video.setText("Video");
         layout.addView(Camera);
         layout.addView(Video);
         builder.setView(layout);
-        builder.setNegativeButton("CANCEL",null);
+        builder.setNegativeButton(R.string.cancel,null);
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         Camera.setOnClickListener(view ->{
@@ -269,7 +269,7 @@ public class MainMenu extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             galleryAddFile();
-            Toast.makeText(this,"Image saved",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,R.string.img_save,Toast.LENGTH_SHORT).show();
             
 //            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 //            System.out.println(locationManager);
@@ -279,11 +279,10 @@ public class MainMenu extends AppCompatActivity {
         }
         else if  (requestCode == REQUEST_VIDEO_RECORD  && resultCode == RESULT_OK){
             galleryAddFile();
-            Toast.makeText(this,"Video saved",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,R.string.video_save,Toast.LENGTH_SHORT).show();
         }
     }
     private void galleryAddFile() {
-        System.out.println("Hello");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(currentPhotoPath);
         Uri contentUri = Uri.fromFile(f);
