@@ -30,6 +30,7 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
+        <activity android:name = ".FaceRecognition" android:exported="true"/>
         <activity android:name = ".Image" android:exported="true"/>
         <activity android:name = ".Video" android:exported="true"/>
         <activity android:name = ".Setting"  android:exported="true"/>
