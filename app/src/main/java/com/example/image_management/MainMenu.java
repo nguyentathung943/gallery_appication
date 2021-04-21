@@ -62,18 +62,16 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();
-        ChangeLanguage(config.language);
-        setContentView(R.layout.main_menu);
-
-        likeImage = ((LikeImage)getApplicationContext());
-        likeImage.init();
-        sw = findViewById(R.id.themeSwitch);
-
         if (!checkConfig){
             config.saveConfig(0,"en",0);
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            config.getConfig();
         }
-        else{
+        ChangeLanguage(config.language);
+        setContentView(R.layout.main_menu);
+        likeImage = ((LikeImage)getApplicationContext());
+        likeImage.init();
+        sw = findViewById(R.id.themeSwitch);
             if(config.isDarkMode==1){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 sw.setChecked(true);
@@ -84,8 +82,6 @@ public class MainMenu extends AppCompatActivity {
                 sw.setChecked(false);
                 sw.setText(R.string.light);
             }
-
-        }
         askPermission();
         sw.setOnCheckedChangeListener((compoundButton, checked) -> {
             if(checked){
