@@ -114,7 +114,6 @@ public class Video extends AppCompatActivity {
         finish();
     }
 
-
     private void DeleteFile(String path){
         File a = new File(path);
         a.delete();
@@ -189,10 +188,10 @@ public class Video extends AppCompatActivity {
             float[] latLong = new float[2];
             boolean hasLatLong = exif.getLatLong(latLong);
             if (hasLatLong) {
-                location.setText(R.string.latitude + ": " + latLong[0] +"\n" + R.string.longitude + ": "+latLong[1]);
+                location.setText(getString(R.string.latitude) + ": " + latLong[0] +"\n" + getString(R.string.longitude) + ": "+latLong[1]);
             }
             else{
-                location.setText(R.string.location + ": " + R.string.none);
+                location.setText(getString(R.string.location) +": "+ getString(R.string.location_re));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -211,11 +210,11 @@ public class Video extends AppCompatActivity {
         btnLay.setOrientation(LinearLayout.VERTICAL);
         btnLay.setGravity(Gravity.CENTER_HORIZONTAL);
         btnLay.addView(secureFolder);
-        name.setText(R.string.name + ": " + a.getName());
+        name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
-        date.setText(R.string.create_date + ": " + attr.creationTime());
+        date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
         date.setTextSize(20);
-        size.setText(R.string.size + ": " + attr.size() + " bytes");
+        size.setText(getString(R.string.size) + ": " + attr.size() + " bytes");
         size.setTextSize(20);
         location.setTextSize(20);
         layout.addView(name);
@@ -229,7 +228,6 @@ public class Video extends AppCompatActivity {
             secureFolder.setText(R.string.remove_secure);
         }
         else{
-
             secureFolder.setText(R.string.move_secure);
         }
         AlertDialog alertDialog = builder.create();
@@ -248,7 +246,6 @@ public class Video extends AppCompatActivity {
             }
         });
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
