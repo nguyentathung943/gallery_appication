@@ -60,7 +60,7 @@ public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivity(new Intent(MainMenu.this, FaceRecognition.class));
+//        startActivity(new Intent(MainMenu.this, FaceRecognition.class));
         config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();
         if (!checkConfig){
