@@ -84,6 +84,7 @@ public class Image extends AppCompatActivity {
     ImageView myImage;
     ImageView info;
     ImageView likeIcon;
+    ImageView unlock;
     Boolean isLiked;
     LikeImage likeImage;
     public void shareOn(){
@@ -94,8 +95,18 @@ public class Image extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
         shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        this.grantUriPermission("android",photoURI, Intent.FLAG_GRANT_READ_URI_PERMISSION| Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
+    }
+    public void copyOn(String path){
+        Uri uri = FileProvider.getUriForFile(
+                this,
+                "com.example.android.fileprovider",
+                new File(path));
+        ClipboardManager mClipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newUri(getApplicationContext().getContentResolver(), "a Photo", uri);
+        mClipboard.setPrimaryClip(clip);
+        Toast.makeText(this,R.string.copy_click,Toast.LENGTH_SHORT).show();
     }
     public void  callScanItent(Context context,String path) {
         MediaScannerConnection.scanFile(context,
@@ -127,6 +138,22 @@ public class Image extends AppCompatActivity {
                 break;
             case R.id.btn_delete:
                 deleteOn();
+                break;
+            case R.id.secure_btn:
+                try {
+                    String exten = getExtension(path);
+                    if (isSecure){
+                        RemoveFromSecure(path,exten);
+                    }
+                    else {
+                        MoveFileToSecure(path, exten);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.copy_btn_image:
+                copyOn(path);
                 break;
         }
     }
@@ -202,14 +229,10 @@ public class Image extends AppCompatActivity {
         TextView date = new TextView(this);
         TextView size = new TextView(this);
         Button walllpp = new Button(this);
-        Button cpy = new Button(this);
-        Button secureFolder = new Button(this);
         LinearLayout btnLay = new LinearLayout(this);
         btnLay.setOrientation(LinearLayout.VERTICAL);
         btnLay.setGravity(Gravity.CENTER_HORIZONTAL);
         btnLay.addView(walllpp);
-        btnLay.addView(cpy);
-        btnLay.addView(secureFolder);
         name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
         date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
@@ -225,13 +248,6 @@ public class Image extends AppCompatActivity {
         builder.setView(layout);
         builder.setNegativeButton(R.string.ok,null);
         walllpp.setText(R.string.set_wallpaper);
-        cpy.setText(R.string.copy);
-        if(isSecure){
-            secureFolder.setText(R.string.remove_secure);
-        }
-        else{
-            secureFolder.setText(R.string.move_secure);
-        }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         walllpp.setOnClickListener(view ->{
@@ -241,29 +257,6 @@ public class Image extends AppCompatActivity {
             intent.putExtra("mimeType", "image/*");
             startActivity(Intent.createChooser(intent, "Set as:"));
         });
-        cpy.setOnClickListener(view ->{
-            Uri uri = FileProvider.getUriForFile(
-                    this,
-                    "com.example.android.fileprovider",
-                    new File(path));
-            ClipboardManager mClipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newUri(getApplicationContext().getContentResolver(), "a Photo", uri);
-            mClipboard.setPrimaryClip(clip);
-            Toast.makeText(this,R.string.copy_click,Toast.LENGTH_SHORT).show();
-        });
-        secureFolder.setOnClickListener(view -> {
-            try {
-                String exten = getExtension(path);
-                if (isSecure){
-                    RemoveFromSecure(path,exten);
-                }
-                else {
-                    MoveFileToSecure(path, exten);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     @Override
@@ -271,9 +264,14 @@ public class Image extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.img_view);
         likeIcon = (ImageView) findViewById(R.id.like_image);
+        unlock = findViewById(R.id.secure_btn);
+
         info = findViewById(R.id.info);
         path = getIntent().getStringExtra("path");
         isSecure = getIntent().getBooleanExtra("secure", false);
+        if(isSecure){
+            unlock.setImageDrawable(getResources().getDrawable(R.drawable.unlock, getApplicationContext().getTheme()));
+        }
         System.out.println(path);
         Bitmap myBitmap = BitmapFactory.decodeFile(path);
         myImage = findViewById(R.id.img_show);

@@ -76,37 +76,56 @@
             android:id="@+id/play_btn"
             />
     </RelativeLayout>
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/end"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
         android:background="?attr/tintcolor"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
-
         <ImageView
             android:id="@+id/btn_share"
             android:layout_width="35dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:onClick="videoViewMenu"
             android:src="@drawable/shared_icon" />
         <ImageView
-            android:layout_weight="6"
+            android:id="@+id/like_video"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_gravity="center"
-           android:src="@drawable/non_liked_icon"
-            android:id="@+id/like_video"/>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:onClick="videoViewMenu"
+            android:src="@drawable/non_liked_icon" />
         <ImageView
-            android:layout_weight="1"
+            android:id="@+id/copy_btn_video"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_gravity="center"
-            android:src="@drawable/trash_icon"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/btn_share"
+            android:onClick="videoViewMenu"
+            android:layout_toStartOf="@id/like_video"
+            android:src="@drawable/copy_file"/>
+        <ImageView
             android:id="@+id/btn_delete"
-            android:onClick="videoViewMenu"/>
-    </LinearLayout>
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:onClick="videoViewMenu"
+            android:src="@drawable/trash_icon" />
+        <ImageView
+            android:id="@+id/secure_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/like_video"
+            android:onClick="videoViewMenu"
+            android:layout_toStartOf="@id/btn_delete"
+            android:src="@drawable/secure" />
+    </RelativeLayout>
 </RelativeLayout>

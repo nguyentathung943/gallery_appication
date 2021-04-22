@@ -7,6 +7,8 @@ import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +36,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -59,7 +62,9 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.acl.Permission;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TreeMap;
 
 import ly.img.android.pesdk.PhotoEditorSettingsList;
@@ -85,6 +90,7 @@ public class Video extends AppCompatActivity {
     String path;
     VideoView video;
     ImageView playBtn, videoImage, likeIcon;
+    ImageView unlock;
     MediaPlayer mediaPlayer;
     LikeImage likeImage;
     Boolean isLiked;
@@ -97,10 +103,41 @@ public class Video extends AppCompatActivity {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, photoURI);
-        shareIntent.setType("video/*");
+        shareIntent.setType("image/*");
         shareIntent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        this.grantUriPermission("android",photoURI, Intent.FLAG_GRANT_READ_URI_PERMISSION| Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
+    }
+    public void showListAlbum(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.copy_video_message));
+        String newPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/";
+        File x = new File(newPath);
+        ArrayList<String> albumList = new ArrayList<>();
+        for(File folder: x.listFiles()){
+            if(!folder.getName().startsWith(".")) {
+                System.out.println("HALLO" + folder.getName());
+                albumList.add(folder.getName());
+            }
+        }
+        builder.setItems(albumList.toArray(new String[0]),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String cur_name = albumList.get(i);
+                String destination = newPath +"/" +cur_name  +"/"+ getFileName(path)+getExtension(path);
+                File check = new File(destination);
+                if (check.exists()) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.copy_video_mess_off), Toast.LENGTH_SHORT).show();
+                } else {
+                    copyFile(new File(path), new File(destination));
+                    callScanItent(getApplicationContext(),destination);
+                    Toast.makeText(getApplicationContext(), getString(R.string.copy_video_mess_on), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.ok,null);
+        builder.create().show();
     }
     public void  callScanItent(Context context,String path) {
         MediaScannerConnection.scanFile(context,
@@ -113,7 +150,6 @@ public class Video extends AppCompatActivity {
         Toast.makeText(this,R.string.delete_video,Toast.LENGTH_SHORT).show();
         finish();
     }
-
     private void DeleteFile(String path){
         File a = new File(path);
         a.delete();
@@ -124,13 +160,29 @@ public class Video extends AppCompatActivity {
     public void onBackPressed(){
         finish();
     }
-    public void videoViewMenu(View view){
+    public void videoViewMenu(View view) throws IOException {
         switch (view.getId()){
             case R.id.btn_share:
                 shareOn();
                 break;
             case R.id.btn_delete:
                 deleteOn();
+                break;
+            case R.id.copy_btn_video:
+                showListAlbum();
+                break;
+            case R.id.secure_btn:
+                String exten = getExtension(path);
+                try {
+                    if (isSecure){
+                        RemoveFromSecure(path,exten);
+                    }
+                    else {
+                        MoveFileToSecure(path, exten);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -148,8 +200,12 @@ public class Video extends AppCompatActivity {
         callScanItent(getApplicationContext(),source);
         DeleteFile(this.path);
     }
-    public void copyFile(File source, File destination) throws IOException {
-        FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
+    public void copyFile(File source, File destination){
+        try {
+            FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private void MoveFileToSecure(String oldPath,String suffix) throws IOException {
         likeImage = ((LikeImage)getApplicationContext());
@@ -173,6 +229,12 @@ public class Video extends AppCompatActivity {
         File a = new File(path);
         int dot = a.getName().lastIndexOf(".");
         return a.getName().substring(dot);
+    }
+    private String getFileName(String path){
+        File a = new File(path);
+        int dot = a.getName().lastIndexOf(".");
+        String fileName = a.getName().substring(0,dot);
+        return fileName;
     }
     public void ImageInfo(String path){
         File a = new File(path);
@@ -205,11 +267,6 @@ public class Video extends AppCompatActivity {
         TextView name = new TextView(this);
         TextView date = new TextView(this);
         TextView size = new TextView(this);
-        Button secureFolder = new Button(this);
-        LinearLayout btnLay = new LinearLayout(this);
-        btnLay.setOrientation(LinearLayout.VERTICAL);
-        btnLay.setGravity(Gravity.CENTER_HORIZONTAL);
-        btnLay.addView(secureFolder);
         name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
         date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
@@ -221,30 +278,10 @@ public class Video extends AppCompatActivity {
         layout.addView(date);
         layout.addView(size);
         layout.addView(location);
-        layout.addView(btnLay);
         builder.setView(layout);
         builder.setNegativeButton(R.string.ok,null);
-        if(isSecure){
-            secureFolder.setText(R.string.remove_secure);
-        }
-        else{
-            secureFolder.setText(R.string.move_secure);
-        }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-        secureFolder.setOnClickListener(view -> {
-            try {
-                String exten = getExtension(path);
-                if (isSecure){
-                    RemoveFromSecure(path,exten);
-                }
-                else {
-                    MoveFileToSecure(path, exten);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -254,6 +291,8 @@ public class Video extends AppCompatActivity {
         video = (VideoView) findViewById(R.id.video);
         playBtn = (ImageView) findViewById(R.id.play_btn);
         videoImage = (ImageView) findViewById(R.id.video_image);
+        unlock = findViewById(R.id.secure_btn);
+
         Glide.with(this)
                 .load(path)
                 .centerCrop()
@@ -264,6 +303,9 @@ public class Video extends AppCompatActivity {
         info = findViewById(R.id.info);
         path = getIntent().getStringExtra("path");
         isSecure = getIntent().getBooleanExtra("secure", false);
+        if(isSecure){
+            unlock.setImageDrawable(getResources().getDrawable(R.drawable.unlock, getApplicationContext().getTheme()));
+        }
         info.setOnClickListener(view->{
             ImageInfo(path);
         });

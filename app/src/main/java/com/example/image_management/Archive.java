@@ -96,7 +96,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            listDate.add(getString(R.string.empty));
+            if(listItem.isEmpty()){
+                listDate.add(getString(R.string.empty));
+            }
+            else{
+                listDate.add(getString(R.string.all_time));
+            }
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -107,7 +112,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            listDate.add(getString(R.string.all_time));
+            if(listItem.isEmpty()){
+                listDate.add(getString(R.string.empty));
+            }
+            else{
+                listDate.add(getString(R.string.all_time));
+            }
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);

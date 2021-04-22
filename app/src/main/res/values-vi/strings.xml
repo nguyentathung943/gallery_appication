@@ -57,4 +57,8 @@
     <string name="copy_click">Ảnh đã được sao chép vào bộ nhớ đệm</string>
     <string name="location_re">Không có thông tin</string>
     <string name="empty">Album này trống</string>
+    <string name="copy_video_title">Tạo bản sao</string>
+    <string name="copy_video_message">Chọn album chứa bản sao</string>
+    <string name="copy_video_mess_on">Bản sao khởi tạo thành công</string>
+    <string name="copy_video_mess_off">Bản sao đã tồn tại</string>
 </resources>
