@@ -1,22 +1,24 @@
 package com.example.image_management;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -24,28 +26,40 @@ import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.face.Face;
+import com.google.mlkit.vision.face.FaceDetector;
+
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.Interpreter;
+import org.tensorflow.lite.support.common.TensorOperator;
+import org.tensorflow.lite.support.common.ops.NormalizeOp;
+import org.tensorflow.lite.support.image.ImageProcessor;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.image.ops.ResizeOp;
+import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 public class Archive extends AppCompatActivity implements ListAdapter.ClickImageListener{
     RecyclerView recyclerView;
@@ -56,7 +70,19 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     Configuration config;
     Boolean isSecure;
     ListAdapter listAdapter;
+    ArrayList<float[][]> listOribitmap;
+    ArrayList<float[][]> listTestbitmap;
     GroupPhotoAdapter groupPhotoAdapter;
+    Task<List<Face>> detect;
+    Boolean isSameFace;
+    TextView headerTitle;
+    ArrayList<Boolean> listDetectFace;
+    ArrayList<String> listFacePath;
+    Task<Void>  checkSameFace, isSameFunc;
+    ArrayList<Boolean> listFaceDetect;
+    Integer lengthCheckFace;
+    ArrayList<FaceDetection> listFaceDetection;
+    ArrayList<GroupFaceDetection> listGroupFaceDetection;
     int VIEW_REQUEST = 555;
     String album;
     String[] projection = {
@@ -82,7 +108,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         setContentView(R.layout.archive);
         init();
         isSecure = getIntent().getBooleanExtra("secure",false);
-        TextView headerTitle = (TextView) findViewById(R.id.header_title);
+        headerTitle = (TextView) findViewById(R.id.header_title);
         if(isSecure)
             headerTitle.setText(R.string.secure_folder);
         else if(album.equals(""))
@@ -96,12 +122,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            if(listItem.isEmpty()){
-                listDate.add(getString(R.string.empty));
-            }
-            else{
-                listDate.add(getString(R.string.all_time));
-            }
+            listDate.add(getString(R.string.empty));
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -112,18 +133,25 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            if(listItem.isEmpty()){
-                listDate.add(getString(R.string.empty));
-            }
-            else{
-                listDate.add(getString(R.string.all_time));
-            }
+            listDate.add(getString(R.string.all_time));
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(groupPhotoAdapter);
-        }else
+        }
+        else if(album.equals("Face Recognition")){
+            System.out.println("Face face");
+            getFaceRecognition();
+            recyclerView = findViewById(R.id.group_photo_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(groupPhotoAdapter);
+        }
+        else
         {
+
             getAllImages();
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
@@ -138,9 +166,19 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         displayAdapter = new DisplayAdapter(this);
         listPhotoGroup = new ArrayList<>();
         listDate = new ArrayList<>();
+        listDetectFace = new ArrayList<>();
+        listFaceDetect = new ArrayList<>();
+        lengthCheckFace = 0;
+        listFaceDetection = new ArrayList<>();
+        listGroupFaceDetection = new ArrayList<>();
         album = getIntent().getStringExtra("album");
         if(album == null)
             album = "";
+        try{
+            tflite=new Interpreter(loadmodelfile(this));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
@@ -190,29 +228,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
     }
 
-//    void getCreationTime(String path){
-//        BasicFileAttributes attributes = null;
-//        try
-//        {
-//            attributes =
-//                    Files.readAttributes(Paths.get(path), BasicFileAttributes.class);
-//        }
-//        catch (IOException e)67u;.
-//        {
-//            e.printStackTrace();
-//        }
-//        long milliseconds = attributes.creationTime().to(TimeUnit.MILLISECONDS);
-//        if((milliseconds > Long.MIN_VALUE) && (milliseconds < Long.MAX_VALUE))
-//        {
-//            Date creationDate =
-//                    new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
-//
-//            System.out.println("File favourite " + attributes.creationTime() + " " +
-//                    creationDate.getDate() + "/" +
-//                    (creationDate.getMonth() + 1) + "/" +
-//                    (creationDate.getYear() + 1900));
-//        }
-//    }
     public void getSecureFolder(){
         String securePath = getApplicationInfo().dataDir + "/files/Secure";
         File storageDir = new File(securePath);
@@ -251,6 +266,73 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             }
         }
     }
+
+    public void getFaceRecognition() {
+        Uri queryUri = MediaStore.Files.getContentUri("external");
+        System.out.println(queryUri.getPath());
+        CursorLoader cursorLoader = new CursorLoader(
+                this,
+                queryUri,
+                projection,
+                selection,
+                null,
+                MediaStore.Files.FileColumns.DATE_TAKEN + " DESC"
+        );
+        Cursor cursor = cursorLoader.loadInBackground();
+        listFacePath = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            System.out.println("Image Path " + absolutePathOfImage);
+            File temp = new File(absolutePathOfImage);
+            if(!temp.exists()){
+                continue;
+            }
+            listFacePath.add(absolutePathOfImage);
+        }
+        cursor.close();
+        for(String i : listFacePath){
+            faceDetector(i);
+        }
+        Tasks.whenAll(detect).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                System.out.println("Total face whenall" + listFaceDetection.size());
+                FaceDetection firstImg = listFaceDetection.get(0);
+                if(listFaceDetection.size() > 0){
+                    listGroupFaceDetection.add(new GroupFaceDetection(firstImg.getFace(), firstImg.getEmbadding(), firstImg.getPath()));
+                    for(int i = 1; i < listFaceDetection.size(); i++){
+                        int j = 0;
+                        for(; j < listGroupFaceDetection.size(); j++)
+                        {
+                            double cal = calculate_distance(listFaceDetection.get(i).getEmbadding(), listGroupFaceDetection.get(j).getEmbadding());
+                            System.out.println("cal " + cal);
+
+                            if(cal < 6.0 && !listGroupFaceDetection.get(j).getListImage().get(0).equals(listFaceDetection.get(i).getPath()))
+                            {
+                                System.out.println("add new");
+                                listGroupFaceDetection.get(j).AddListImage(listFaceDetection.get(i).getPath());
+                                break;
+                            }
+                        }
+                        if(j == listGroupFaceDetection.size())
+                        {
+                            System.out.println("create new");
+                            listGroupFaceDetection.add(new GroupFaceDetection(listFaceDetection.get(i).getFace(), listFaceDetection.get(i).getEmbadding(), listFaceDetection.get(i).getPath()));
+
+                        }
+                    }
+                }
+                System.out.println("SizeGroup " + listGroupFaceDetection.size());
+                for(GroupFaceDetection i : listGroupFaceDetection){
+                    System.out.println("----");
+//                    for(String path : i.getListImage())
+                    System.out.println("GroupFaceDetection " + i.getListImage().size());
+                }
+
+            }
+        });
+    }
+
     public void getAllImages() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
         System.out.println(queryUri.getPath());
@@ -269,15 +351,16 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         int columnDate = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_TAKEN);
         int curDate = -1, curMonth = -1, curYear = -1;
         ArrayList<Item> listPhotoSameDate = new ArrayList<>();
+        listFacePath = new ArrayList<>(); ///
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            System.out.println("Image Path " + absolutePathOfImage);
             File temp = new File(absolutePathOfImage);
             if(!temp.exists()){
                 continue;
             }
             if(!absolutePathOfImage.contains(album))
                 continue;
-
 //            Calendar date = Calendar.getInstance();
 //            date.setTimeInMillis(cursor.getLong(columnDate)*1000);
 ////            Date date = new Date(cursor.getLong(columnDate));
@@ -299,10 +382,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 durationTime = formatter.format(zdt);
             }
 
-            System.out.println("Data");
-            System.out.println("Duration " + durationTime);
-            System.out.println("Size " + cursor.getString(columnSize));
-            System.out.println("Type " + cursor.getString(columnMediaType));
             int typeData = cursor.getInt(columnMediaType);
             long timestampLong = cursor.getLong(columnDate);
             Date d = new Date(timestampLong);
@@ -335,6 +414,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 }
             }
         }
+        if(listFacePath.size() > 0)
+            lengthCheckFace = listFacePath.size() * (listFacePath.size() - 1) / 2;
         listPhotoGroup.add(listPhotoSameDate);
         cursor.close();
         for(int i = 0; i < listDate.size(); i++){
@@ -343,7 +424,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 System.out.println(x.getPath());
             }
         }
-        System.out.println("Date length " + listDate.size() + " " + listPhotoGroup.size());
     }
     void open_with_photos(Item item){
         Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(item.getPath()));
@@ -368,29 +448,29 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         intent.putExtra("secure", isSecure);
         startActivityForResult(intent, VIEW_REQUEST);
     }
-@Override
-public void onClick(Item item) {
-    if(item.getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
-    {
-        if(config.isDefault==1){
-            openwithThis(item);
+    @Override
+    public void onClick(Item item) {
+        if(item.getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+        {
+            if(config.isDefault==1){
+                openwithThis(item);
+            }
+            else {
+                open_with_photos(item);
+            }
         }
-        else {
-            open_with_photos(item);
+        else if(item.getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+        {
+            if(config.isDefault==1){
+                openwithThis(item);
+            }
+            else {
+                open_with_photos(item);
+            }
         }
     }
-    else if(item.getType() == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
-    {
-        if(config.isDefault==1){
-            openwithThis(item);
-        }
-        else {
-            open_with_photos(item);
-        }
-    }
-}
     public void back(View v){
-            this.finish();
+        this.finish();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -416,6 +496,113 @@ public void onClick(Item item) {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    //////////////////// Face recognition
+    protected Interpreter tflite;
+    private  int imageSizeX;
+    private  int imageSizeY;
+    boolean isHaveFace;
+    private static final float IMAGE_MEAN = 0.0f;
+    private static final float IMAGE_STD = 1.0f;
+    double distance;
+    public Bitmap oribitmap,testbitmap;
+    public static Bitmap cropped;
+
+    private double calculate_distance(float[][] ori_embedding, float[][] test_embedding) {
+        double sum =0.0;
+        float x = 0;
+        float y = 0;
+        for(int i=0;i<128;i++){
+            x += ori_embedding[0][i];
+            y += test_embedding[0][i];
+            sum=sum+Math.pow((ori_embedding[0][i]-test_embedding[0][i]),2.0);
+        }
+        System.out.println("Float " + x + " - " + y);
+        return Math.sqrt(sum);
+    }
+
+    private TensorImage loadImage(final Bitmap bitmap, TensorImage inputImageBuffer ) {
+        // Loads bitmap into a TensorImage.
+        inputImageBuffer.load(bitmap);
+
+        // Creates processor for the TensorImage.
+        int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
+        // TODO(b/143564309): Fuse ops inside ImageProcessor.
+        ImageProcessor imageProcessor =
+                new ImageProcessor.Builder()
+                        .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
+                        .add(new ResizeOp(imageSizeX, imageSizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+                        .add(getPreprocessNormalizeOp())
+                        .build();
+        return imageProcessor.process(inputImageBuffer);
+    }
+
+    private MappedByteBuffer loadmodelfile(Activity activity) throws IOException {
+        AssetFileDescriptor fileDescriptor=activity.getAssets().openFd("Qfacenet.tflite");
+        FileInputStream inputStream=new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel=inputStream.getChannel();
+        long startoffset = fileDescriptor.getStartOffset();
+        long declaredLength=fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY,startoffset,declaredLength);
+    }
+
+    private TensorOperator getPreprocessNormalizeOp() {
+        return new NormalizeOp(IMAGE_MEAN, IMAGE_STD);
+    }
+
+    public void faceDetector(String path){
+        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(path));
+        ArrayList<Bitmap> listCrop = new ArrayList<>();
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
+            InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
+            FaceDetector faceDetector = com.google.mlkit.vision.face.FaceDetection.getClient();
+            detect = faceDetector.process(inputImage)
+                    .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
+                        @Override
+                        public void onSuccess(List<Face> faces) {
+                            for (Face face : faces) {
+                                Rect bounds = face.getBoundingBox();
+                                cropped = Bitmap.createBitmap(bitmap, bounds.left, bounds.top, bounds.width(), bounds.height());
+                                float[][] embaddingData = get_embaddings(cropped);
+                                listCrop.add(cropped);
+                                listFaceDetection.add(new FaceDetection(embaddingData, path, cropped));
+                            }
+                        }
+                    })
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public float[][] get_embaddings(Bitmap bitmap){
+        TensorImage inputImageBuffer;
+        float[][] embedding = new float[1][128];
+
+        int imageTensorIndex = 0;
+        int[] imageShape = tflite.getInputTensor(imageTensorIndex).shape(); // {1, height, width, 3}
+        imageSizeY = imageShape[1];
+        imageSizeX = imageShape[2];
+
+        DataType imageDataType = tflite.getInputTensor(imageTensorIndex).dataType();
+
+        inputImageBuffer = new TensorImage(imageDataType);
+
+        inputImageBuffer = loadImage(bitmap,inputImageBuffer);
+
+        tflite.run(inputImageBuffer.getBuffer(),embedding);
+        return embedding;
     }
 
 }

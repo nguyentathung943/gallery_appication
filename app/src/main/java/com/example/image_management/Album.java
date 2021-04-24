@@ -37,6 +37,7 @@ public class Album extends AppCompatActivity implements AlbumAdapter.ClickItemLi
 
         listFile = new ArrayList<>();
         listFile.add("Favourite");
+        listFile.add("Face Recognition");
         String path = Environment.getExternalStorageDirectory().toString()+"/DCIM";
         File directory = new File(path);
         File[] files = directory.listFiles();
