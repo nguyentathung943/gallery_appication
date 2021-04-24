@@ -11,5 +11,8 @@
         <attr name="wrongState" format="color"/>
         <attr name="normalState" format="color"/>
         <attr name="textState" format="color"/>
+
+        <attr name="scrollSelected" format="color"/>
+        <attr name="scrollUnselected" format="color"/>
     </declare-styleable>
 </resources>

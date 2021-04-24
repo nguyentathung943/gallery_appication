@@ -4,7 +4,12 @@ buildscript {
         google()
         jcenter()
         gradlePluginPortal()
-        maven { url 'https://artifactory.img.ly/artifactory/imgly' }
+        maven {
+            url 'https://artifactory.img.ly/artifactory/imgly'
+        }
+        maven {
+            url 'https://jitpack.io'
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:3.3.2"

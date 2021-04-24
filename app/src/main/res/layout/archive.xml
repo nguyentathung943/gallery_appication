@@ -40,7 +40,14 @@
                     android:layout_gravity="center"
                     android:src="@drawable/eye_icon"
                     android:onClick="ChangeDisplay"/>
-
+                <ImageView
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/slide_show_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/slide_show"
+                    android:onClick="SlideShowOngo"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"

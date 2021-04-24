@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundcolor">
+
+    <com.smarteist.autoimageslider.SliderView
+        android:id="@+id/slide_show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:sliderScrollTimeInSec="2"
+        app:sliderAutoCycleDirection="back_and_forth"
+        app:sliderIndicatorPadding="4dp"
+        app:sliderIndicatorRadius="1.5dp"
+        app:sliderIndicatorSelectedColor="?attr/scrollSelected"
+        app:sliderIndicatorUnselectedColor="?attr/scrollUnselected"
+        app:sliderAnimationDuration="1000"
+        app:sliderIndicatorOrientation="horizontal"
+        app:sliderIndicatorGravity="center_horizontal|bottom">
+    </com.smarteist.autoimageslider.SliderView>
+</RelativeLayout>

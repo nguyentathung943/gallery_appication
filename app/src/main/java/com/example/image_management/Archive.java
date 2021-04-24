@@ -8,6 +8,7 @@ import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.gson.Gson;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetector;
@@ -70,6 +72,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     ArrayList<Item> listItem;
     ArrayList<ArrayList<Item>> listPhotoGroup;
     ArrayList<String> listDate;
+    ArrayList<String> slideShowItems;
     DisplayAdapter displayAdapter;
     Configuration config;
     Boolean isSecure;
@@ -179,6 +182,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
     }
     public void init() {
+        slideShowItems = new ArrayList<>();
         listItem = new ArrayList<>();
         displayAdapter = new DisplayAdapter(this);
         listPhotoGroup = new ArrayList<>();
@@ -213,6 +217,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             while((favouritePath = reader.readLine()) != null){
                 if(isImageFile(favouritePath)){
                     listItem.add(new Item(favouritePath,"",1));// IMAGE
+                    slideShowItems.add(favouritePath);
                 }
                 else{
                     long duration = 0;
@@ -255,6 +260,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             System.out.println(media.getAbsolutePath());
             if(isImageFile(media.getAbsolutePath())){
                 listItem.add(new Item(media.getAbsolutePath(),"",1));// IMAGE
+                slideShowItems.add(media.getAbsolutePath());
             }
             else{
                 long duration = 0;
@@ -386,6 +392,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
 ////            Date date = new Date(cursor.getLong(columnDate));
 ////            System.out.println("Date " + date. + " " + date.getDate() + " " + date.getMonth() + " " + date.getYear());
 //            System.out.println("Date " + date.MONTH + " " + date.YEAR);
+
             Long durationData = cursor.getLong(columnDuration);
             Instant instant = Instant.ofEpochMilli(durationData);
             ZonedDateTime zdt = ZonedDateTime.ofInstant ( instant , ZoneOffset.UTC );
@@ -403,6 +410,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             }
 
             int typeData = cursor.getInt(columnMediaType);
+            if(typeData ==1 ){
+                slideShowItems.add(absolutePathOfImage);
+            }
             Date d = new Date(new File(absolutePathOfImage).lastModified());
             Calendar c = Calendar.getInstance();
             c.setTime(d);
@@ -500,6 +510,13 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         else if(requestCode==VIEW_REQUEST){
             recreate();
         }
+    }
+    public void SlideShowOngo(View v){
+        Intent slideShow = new Intent(this, SlideShow.class);
+        Gson gson = new Gson();
+        String listSlide = gson.toJson(slideShowItems);
+        slideShow.putExtra("listSlide",listSlide);
+        startActivity(slideShow);
     }
     public void ChangeDisplay(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(Archive.this);

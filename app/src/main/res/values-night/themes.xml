@@ -24,5 +24,8 @@
         <item name="wrongState">#ea2b46</item>
         <item name="normalState">#ffffff</item>
         <item name="textState" >#222222</item>
+
+        <item name="scrollSelected">#FFFFFF</item>
+        <item name="scrollUnselected">#636363</item>
     </style>
 </resources>
