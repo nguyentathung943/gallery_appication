@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path name="my_images" path="DCIM/Camera"/>
+    <files-path name="my_images" path="."/>
     <external-path
         name="external"
         path="." />
