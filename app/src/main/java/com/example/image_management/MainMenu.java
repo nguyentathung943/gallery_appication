@@ -135,19 +135,19 @@ public class MainMenu extends AppCompatActivity {
                 builder.setMessage(R.string.list_type);
                 builder.setPositiveButton(R.string.ok, (dialog, which) ->
                         ActivityCompat.requestPermissions(MainMenu.this,
-                        new String[]{
-                                Manifest.permission.CAMERA,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.ACCESS_COARSE_LOCATION,
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                                Manifest.permission.INTERNET
-                        },
-                        CAMERA_PERM_CODE));
+                                new String[]{
+                                        Manifest.permission.CAMERA,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                                        Manifest.permission.INTERNET
+                                },
+                                CAMERA_PERM_CODE));
                 builder.setNegativeButton(R.string.no,(dialog, which) ->
                         askPermission()
-                 );
+                );
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
@@ -173,7 +173,6 @@ public class MainMenu extends AppCompatActivity {
                 Toast.makeText(this, "Permissions are granted",Toast.LENGTH_SHORT).show();
             }
             else{
-                Toast.makeText(this, "Permissions are required!",Toast.LENGTH_SHORT).show();
                 askPermission();
             }
         }

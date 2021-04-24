@@ -31,12 +31,15 @@
             android:gravity="center"
             android:id="@+id/slide_show_title"/>
     </LinearLayout>
-    <ImageView
-        android:id="@+id/slide_show_item"
-        android:layout_below="@id/start"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true">
-    </ImageView>
+        android:layout_below="@id/start"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
+        <ImageView
+            android:id="@+id/slide_show_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 </RelativeLayout>

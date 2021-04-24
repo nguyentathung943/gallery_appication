@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -419,11 +420,16 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
     }
     public void SlideShowOngo(View v){
-        Intent slideShow = new Intent(this, SlideShow.class);
-        Gson gson = new Gson();
-        String listSlide = gson.toJson(slideShowItems);
-        slideShow.putExtra("listSlide",listSlide);
-        startActivity(slideShow);
+        if(slideShowItems.size()==0){
+            Toast.makeText(this,getString(R.string.list_empty),Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Intent slideShow = new Intent(this, SlideShow.class);
+            Gson gson = new Gson();
+            String listSlide = gson.toJson(slideShowItems);
+            slideShow.putExtra("listSlide",listSlide);
+            startActivity(slideShow);
+        }
     }
     public void ChangeDisplay(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(Archive.this);

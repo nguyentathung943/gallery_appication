@@ -13,7 +13,7 @@
     <string name="validate_pin1">XÁC THỰC LÀ BẠN</string>
     <string name="change_pin2">4 chữ số</string>
     <string name="validate_pin2">Điền mã PIN cũ của bạn</string>
-    <string name="image">Ảnh</string>
+    <string name="image">Chụp ảnh</string>
     <string name="edit">Sửa</string>
     <string name="your_gallery">Kho ảnh của bạn</string>
     <string name="number_item">100 ảnh</string>
@@ -64,4 +64,5 @@
     <string name="all_favor">Các tập tin được yêu thích</string>
     <string name="all_secure">Các tập tin an toàn</string>
     <string name="list_face">Danh sách ảnh mặt giống nhau</string>
+    <string name="list_empty">Không có ảnh để trình chiếu!</string>
 </resources>

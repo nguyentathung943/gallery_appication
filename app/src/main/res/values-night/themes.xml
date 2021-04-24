@@ -25,7 +25,9 @@
         <item name="normalState">#ffffff</item>
         <item name="textState" >#222222</item>
 
-        <item name="scrollSelected">#FFFFFF</item>
-        <item name="scrollUnselected">#636363</item>
+
+
+        <item name="scrollSelected">#080808</item>
+        <item name="scrollUnselected">#FFFFFF</item>
     </style>
 </resources>
