@@ -109,10 +109,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             MediaStore.Files.FileColumns.SIZE
     };
     String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE
-            + " OR "
-            + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-            + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+            + MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,48 +172,58 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             listFacePath.add(absolutePathOfImage);
         }
         cursor.close();
-        for(String i : listFacePath){
-            faceDetector(i);
+        if(listFacePath.size() == 0){
+            TextView faceStatus = (TextView) findViewById(R.id.face_status);
+            faceStatus.setText(getString(R.string.empty));
+            faceStatus.setVisibility(View.VISIBLE);
         }
-        Tasks.whenAll(detect).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                System.out.println("Total face whenall" + listFaceDetection.size());
-                FaceDetection firstImg = listFaceDetection.get(0);
-                if(listFaceDetection.size() > 0){
-                    listGroupFaceDetection.add(new GroupFaceDetection(firstImg.getFace(), firstImg.getEmbadding(), firstImg.getPath()));
-                    for(int i = 1; i < listFaceDetection.size(); i++){
-                        int j = 0;
-                        for(; j < listGroupFaceDetection.size(); j++)
-                        {
-                            double cal = calculate_distance(listFaceDetection.get(i).getEmbadding(), listGroupFaceDetection.get(j).getEmbadding());
-                            System.out.println("cal " + cal);
+        else{
+            for(String i : listFacePath){
+                faceDetector(i);
+            }
+            Tasks.whenAll(detect).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
 
-                            if(cal < 6.0 && !listGroupFaceDetection.get(j).getListImage().get(0).equals(listFaceDetection.get(i).getPath()))
-                            {
-                                System.out.println("add new");
-                                listGroupFaceDetection.get(j).AddListImage(listFaceDetection.get(i).getPath());
-                                break;
+                    System.out.println("Total face whenall" + listFaceDetection.size());
+                    if(listFaceDetection.size() == 0){
+                        TextView faceStatus = (TextView) findViewById(R.id.face_status);
+                        faceStatus.setText(getString(R.string.empty));
+                        faceStatus.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        FaceDetection firstImg = listFaceDetection.get(0);
+                        if(listFaceDetection.size() > 0){
+                            listGroupFaceDetection.add(new GroupFaceDetection(firstImg.getFace(), firstImg.getEmbadding(), firstImg.getPath()));
+                            for(int i = 1; i < listFaceDetection.size(); i++){
+                                int j = 0;
+                                for(; j < listGroupFaceDetection.size(); j++)
+                                {
+                                    double cal = calculate_distance(listFaceDetection.get(i).getEmbadding(), listGroupFaceDetection.get(j).getEmbadding());
+                                    System.out.println("cal " + cal);
+
+                                    if(cal < 6.0 && !listGroupFaceDetection.get(j).getListImage().get(0).equals(listFaceDetection.get(i).getPath()))
+                                    {
+                                        System.out.println("add new");
+                                        listGroupFaceDetection.get(j).AddListImage(listFaceDetection.get(i).getPath());
+                                        break;
+                                    }
+                                }
+                                if(j == listGroupFaceDetection.size())
+                                {
+                                    System.out.println("create new");
+                                    listGroupFaceDetection.add(new GroupFaceDetection(listFaceDetection.get(i).getFace(), listFaceDetection.get(i).getEmbadding(), listFaceDetection.get(i).getPath()));
+
+                                }
                             }
                         }
-                        if(j == listGroupFaceDetection.size())
-                        {
-                            System.out.println("create new");
-                            listGroupFaceDetection.add(new GroupFaceDetection(listFaceDetection.get(i).getFace(), listFaceDetection.get(i).getEmbadding(), listFaceDetection.get(i).getPath()));
-
-                        }
+                        renderUI();
                     }
+
                 }
-                System.out.println("SizeGroup " + listGroupFaceDetection.size());
-                for(GroupFaceDetection i : listGroupFaceDetection){
-                    System.out.println("----");
-//                    for(String path : i.getListImage())
-                    System.out.println("GroupFaceDetection " + i.getListImage().size());
-                }
-                System.out.println("RenderUI");
-                renderUI();
-            }
-        });
+            });
+        }
+
     }
 
 
@@ -256,9 +263,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
-    //////////////////// Face recognition
-
 
     private double calculate_distance(float[][] ori_embedding, float[][] test_embedding) {
         double sum =0.0;
