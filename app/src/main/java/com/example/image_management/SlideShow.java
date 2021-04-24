@@ -39,7 +39,6 @@ public class SlideShow extends AppCompatActivity {
         for(String path : list){
             items.add(new SlideShowItem(Drawable.createFromPath(path), new File(path).getName()));
         }
-
         System.out.println("Slideshow size:"  + list.size());
         sliderView = findViewById(R.id.slide_show);
         back = findViewById(R.id.btn_back_slide_show);
