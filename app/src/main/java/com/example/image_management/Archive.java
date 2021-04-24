@@ -52,6 +52,10 @@ import java.net.URLConnection;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -122,7 +126,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            listDate.add(getString(R.string.empty));
+            if(listItem.isEmpty()){
+                listDate.add(getString(R.string.empty));
+            }
+            else{
+                listDate.add(getString(R.string.all_secure));
+            }
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -133,7 +142,12 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             listPhotoGroup.add(listItem);
-            listDate.add(getString(R.string.all_time));
+            if(listItem.isEmpty()){
+                listDate.add(getString(R.string.empty));
+            }
+            else{
+                listDate.add(getString(R.string.all_favor));
+            }
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -151,8 +165,11 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
         else
         {
-
-            getAllImages();
+            try {
+                getAllImages();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
@@ -332,8 +349,11 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             }
         });
     }
-
-    public void getAllImages() {
+    public String getDate(long val){
+        val*=1000L;
+        return new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new java.util.Date(val));
+    }
+    public void getAllImages() throws IOException {
         Uri queryUri = MediaStore.Files.getContentUri("external");
         System.out.println(queryUri.getPath());
         CursorLoader cursorLoader = new CursorLoader(
@@ -383,8 +403,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             }
 
             int typeData = cursor.getInt(columnMediaType);
-            long timestampLong = cursor.getLong(columnDate);
-            Date d = new Date(timestampLong);
+            Date d = new Date(new File(absolutePathOfImage).lastModified());
             Calendar c = Calendar.getInstance();
             c.setTime(d);
             int year = c.get(Calendar.YEAR);

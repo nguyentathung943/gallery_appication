@@ -61,4 +61,6 @@
     <string name="copy_video_message">Choose an album that keeps the copy</string>
     <string name="copy_video_mess_on">A copy has been moved to the album</string>
     <string name="copy_video_mess_off">Video has already existed in that album</string>
+    <string name="all_favor">All items in your Favorite collection</string>
+    <string name="all_secure">All items in your Secure Folder</string>
 </resources>

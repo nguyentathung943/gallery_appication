@@ -180,21 +180,8 @@ public class MainMenu extends AppCompatActivity {
     }
     void openVideo(){
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createMediaFile(".mp4");
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
-                        photoFile);
-                takeVideoIntent .putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            }
-            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_RECORD );
+        if(takeVideoIntent.resolveActivity(getPackageManager())!=null){
+            startActivityForResult(takeVideoIntent,REQUEST_VIDEO_RECORD);
         }
     }
     public void openCamera() {
@@ -267,15 +254,11 @@ public class MainMenu extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             galleryAddFile();
             Toast.makeText(this,R.string.img_save,Toast.LENGTH_SHORT).show();
-            
-//            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-//            System.out.println(locationManager);
         }
         else if(requestCode == SETTING_CONSTANT){
             recreate();
         }
         else if  (requestCode == REQUEST_VIDEO_RECORD  && resultCode == RESULT_OK){
-            galleryAddFile();
             Toast.makeText(this,R.string.video_save,Toast.LENGTH_SHORT).show();
         }
     }

@@ -8,7 +8,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
 // Configure the PESDKPlugin
 imglyConfig {
-
     pesdk {
         enabled true
         licencePath 'LICENSE'
