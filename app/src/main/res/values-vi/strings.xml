@@ -63,4 +63,5 @@
     <string name="copy_video_mess_off">Bản sao đã tồn tại</string>
     <string name="all_favor">Các tập tin được yêu thích</string>
     <string name="all_secure">Các tập tin an toàn</string>
+    <string name="list_face">Danh sách ảnh mặt giống nhau</string>
 </resources>

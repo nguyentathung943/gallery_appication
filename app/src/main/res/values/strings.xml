@@ -63,4 +63,5 @@
     <string name="copy_video_mess_off">Video has already existed in that album</string>
     <string name="all_favor">All items in your Favorite collection</string>
     <string name="all_secure">All items in your Secure Folder</string>
+    <string name="list_face">List same face images</string>
 </resources>

@@ -124,6 +124,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             headerTitle.setText(album);
         config = new Configuration(getApplicationContext());
         config.getConfig();
+        System.out.println("exact face first");
         if(isSecure){
             getSecureFolder();
             recyclerView = findViewById(R.id.group_photo_recyclerView);
@@ -157,10 +158,48 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recyclerView.setAdapter(groupPhotoAdapter);
         }
         else if(album.equals("Face Recognition")){
-            System.out.println("Face face");
-            getFaceRecognition();
+            ArrayList<String> listFace = (ArrayList<String>) getIntent().getSerializableExtra("face_path");
+            for(String facePath: listFace)
+            {
+                if(isImageFile(facePath)){
+                    listItem.add(new Item(facePath,"",1));// IMAGE
+                    slideShowItems.add(facePath);
+                }
+                else{
+                    long duration = 0;
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    retriever.setDataSource(getApplicationContext(), Uri.fromFile(new File(facePath)));
+                    if(retriever != null){
+                        String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                        duration = Long.parseLong(time);
+                        retriever.release();
+                    }
+                    Instant instant = Instant.ofEpochMilli(duration);
+                    DateTimeFormatter formatter;
+                    String durationTime = "";
+                    ZonedDateTime zdt = ZonedDateTime.ofInstant ( instant , ZoneOffset.UTC );
+                    if(duration >= 3600000)
+                    {
+                        formatter = DateTimeFormatter.ofPattern ( "HH:mm:ss" );
+                        durationTime = formatter.format(zdt);
+                    }
+                    else if(duration > 0)
+                    {
+                        formatter = DateTimeFormatter.ofPattern("mm:ss");
+                        durationTime = formatter.format(zdt);
+                    }
+                    listItem.add(new Item(facePath,durationTime,3));// VIDEO
+                }
+            }
             recyclerView = findViewById(R.id.group_photo_recyclerView);
             recyclerView.setHasFixedSize(true);
+            listPhotoGroup.add(listItem);
+            if(listFace.isEmpty()){
+                listDate.add(getString(R.string.empty));
+            }
+            else{
+                listDate.add(getString(R.string.list_face));
+            }
             groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(mLayoutManager);

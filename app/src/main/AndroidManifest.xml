@@ -43,6 +43,9 @@
             android:name=".FaceRecognition"
             android:exported="true" />
         <activity
+            android:name=".GroupFaceAlbum"
+            android:exported="true" />
+        <activity
             android:name=".Image"
             android:exported="true" />
         <activity
