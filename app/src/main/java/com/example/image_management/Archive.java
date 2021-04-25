@@ -82,35 +82,9 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         config.getConfig();
         if(isSecure){
             getSecureFolder();
-            recyclerView = findViewById(R.id.group_photo_recyclerView);
-            recyclerView.setHasFixedSize(true);
-            listPhotoGroup.add(listItem);
-            if(listItem.isEmpty()){
-                listDate.add(getString(R.string.empty));
-            }
-            else{
-                listDate.add(getString(R.string.all_secure));
-            }
-            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(groupPhotoAdapter);
         }
         else if(album.equals("Favourite")){
             getFavouritePhoto();
-            recyclerView = findViewById(R.id.group_photo_recyclerView);
-            recyclerView.setHasFixedSize(true);
-            listPhotoGroup.add(listItem);
-            if(listItem.isEmpty()){
-                listDate.add(getString(R.string.empty));
-            }
-            else{
-                listDate.add(getString(R.string.all_favor));
-            }
-            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(groupPhotoAdapter);
         }
         else if(album.equals("Face Recognition")){
             getFaceRecognition();
@@ -122,12 +96,6 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            recyclerView = findViewById(R.id.group_photo_recyclerView);
-            recyclerView.setHasFixedSize(true);
-            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(groupPhotoAdapter);
         }
     }
     public void init() {
@@ -236,6 +204,19 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         } catch (IOException e) {
             e.printStackTrace();
         }
+        recyclerView = findViewById(R.id.group_photo_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        listPhotoGroup.add(listItem);
+        if(listItem.isEmpty()){
+            listDate.add(getString(R.string.empty));
+        }
+        else{
+            listDate.add(getString(R.string.all_favor));
+        }
+        groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(groupPhotoAdapter);
     }
 
     public void getSecureFolder(){
@@ -276,6 +257,19 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 listItem.add(new Item(media.getAbsolutePath(),durationTime,3));// VIDEO
             }
         }
+        recyclerView = findViewById(R.id.group_photo_recyclerView);
+        recyclerView.setHasFixedSize(true);
+        listPhotoGroup.add(listItem);
+        if(listItem.isEmpty()){
+            listDate.add(getString(R.string.empty));
+        }
+        else{
+            listDate.add(getString(R.string.all_secure));
+        }
+        groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(groupPhotoAdapter);
     }
 
     public String getDate(long val){
@@ -359,8 +353,27 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 }
             }
         }
-        listPhotoGroup.add(listPhotoSameDate);
         cursor.close();
+        if(listPhotoSameDate.size() == 0){
+            recyclerView = findViewById(R.id.group_photo_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            listPhotoGroup.add(listItem);
+            listDate.add(getString(R.string.empty));
+            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(groupPhotoAdapter);
+        }
+        else{
+            listPhotoGroup.add(listPhotoSameDate);
+            recyclerView = findViewById(R.id.group_photo_recyclerView);
+            recyclerView.setHasFixedSize(true);
+            groupPhotoAdapter = new GroupPhotoAdapter(this, listPhotoGroup, listDate);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(groupPhotoAdapter);
+        }
+
     }
     void open_with_photos(Item item){
         Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", new File(item.getPath()));

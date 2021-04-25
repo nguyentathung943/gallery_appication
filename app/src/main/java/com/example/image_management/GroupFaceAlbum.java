@@ -314,16 +314,23 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
             InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
             FaceDetector faceDetector = com.google.mlkit.vision.face.FaceDetection.getClient();
+            System.out.println("Bitmapwidth " + bitmap.getWidth());
             detect = faceDetector.process(inputImage)
                     .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
                         @Override
                         public void onSuccess(List<Face> faces) {
                             for (Face face : faces) {
                                 Rect bounds = face.getBoundingBox();
-                                cropped = Bitmap.createBitmap(bitmap, bounds.left, bounds.top, bounds.width(), bounds.height());
-                                float[][] embaddingData = get_embaddings(cropped);
-                                listCrop.add(cropped);
-                                listFaceDetection.add(new FaceDetection(embaddingData, path, cropped));
+                                System.out.println("Pathface " + path);
+                                System.out.println("Bound " + bounds.left + " " + bounds.top + " " + bounds.width() + " " + bounds.height());
+                                try {
+                                    cropped = Bitmap.createBitmap(bitmap, bounds.left, bounds.top, bounds.width(), bounds.height());
+                                    float[][] embaddingData = get_embaddings(cropped);
+                                    listCrop.add(cropped);
+                                    listFaceDetection.add(new FaceDetection(embaddingData, path, cropped));
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     })
