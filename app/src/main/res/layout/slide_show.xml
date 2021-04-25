@@ -19,6 +19,8 @@
         app:sliderIndicatorUnselectedColor="?attr/scrollUnselected"
         app:sliderAnimationDuration="1000"
         app:sliderIndicatorOrientation="horizontal"
-        app:sliderIndicatorGravity="center_horizontal|bottom">
+        app:sliderIndicatorGravity="center_horizontal|bottom"
+        >
+
     </com.smarteist.autoimageslider.SliderView>
 </RelativeLayout>

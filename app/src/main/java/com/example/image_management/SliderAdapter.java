@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.google.android.material.transition.Hold;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
@@ -27,6 +29,7 @@ class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
     public void onBindViewHolder(SliderAdapter.Holder viewHolder, int position) {
         viewHolder.image.setImageDrawable(list.get(position).draw);
         viewHolder.title.setText(list.get(position).name);
+        viewHolder.order.setText(list.get(position).order);
     }
     @Override
     public int getCount() {
@@ -35,8 +38,10 @@ class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
     public class Holder extends SliderViewAdapter.ViewHolder{
         ImageView image;
         TextView title;
+        TextView order;
         public Holder(View itemView) {
             super(itemView);
+            order = itemView.findViewById(R.id.number_slide);
             image = itemView.findViewById(R.id.slide_show_item);
             title = itemView.findViewById(R.id.slide_show_title);
         }
