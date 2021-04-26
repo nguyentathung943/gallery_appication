@@ -72,4 +72,7 @@
     <string name="copy_image_mess_off">Image has already existed in that album</string>
     <string name="secure_in">Media file has been moved to secure folder</string>
     <string name="secure_out">Media file has been removed from secure folder</string>
+    <string name="favourite">Favourite</string>
+    <string name="face_recognition">Group Faces</string>
+    <string name="list_faces">List Faces</string>
 </resources>

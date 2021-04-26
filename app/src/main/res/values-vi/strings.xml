@@ -73,4 +73,7 @@
 
     <string name="secure_in">Đã di chuyển file vào thư mục an toàn</string>
     <string name="secure_out">Đã xoá file khỏi thư mục an toàn</string>
+    <string name="favourite">Yêu thích</string>
+    <string name="face_recognition">Ảnh theo mặt</string>
+    <string name="list_faces">Danh sách khuôn mặt</string>
 </resources>
