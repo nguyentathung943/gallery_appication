@@ -285,13 +285,11 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 projection,
                 selection,
                 null,
-                MediaStore.Files.FileColumns.DATE_TAKEN + " DESC"
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
         );
         Cursor cursor = cursorLoader.loadInBackground();
         int columnMediaType = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE);
         int columnDuration = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DURATION);
-        int columnSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE);
-        int columnDate = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_TAKEN);
         int curDate = -1, curMonth = -1, curYear = -1;
         ArrayList<Item> listPhotoSameDate = new ArrayList<>();
         while (cursor.moveToNext()) {
