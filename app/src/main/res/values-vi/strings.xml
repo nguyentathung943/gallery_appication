@@ -65,4 +65,7 @@
     <string name="all_secure">Các tập tin an toàn</string>
     <string name="list_face">Danh sách ảnh mặt giống nhau</string>
     <string name="list_empty">Không có ảnh để trình chiếu!</string>
+    <string name="favourite">Yêu thích</string>
+    <string name="face_recognition">Ảnh theo mặt</string>
+    <string name="list_faces">Danh sách khuôn mặt</string>
 </resources>

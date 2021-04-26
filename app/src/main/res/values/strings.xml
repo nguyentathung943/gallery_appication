@@ -65,4 +65,7 @@
     <string name="all_secure">All items in your Secure Folder</string>
     <string name="list_face">List same face images</string>
     <string name="list_empty">No image was found!</string>
+    <string name="favourite">Favourite</string>
+    <string name="face_recognition">Group Faces</string>
+    <string name="list_faces">List Faces</string>
 </resources>

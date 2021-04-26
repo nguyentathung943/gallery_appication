@@ -28,10 +28,10 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="List Faces"
             android:textColor="?attr/textcolor"
             android:textSize="24dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:id="@+id/list_faces"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"

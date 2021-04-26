@@ -83,10 +83,10 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         if(isSecure){
             getSecureFolder();
         }
-        else if(album.equals("Favourite")){
+        else if(album.equals(getString(R.string.favourite))){
             getFavouritePhoto();
         }
-        else if(album.equals("Face Recognition")){
+        else if(album.equals(getString(R.string.face_recognition))){
             getFaceRecognition();
         }
         else

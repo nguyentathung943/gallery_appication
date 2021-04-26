@@ -114,6 +114,8 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_face);
+        headerTitle = (TextView) findViewById(R.id.list_faces);
+        headerTitle.setText(getString(R.string.list_faces));
         init();
         config = new Configuration(getApplicationContext());
         getFaceRecognition();
@@ -371,7 +373,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
     public void onClick(GroupFaceDetection groupFaceDetection) {
         Intent intent = new Intent(this, Archive.class);
         intent.putExtra("secure",false);
-        intent.putExtra("album", "Face Recognition");
+        intent.putExtra("album", getString(R.string.face_recognition));
         intent.putExtra("face_path", groupFaceDetection.getListImage());
         startActivity(intent);
 
