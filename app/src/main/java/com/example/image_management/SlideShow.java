@@ -42,7 +42,7 @@ public class SlideShow extends AppCompatActivity {
         System.out.println("Slideshow size:"  + list.size());
         sliderView = findViewById(R.id.slide_show);
         back = findViewById(R.id.btn_back_slide_show);
-        slideAdapter = new SliderAdapter(items);
+        slideAdapter = new SliderAdapter(getApplicationContext(),items);
 
         sliderView.setSliderAdapter(slideAdapter);
 

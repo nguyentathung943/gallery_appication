@@ -14,12 +14,13 @@
         app:sliderAutoCycleDirection="back_and_forth"
         app:sliderIndicatorPadding="4dp"
         app:sliderIndicatorRadius="1.5dp"
-        app:sliderStartAutoCycle="true"
         app:sliderIndicatorSelectedColor="?attr/scrollSelected"
         app:sliderIndicatorUnselectedColor="?attr/scrollUnselected"
         app:sliderAnimationDuration="1000"
         app:sliderIndicatorOrientation="horizontal"
         app:sliderIndicatorGravity="center_horizontal|bottom"
+        app:sliderAutoCycleEnabled="true"
+        app:sliderStartAutoCycle="true"
         >
 
     </com.smarteist.autoimageslider.SliderView>

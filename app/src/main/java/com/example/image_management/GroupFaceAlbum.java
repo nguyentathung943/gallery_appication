@@ -153,7 +153,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
 
     public void getFaceRecognition() {
         Uri queryUri = MediaStore.Files.getContentUri("external");
-        System.out.println(queryUri.getPath());
         CursorLoader cursorLoader = new CursorLoader(
                 this,
                 queryUri,
@@ -166,7 +165,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
         listFacePath = new ArrayList<>();
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
-            System.out.println("Image Path " + absolutePathOfImage);
             File temp = new File(absolutePathOfImage);
             if(!temp.exists()){
                 continue;
@@ -187,7 +185,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                 @Override
                 public void onSuccess(Void aVoid) {
 
-                    System.out.println("Total face whenall" + listFaceDetection.size());
                     if(listFaceDetection.size() == 0){
                         TextView faceStatus = (TextView) findViewById(R.id.face_status);
                         faceStatus.setText(getString(R.string.empty));
@@ -202,18 +199,15 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                                 for(; j < listGroupFaceDetection.size(); j++)
                                 {
                                     double cal = calculate_distance(listFaceDetection.get(i).getEmbadding(), listGroupFaceDetection.get(j).getEmbadding());
-                                    System.out.println("cal " + cal);
 
                                     if(cal < 6.0 && !listGroupFaceDetection.get(j).getListImage().get(0).equals(listFaceDetection.get(i).getPath()))
                                     {
-                                        System.out.println("add new");
                                         listGroupFaceDetection.get(j).AddListImage(listFaceDetection.get(i).getPath());
                                         break;
                                     }
                                 }
                                 if(j == listGroupFaceDetection.size())
                                 {
-                                    System.out.println("create new");
                                     listGroupFaceDetection.add(new GroupFaceDetection(listFaceDetection.get(i).getFace(), listFaceDetection.get(i).getEmbadding(), listFaceDetection.get(i).getPath()));
 
                                 }
@@ -275,7 +269,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             y += test_embedding[0][i];
             sum=sum+Math.pow((ori_embedding[0][i]-test_embedding[0][i]),2.0);
         }
-        System.out.println("Float " + x + " - " + y);
         return Math.sqrt(sum);
     }
 
@@ -316,15 +309,12 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoURI);
             InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
             FaceDetector faceDetector = com.google.mlkit.vision.face.FaceDetection.getClient();
-            System.out.println("Bitmapwidth " + bitmap.getWidth());
             detect = faceDetector.process(inputImage)
                     .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
                         @Override
                         public void onSuccess(List<Face> faces) {
                             for (Face face : faces) {
                                 Rect bounds = face.getBoundingBox();
-                                System.out.println("Pathface " + path);
-                                System.out.println("Bound " + bounds.left + " " + bounds.top + " " + bounds.width() + " " + bounds.height());
                                 try {
                                     cropped = Bitmap.createBitmap(bitmap, bounds.left, bounds.top, bounds.width(), bounds.height());
                                     float[][] embaddingData = get_embaddings(cropped);

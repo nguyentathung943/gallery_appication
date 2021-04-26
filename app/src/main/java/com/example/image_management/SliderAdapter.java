@@ -1,23 +1,23 @@
 package com.example.image_management;
 
-import android.graphics.drawable.Drawable;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.transition.Hold;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+import java.util.List;
 
 class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
-    ArrayList<SlideShowItem> list;
-    public SliderAdapter(ArrayList<SlideShowItem> list){
+    List<SlideShowItem> list;
+    private Context context;
+    public SliderAdapter(Context context, ArrayList<SlideShowItem> list) {
         this.list = list;
+        this.context = context;
     }
     @Override
     public SliderAdapter.Holder onCreateViewHolder(ViewGroup parent) {
