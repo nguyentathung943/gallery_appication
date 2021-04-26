@@ -346,6 +346,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                     curDate = date;
                     curMonth = month;
                     curYear = year;
+                    System.out.println("Date " + year +"-"+month+"-"+date);
                     listDate.add(date + "/" + month + "/" + year);
                 }
                 else{

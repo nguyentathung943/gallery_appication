@@ -116,7 +116,6 @@ public class Video extends AppCompatActivity {
         ArrayList<String> albumList = new ArrayList<>();
         for(File folder: x.listFiles()){
             if(!folder.getName().startsWith(".")) {
-                System.out.println("HALLO" + folder.getName());
                 albumList.add(folder.getName());
             }
         }
@@ -176,9 +175,11 @@ public class Video extends AppCompatActivity {
                 try {
                     if (isSecure){
                         RemoveFromSecure(path,exten);
+                        Toast.makeText(this, getString(R.string.secure_out),Toast.LENGTH_SHORT).show();
                     }
                     else {
                         MoveFileToSecure(path, exten);
+                        Toast.makeText(this, getString(R.string.secure_in),Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -200,7 +201,7 @@ public class Video extends AppCompatActivity {
         callScanItent(getApplicationContext(),source);
         DeleteFile(this.path);
     }
-    public void copyFile(File source, File destination){
+    void copyFile(File source, File destination){
         try {
             FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
         } catch (IOException e) {

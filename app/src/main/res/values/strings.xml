@@ -65,4 +65,11 @@
     <string name="all_secure">All items in your Secure Folder</string>
     <string name="list_face">List same face images</string>
     <string name="list_empty">No image was found!</string>
+
+    <string name="copy1">Copy image to clipboard!</string>
+    <string name="copy2">Copy image to another album!</string>
+
+    <string name="copy_image_mess_off">Image has already existed in that album</string>
+    <string name="secure_in">Media file has been moved to secure folder</string>
+    <string name="secure_out">Media file has been removed from secure folder</string>
 </resources>

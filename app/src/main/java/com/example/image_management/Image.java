@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,6 +56,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.security.acl.Permission;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TreeMap;
 
@@ -99,6 +101,73 @@ public class Image extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
     }
     public void copyOn(String path){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("COPY IMAGE");
+        builder.setMessage("Copy to where?");
+        builder.setNegativeButton(R.string.cancel,null);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        Button clipboard = new Button(this);
+        Button albumCop = new Button(this);
+        clipboard.setText(R.string.copy1);
+        albumCop.setText(R.string.copy2);
+
+        layout.addView(clipboard);
+        layout.addView(albumCop);
+        builder.setView(layout);
+
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        clipboard.setOnClickListener(view->{
+            alertDialog.dismiss();
+            copyClipboard(path);
+        });
+        albumCop.setOnClickListener(view->{
+            alertDialog.dismiss();
+            showListAlbum();
+        });
+    }
+    public void showListAlbum(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.copy_video_message));
+        String newPath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/";
+        File x = new File(newPath);
+        ArrayList<String> albumList = new ArrayList<>();
+        for(File folder: x.listFiles()){
+            if(!folder.getName().startsWith(".")) {
+                albumList.add(folder.getName());
+            }
+        }
+        builder.setItems(albumList.toArray(new String[0]),new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String cur_name = albumList.get(i);
+                String destination = newPath +"/" +cur_name  +"/"+ getFileName(path)+getExtension(path);
+                File check = new File(destination);
+                if (check.exists()) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.copy_image_mess_off), Toast.LENGTH_SHORT).show();
+                } else {
+                    copyFileImage(new File(path), new File(destination));
+                    callScanItent(getApplicationContext(),destination);
+                    Toast.makeText(getApplicationContext(), getString(R.string.copy_video_mess_on), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        });
+        builder.setNegativeButton(R.string.ok,null);
+        builder.create().show();
+    }
+    void copyFileImage(File source, File destination){
+        try {
+            FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void copyClipboard(String path){
         Uri uri = FileProvider.getUriForFile(
                 this,
                 "com.example.android.fileprovider",
@@ -119,8 +188,6 @@ public class Image extends AppCompatActivity {
         Toast.makeText(this,"Image deleted",Toast.LENGTH_SHORT).show();
         finish();
     }
-
-
     private void DeleteFile(String path){
         File a = new File(path);
         a.delete();
@@ -144,9 +211,11 @@ public class Image extends AppCompatActivity {
                     String exten = getExtension(path);
                     if (isSecure){
                         RemoveFromSecure(path,exten);
+                        Toast.makeText(this, getString(R.string.secure_out),Toast.LENGTH_SHORT).show();
                     }
                     else {
                         MoveFileToSecure(path, exten);
+                        Toast.makeText(this, getString(R.string.secure_in),Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -196,6 +265,12 @@ public class Image extends AppCompatActivity {
         File a = new File(path);
         int dot = a.getName().lastIndexOf(".");
         return a.getName().substring(dot);
+    }
+    private String getFileName(String path){
+        File a = new File(path);
+        int dot = a.getName().lastIndexOf(".");
+        String fileName = a.getName().substring(0,dot);
+        return fileName;
     }
     public void ImageInfo(String path){
         File a = new File(path);
@@ -251,6 +326,7 @@ public class Image extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         walllpp.setOnClickListener(view ->{
+            alertDialog.dismiss();
             Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.setDataAndType(Uri.parse(path),"image/*");
@@ -273,9 +349,12 @@ public class Image extends AppCompatActivity {
             unlock.setImageDrawable(getResources().getDrawable(R.drawable.unlock, getApplicationContext().getTheme()));
         }
         System.out.println(path);
-        Bitmap myBitmap = BitmapFactory.decodeFile(path);
+        String imagePath = new File(path).getAbsolutePath();             // photoFile is a File class.
+        Bitmap myBitmap  = BitmapFactory.decodeFile(path);
+
+        Bitmap orientedBitmap = ExifUtil.rotateBitmap(imagePath, myBitmap);
         myImage = findViewById(R.id.img_show);
-        myImage.setImageBitmap(myBitmap);
+        myImage.setImageBitmap(orientedBitmap);
         info.setOnClickListener(view->{
             ImageInfo(path);
         });

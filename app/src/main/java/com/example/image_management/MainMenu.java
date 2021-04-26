@@ -221,11 +221,11 @@ public class MainMenu extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         Camera.setOnClickListener(view ->{
-            alertDialog.hide();
+            alertDialog.dismiss();
             openCamera();
         });
         Video.setOnClickListener(view ->{
-            alertDialog.hide();
+            alertDialog.dismiss();
             openVideo();
         });
     }

@@ -60,9 +60,17 @@
     <string name="copy_video_title">Tạo bản sao</string>
     <string name="copy_video_message">Chọn album chứa bản sao</string>
     <string name="copy_video_mess_on">Bản sao khởi tạo thành công</string>
-    <string name="copy_video_mess_off">Bản sao đã tồn tại</string>
+    <string name="copy_video_mess_off">Video đã tồn tạo trong album bạn chọn</string>
     <string name="all_favor">Các tập tin được yêu thích</string>
     <string name="all_secure">Các tập tin an toàn</string>
     <string name="list_face">Danh sách ảnh mặt giống nhau</string>
     <string name="list_empty">Không có ảnh để trình chiếu!</string>
+
+
+    <string name="copy1">Copy vào clipboard!</string>
+    <string name="copy2">Copy image sang album khác!</string>
+    <string name="copy_image_mess_off">Ảnh đã tồn tại trong album bạn chọn</string>
+
+    <string name="secure_in">Đã di chuyển file vào thư mục an toàn</string>
+    <string name="secure_out">Đã xoá file khỏi thư mục an toàn</string>
 </resources>
