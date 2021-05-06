@@ -31,6 +31,7 @@
     <string name="size">Size</string>
     <string name="set_wallpaper">Set image as wallpaper</string>
     <string name="copy">Copy to clipboard</string>
+
     <string name="remove_secure">Remove from Secure Folder</string>
     <string name="move_secure">Move to Secure Folder</string>
     <string name="camera_option">Camera Option</string>
@@ -75,4 +76,8 @@
     <string name="favourite">Favourite</string>
     <string name="face_recognition">Group Faces</string>
     <string name="list_faces">List Faces</string>
+
+    <string name="copyTitle">Copy Image</string>
+    <string name="copyMessage">Copy to where?</string>
+    <string name="resolution">Resolution</string>
 </resources>

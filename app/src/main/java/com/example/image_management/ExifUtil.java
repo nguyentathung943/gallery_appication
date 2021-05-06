@@ -1,15 +1,49 @@
 package com.example.image_management;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 
+import androidx.core.content.FileProvider;
+
 public class ExifUtil {
+    public static int[] getVideoHW(String path){
+        MediaMetadataRetriever mRetriever = new MediaMetadataRetriever();
+        mRetriever.setDataSource(path);
+        Bitmap frame = mRetriever.getFrameAtTime();
+        int[] temp = new int[2];
+        int width = frame.getWidth();
+        int height = frame.getHeight();
+        temp[0] = width;
+        temp[1] = height;
+        return temp;
+    }
+    public static int[] getHW(Context context, String path) throws FileNotFoundException {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Uri photoURI = FileProvider.getUriForFile(context, "com.example.android.fileprovider", new File(path));
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(
+                context.getContentResolver().openInputStream(photoURI),
+                null,
+                options);
+        int[] temp = new int[2];
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+        temp[0] = imageHeight;
+        temp[1] = imageWidth;
+        return temp;
+    }
     public static Bitmap rotateBitmap(String src, Bitmap bitmap) {
         try {
             int orientation = getExifOrientation(src);

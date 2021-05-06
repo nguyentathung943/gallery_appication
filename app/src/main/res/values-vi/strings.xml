@@ -76,4 +76,8 @@
     <string name="favourite">Yêu thích</string>
     <string name="face_recognition">Ảnh theo mặt</string>
     <string name="list_faces">Danh sách khuôn mặt</string>
+
+    <string name="copyTitle">Sao chép hình ảnh</string>
+    <string name="copyMessage">Sao chép ảnh sang album?</string>
+    <string name="resolution">Độ phân giải</string>
 </resources>

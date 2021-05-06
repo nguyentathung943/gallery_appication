@@ -241,6 +241,8 @@ public class Video extends AppCompatActivity {
         File a = new File(path);
         TextView location = new TextView(this);
         BasicFileAttributes attr = null;
+        int[] hw = new int[2];
+        hw = ExifUtil.getVideoHW(path);
         try {
             attr = Files.readAttributes(a.toPath(), BasicFileAttributes.class);
         } catch (IOException e) {
@@ -268,14 +270,18 @@ public class Video extends AppCompatActivity {
         TextView name = new TextView(this);
         TextView date = new TextView(this);
         TextView size = new TextView(this);
+        TextView reso = new TextView(this);
         name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
         date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
         date.setTextSize(20);
         size.setText(getString(R.string.size) + ": " + attr.size() + " bytes");
         size.setTextSize(20);
+        reso.setText(getString(R.string.resolution) + ": " + hw[0] + " x " + hw[1]);
+        reso.setTextSize(20);
         location.setTextSize(20);
         layout.addView(name);
+        layout.addView(reso);
         layout.addView(date);
         layout.addView(size);
         layout.addView(location);

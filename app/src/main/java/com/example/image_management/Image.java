@@ -102,8 +102,8 @@ public class Image extends AppCompatActivity {
     }
     public void copyOn(String path){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("COPY IMAGE");
-        builder.setMessage("Copy to where?");
+        builder.setTitle(getString(R.string.copyTitle));
+        builder.setMessage(getString(R.string.copyMessage));
         builder.setNegativeButton(R.string.cancel,null);
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -276,7 +276,9 @@ public class Image extends AppCompatActivity {
         File a = new File(path);
         TextView location = new TextView(this);
         BasicFileAttributes attr = null;
+        int[] hw = new int[2];
         try {
+            hw = ExifUtil.getHW(getApplicationContext(),path);
             attr = Files.readAttributes(a.toPath(), BasicFileAttributes.class);
         } catch (IOException e) {
             e.printStackTrace();
@@ -301,6 +303,7 @@ public class Image extends AppCompatActivity {
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         TextView name = new TextView(this);
+        TextView reso = new TextView(this);
         TextView date = new TextView(this);
         TextView size = new TextView(this);
         Button walllpp = new Button(this);
@@ -314,8 +317,11 @@ public class Image extends AppCompatActivity {
         date.setTextSize(20);
         size.setText(getString(R.string.size) + ": " + attr.size() + " bytes");
         size.setTextSize(20);
+        reso.setText(getString(R.string.resolution) + ": " + hw[1] + " x " + hw[0]);
+        reso.setTextSize(20);
         location.setTextSize(20);
         layout.addView(name);
+        layout.addView(reso);
         layout.addView(date);
         layout.addView(size);
         layout.addView(location);
