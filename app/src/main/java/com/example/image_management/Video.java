@@ -60,6 +60,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.acl.Permission;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -264,6 +265,8 @@ public class Video extends AppCompatActivity {
         System.out.println("creationTime: " + attr.creationTime());
         System.out.println("lastAccessTime: " + attr.lastAccessTime());
         System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String dateCreated = df.format(attr.creationTime().toMillis());
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -273,7 +276,7 @@ public class Video extends AppCompatActivity {
         TextView reso = new TextView(this);
         name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
-        date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
+        date.setText(getString(R.string.create_date) + ": " + dateCreated );
         date.setTextSize(20);
         size.setText(getString(R.string.size) + ": " + attr.size() + " bytes");
         size.setTextSize(20);

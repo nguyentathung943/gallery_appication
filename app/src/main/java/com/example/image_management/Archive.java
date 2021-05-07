@@ -384,9 +384,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             intent.setDataAndType(photoURI, "image/*");
         else
             intent.setDataAndType(photoURI, "video/*");
-        startActivity(intent);
+        startActivityForResult(intent, VIEW_REQUEST);
     }
-
     void openwithThis(Item item){
         Intent intent;
         if(item.getType() == 1)
@@ -427,7 +426,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         if(resultCode == RESULT_OK){
             recreate();
         }
-        else if(requestCode==VIEW_REQUEST){
+        else if(requestCode == VIEW_REQUEST){
             recreate();
         }
     }

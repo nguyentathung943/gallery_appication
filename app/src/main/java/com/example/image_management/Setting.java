@@ -139,7 +139,8 @@ public class Setting extends AppCompatActivity{
         Configuration configuration = resources.getConfiguration();
         configuration.setLocale(new Locale(language.toLowerCase()));
         resources.updateConfiguration(configuration, displayMetrics);
-        config.saveConfig(theme, language,DefaultMode);
+        config.getConfig();
+        config.saveConfig(config.isDarkMode, language,config.isDefault);
     }
     public void back(View v){
         this.finish();

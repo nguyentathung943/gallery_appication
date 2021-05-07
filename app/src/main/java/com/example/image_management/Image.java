@@ -9,6 +9,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -42,6 +43,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
+
 import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
@@ -50,10 +53,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.acl.Permission;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,6 +96,7 @@ public class Image extends AppCompatActivity {
     ImageView unlock;
     Boolean isLiked;
     LikeImage likeImage;
+    Uri ImageUri;
     public void shareOn(){
         File file = new File(path);
         Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.example.android.fileprovider", file);
@@ -196,7 +204,7 @@ public class Image extends AppCompatActivity {
     }
     @Override
     public void onBackPressed(){
-        finish();
+        this.finish();
     }
     public void imageViewMenu(View view){
         switch (view.getId()){
@@ -299,6 +307,8 @@ public class Image extends AppCompatActivity {
         System.out.println("creationTime: " + attr.creationTime());
         System.out.println("lastAccessTime: " + attr.lastAccessTime());
         System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String dateCreated = df.format(attr.creationTime().toMillis());
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -313,7 +323,7 @@ public class Image extends AppCompatActivity {
         btnLay.addView(walllpp);
         name.setText(getString(R.string.name) + ": " + a.getName());
         name.setTextSize(20);
-        date.setText(getString(R.string.create_date) + ": " + attr.creationTime());
+        date.setText(getString(R.string.create_date) + ": " + dateCreated);
         date.setTextSize(20);
         size.setText(getString(R.string.size) + ": " + attr.size() + " bytes");
         size.setTextSize(20);
@@ -340,33 +350,47 @@ public class Image extends AppCompatActivity {
             startActivity(Intent.createChooser(intent, "Set as:"));
         });
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.img_view);
         likeIcon = (ImageView) findViewById(R.id.like_image);
         unlock = findViewById(R.id.secure_btn);
-
+        Intent intent = getIntent();
+        String type = intent.getType();
+        String action = intent.getAction();
+        if (Intent.ACTION_VIEW.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                ImageUri = intent.getData();
+                System.out.println("URI CONTENT "+ImageUri);
+                if(ImageUri.getPath().contains("/external")){
+                    path = ImageUri.getPath().replace("/external","/storage/emulated/0");
+                }
+            }
+        }else{
+            path = getIntent().getStringExtra("path");
+            ImageUri = Uri.fromFile(new File(path));
+        }
         info = findViewById(R.id.info);
-        path = getIntent().getStringExtra("path");
         isSecure = getIntent().getBooleanExtra("secure", false);
         if(isSecure){
             unlock.setImageDrawable(getResources().getDrawable(R.drawable.unlock, getApplicationContext().getTheme()));
         }
-        System.out.println(path);
-        String imagePath = new File(path).getAbsolutePath();             // photoFile is a File class.
-        Bitmap myBitmap  = BitmapFactory.decodeFile(path);
-
-        Bitmap orientedBitmap = ExifUtil.rotateBitmap(imagePath, myBitmap);
         myImage = findViewById(R.id.img_show);
-        myImage.setImageBitmap(orientedBitmap);
+        System.out.println("Image path" + path);
+//        String imagePath = new File(path).getAbsolutePath();             // photoFile is a File class.
+//        Bitmap myBitmap  = BitmapFactory.decodeFile(path);
+//        Bitmap orientedBitmap = ExifUtil.rotateBitmap(imagePath, myBitmap);
+//        myImage.setImageBitmap(orientedBitmap);
+        Glide.with(Image.this)
+                .load(ImageUri)
+                .into(myImage);
         info.setOnClickListener(view->{
             ImageInfo(path);
         });
         back = findViewById(R.id.btn_back_img_view);
         back.setOnClickListener(view->{
-            finish();
+            this.finish();
         });
         if(!isSecure){
             likeImage = ((LikeImage)getApplicationContext());

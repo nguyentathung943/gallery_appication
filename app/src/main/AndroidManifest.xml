@@ -47,7 +47,15 @@
             android:exported="true" />
         <activity
             android:name=".Image"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:mimeType="image/*"
+                    android:scheme="content" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Video"
             android:exported="true" />
