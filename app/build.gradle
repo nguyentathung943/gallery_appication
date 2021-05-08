@@ -87,7 +87,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     implementation 'com.burhanrashid52:photoeditor:1.1.1'
     implementation 'com.github.smarteist:autoimageslider:1.4.0-appcompat'
-    implementation 'com.google.mlkit:face-detection:16.0.0'
+    implementation 'com.google.mlkit:face-detection:16.0.7'
     implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
     implementation('org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly') { changing = true }
     implementation('org.tensorflow:tensorflow-lite-support:0.0.0-nightly') { changing = true }

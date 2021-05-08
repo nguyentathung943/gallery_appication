@@ -159,7 +159,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                 projection,
                 selection,
                 null,
-                MediaStore.Files.FileColumns.DATE_TAKEN + " DESC"
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
         );
         Cursor cursor = cursorLoader.loadInBackground();
         listFacePath = new ArrayList<>();
@@ -321,7 +321,9 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                                     listCrop.add(cropped);
                                     listFaceDetection.add(new FaceDetection(embaddingData, path, cropped));
                                 }catch (Exception e){
+                                    System.out.println("Path error: " + path);
                                     e.printStackTrace();
+
                                 }
                             }
                         }
@@ -337,8 +339,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             e.printStackTrace();
         }
     }
-
-
 
     public float[][] get_embaddings(Bitmap bitmap){
         TensorImage inputImageBuffer;
