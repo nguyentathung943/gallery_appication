@@ -95,7 +95,6 @@ public class Image extends AppCompatActivity {
     ImageView likeIcon;
     ImageView unlock;
     Boolean isLiked;
-    LikeImage likeImage;
     Uri ImageUri;
     public void shareOn(){
         File file = new File(path);
@@ -193,14 +192,13 @@ public class Image extends AppCompatActivity {
         File a = new File(path);
         a.delete();
         callScanItent(getApplicationContext(),path);
-        Toast.makeText(this,"Image deleted",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,R.string.delete_image,Toast.LENGTH_SHORT).show();
         finish();
     }
     private void DeleteFile(String path){
-        likeImage = ((LikeImage)getApplicationContext());
-        if(likeImage.checkLiked(path)){
-            likeImage.removeLikeImage(path);
-            likeImage.saveData();
+        if(LikeImage.checkLiked(path)){
+            LikeImage.removeLikeImage(path);
+            LikeImage.saveData();
         }
         File a = new File(path);
         a.delete();
@@ -257,10 +255,9 @@ public class Image extends AppCompatActivity {
         FileUtils.copy(new FileInputStream(source), new FileOutputStream(destination));
     }
     private void MoveFileToSecure(String oldPath,String suffix) throws IOException {
-        likeImage = ((LikeImage)getApplicationContext());
-        if(likeImage.checkLiked(oldPath)){
-            likeImage.removeLikeImage(oldPath);
-            likeImage.saveData();
+        if(LikeImage.checkLiked(oldPath)){
+            LikeImage.removeLikeImage(oldPath);
+            LikeImage.saveData();
         }
         File oldFile = new File(oldPath);
         String newPath = getApplicationInfo().dataDir + "/files/Secure";
@@ -399,8 +396,10 @@ public class Image extends AppCompatActivity {
             this.finish();
         });
         if(!isSecure){
-            likeImage = ((LikeImage)getApplicationContext());
-            if(likeImage.listImage.contains(path))
+            for(String i : LikeImage.listImage){
+                System.out.println("ListImageFavor " + i);
+            }
+            if(LikeImage.listImage.contains(path))
             {
                 likeIcon.setImageResource(R.drawable.liked_icon);
                 isLiked = true;
@@ -415,12 +414,12 @@ public class Image extends AppCompatActivity {
                 if(isLiked)
                 {
                     likeIcon.setImageResource(R.drawable.liked_icon);
-                    likeImage.addLikeImage(path);
+                    LikeImage.addLikeImage(path);
                 }
                 else
                 {
                     likeIcon.setImageResource(R.drawable.non_liked_icon);
-                    likeImage.removeLikeImage(path);
+                    LikeImage.removeLikeImage(path);
                 }
             });
         }

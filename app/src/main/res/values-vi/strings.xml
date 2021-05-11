@@ -50,6 +50,7 @@
     <string name="on">Bật</string>
     <string name="off">Tắt</string>
     <string name="delete_video">Đã xóa video</string>
+    <string name="delete_image">Đã xóa ảnh</string>
     <string name="none">Không</string>
     <string name="all_time">Tất cả thời gian</string>
     <string name="grant_permission">Hãy cấp quyền để tiếp tục sử dụng ứng dụng này!</string>

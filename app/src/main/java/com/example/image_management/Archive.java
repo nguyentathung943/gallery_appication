@@ -18,7 +18,6 @@ import androidx.core.content.FileProvider;
 import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -69,6 +68,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.archive);
         init();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -172,7 +172,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         FileInputStream fis = null;
         String favouritePath;
         try {
-            fis = getApplicationContext().openFileInput(filename);
+            fis = this.openFileInput(filename);
             InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
             BufferedReader reader = new BufferedReader(inputStreamReader);
             while((favouritePath = reader.readLine()) != null){
@@ -449,9 +449,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         else{
             alertDialog.show();
             Intent slideShow = new Intent(this, SlideShow.class);
-            Gson gson = new Gson();
-            String listSlide = gson.toJson(slideShowItems);
-            slideShow.putExtra("listSlide",listSlide);
+            SlideShowData.setList(slideShowItems);
             startActivityForResult(slideShow,444);
         }
     }

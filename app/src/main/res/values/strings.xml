@@ -31,7 +31,6 @@
     <string name="size">Size</string>
     <string name="set_wallpaper">Set image as wallpaper</string>
     <string name="copy">Copy to clipboard</string>
-
     <string name="remove_secure">Remove from Secure Folder</string>
     <string name="move_secure">Move to Secure Folder</string>
     <string name="camera_option">Camera Option</string>
@@ -51,6 +50,7 @@
     <string name="on">On</string>
     <string name="off">Off</string>
     <string name="delete_video">Video deleted</string>
+    <string name="delete_image">Image deleted</string>
     <string name="none">None</string>
     <string name="all_time">All time</string>
     <string name="grant_permission">Please grant those permissions to continue using this app!</string>

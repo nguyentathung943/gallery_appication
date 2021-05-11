@@ -1,6 +1,5 @@
 package com.example.image_management;
 
-import android.app.Application;
 import android.content.Context;
 
 import java.io.BufferedReader;
@@ -13,18 +12,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LikeImage extends Application {
-    Context context;
-    List<String> listImage;
-    public boolean checkLiked(String path){
-        if (this.listImage.isEmpty()){
+
+public class LikeImage{
+    public static List<String> listImage = new ArrayList<>();
+    static Context context;
+    public static boolean checkLiked(String path){
+        if (listImage.isEmpty()){
             return false;
         }
         return listImage.contains(path);
     }
-    public void init(Context context){
+    public static void init(Context contextData){
         listImage = new ArrayList<>();
-        this.context = context;
+        context = contextData;
         String filename = "like.txt";
         FileInputStream fis = null;
         try {
@@ -40,7 +40,7 @@ public class LikeImage extends Application {
             e.printStackTrace();
         }
     }
-    public void saveData(){
+    public static void saveData(){
         try {
             FileOutputStream fout = context.openFileOutput("like.txt", Context.MODE_PRIVATE);
             for(String cur : listImage){
@@ -53,18 +53,13 @@ public class LikeImage extends Application {
             e.printStackTrace();
         }
     }
-    public void addLikeImage(String imagePath){
+    public static void addLikeImage(String imagePath){
         listImage.add(imagePath);
-        for(String i : listImage)
-            System.out.println("LIKE " + i);
         saveData();
     }
-    public void removeLikeImage(String imagePath){
+    public static void removeLikeImage(String imagePath){
         int index = listImage.indexOf(imagePath);
         listImage.remove(index);
-        System.out.println("INDEX " + index);
-        for(String i : listImage)
-            System.out.println("LIKE " + i);
         saveData();
     }
 }

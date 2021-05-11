@@ -60,7 +60,6 @@ public class MainMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        startActivity(new Intent(MainMenu.this, FaceRecognition.class));
         config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();
         if (!checkConfig){
@@ -74,8 +73,8 @@ public class MainMenu extends AppCompatActivity {
             ChangeLanguage(config.language);
         }
         setContentView(R.layout.main_menu);
-        likeImage = ((LikeImage)getApplicationContext());
-        likeImage.init(getApplicationContext());
+        likeImage.init(this);
+        System.out.println("LikeImage");
         sw = findViewById(R.id.themeSwitch);
             if(config.isDarkMode==1){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

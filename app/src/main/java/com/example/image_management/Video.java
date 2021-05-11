@@ -94,7 +94,6 @@ public class Video extends AppCompatActivity {
     ImageView playBtn, videoImage, likeIcon;
     ImageView unlock;
     MediaPlayer mediaPlayer;
-    LikeImage likeImage;
     Boolean isLiked;
     ImageView back;
     Boolean isSecure;
@@ -160,10 +159,9 @@ public class Video extends AppCompatActivity {
     }
     private void DeleteFile(String path){
         File a = new File(path);
-        likeImage = ((LikeImage)getApplicationContext());
-        if(likeImage.checkLiked(path)){
-            likeImage.removeLikeImage(path);
-            likeImage.saveData();
+        if(LikeImage.checkLiked(path)){
+            LikeImage.removeLikeImage(path);
+            LikeImage.saveData();
         }
         a.delete();
         callScanItent(getApplicationContext(),path);
@@ -223,10 +221,9 @@ public class Video extends AppCompatActivity {
         }
     }
     private void MoveFileToSecure(String oldPath,String suffix) throws IOException {
-        likeImage = ((LikeImage)getApplicationContext());
-        if(likeImage.checkLiked(oldPath)){
-            likeImage.removeLikeImage(oldPath);
-            likeImage.saveData();
+        if(LikeImage.checkLiked(oldPath)){
+            LikeImage.removeLikeImage(oldPath);
+            LikeImage.saveData();
         }
         File oldFile = new File(oldPath);
         String newPath = getApplicationInfo().dataDir + "/files/Secure";
@@ -332,8 +329,7 @@ public class Video extends AppCompatActivity {
             finish();
         });
         if(!isSecure){
-            likeImage = ((LikeImage)getApplicationContext());
-            if(likeImage.listImage.contains(path))
+            if(LikeImage.listImage.contains(path))
             {
                 likeIcon.setImageResource(R.drawable.liked_icon);
                 isLiked = true;
@@ -348,12 +344,12 @@ public class Video extends AppCompatActivity {
                 if(isLiked)
                 {
                     likeIcon.setImageResource(R.drawable.liked_icon);
-                    likeImage.addLikeImage(path);
+                    LikeImage.addLikeImage(path);
                 }
                 else
                 {
                     likeIcon.setImageResource(R.drawable.non_liked_icon);
-                    likeImage.removeLikeImage(path);
+                    LikeImage.removeLikeImage(path);
                 }
             });
         }
