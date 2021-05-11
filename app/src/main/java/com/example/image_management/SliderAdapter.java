@@ -15,7 +15,7 @@ import java.util.List;
 class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
     List<SlideShowItem> list;
     private Context context;
-    public SliderAdapter(Context context, ArrayList<SlideShowItem> list) {
+    public SliderAdapter(Context context, List list) {
         this.list = list;
         this.context = context;
     }
@@ -24,7 +24,6 @@ class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_slide_show,parent,false);
         return new Holder(view);
     }
-
     @Override
     public void onBindViewHolder(SliderAdapter.Holder viewHolder, int position) {
         viewHolder.image.setImageDrawable(list.get(position).draw);
