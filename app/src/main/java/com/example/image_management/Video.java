@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -109,6 +110,13 @@ public class Video extends AppCompatActivity {
         this.grantUriPermission("android",photoURI, Intent.FLAG_GRANT_READ_URI_PERMISSION| Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivityForResult(Intent.createChooser(shareIntent, "Share File"),1011);
     }
+    public String locationInfo(String path){
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(path);
+        String location = mediaMetadataRetriever
+                .extractMetadata(MediaMetadataRetriever.METADATA_KEY_LOCATION);
+        return location;
+    }
     public void showListAlbum(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.copy_video_message));
@@ -152,6 +160,11 @@ public class Video extends AppCompatActivity {
     }
     private void DeleteFile(String path){
         File a = new File(path);
+        likeImage = ((LikeImage)getApplicationContext());
+        if(likeImage.checkLiked(path)){
+            likeImage.removeLikeImage(path);
+            likeImage.saveData();
+        }
         a.delete();
         callScanItent(getApplicationContext(),path);
         finish();
@@ -249,18 +262,13 @@ public class Video extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            ExifInterface exif = new ExifInterface(a);
-            float[] latLong = new float[2];
-            boolean hasLatLong = exif.getLatLong(latLong);
-            if (hasLatLong) {
-                location.setText(getString(R.string.latitude) + ": " + latLong[0] +"\n" + getString(R.string.longitude) + ": "+latLong[1]);
-            }
-            else{
-                location.setText(getString(R.string.location) +": "+ getString(R.string.location_re));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        String locationData = locationInfo(path);
+        System.out.println("Location tag" + locationData);
+        if(locationData=="null"){
+            location.setText(getString(R.string.location) +": "+ locationData);
+        }
+        else {
+            location.setText(getString(R.string.location) +": "+ getString(R.string.location_re));
         }
         System.out.println("creationTime: " + attr.creationTime());
         System.out.println("lastAccessTime: " + attr.lastAccessTime());

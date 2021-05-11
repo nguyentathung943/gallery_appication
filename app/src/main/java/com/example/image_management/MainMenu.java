@@ -75,7 +75,7 @@ public class MainMenu extends AppCompatActivity {
         }
         setContentView(R.layout.main_menu);
         likeImage = ((LikeImage)getApplicationContext());
-        likeImage.init();
+        likeImage.init(getApplicationContext());
         sw = findViewById(R.id.themeSwitch);
             if(config.isDarkMode==1){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);

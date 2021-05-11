@@ -22,9 +22,9 @@ public class LikeImage extends Application {
         }
         return listImage.contains(path);
     }
-    public void init(){
+    public void init(Context context){
         listImage = new ArrayList<>();
-        context = getApplicationContext();
+        this.context = context;
         String filename = "like.txt";
         FileInputStream fis = null;
         try {

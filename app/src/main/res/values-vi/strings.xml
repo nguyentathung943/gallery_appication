@@ -80,4 +80,6 @@
     <string name="copyTitle">Sao chép hình ảnh</string>kk
     <string name="copyMessage">Sao chép ảnh sang?</string>
     <string name="resolution">Độ phân giải</string>
+
+    <string name="alert">Dữ liệu đang được xử lý, vui lòng chờ...</string>
 </resources>

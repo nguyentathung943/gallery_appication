@@ -2,6 +2,8 @@ package com.example.image_management;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.transition.Slide;
@@ -25,11 +27,11 @@ public class SlideShow extends AppCompatActivity {
     SliderView sliderView;
     ImageView back;
     SliderAdapter slideAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_show);
+//        Init Alert Dialog
         Bundle bundle = getIntent().getExtras();
         String jsonString = bundle.getString("listSlide");
         Gson gson = new Gson();
@@ -43,9 +45,7 @@ public class SlideShow extends AppCompatActivity {
         sliderView = findViewById(R.id.slide_show);
         back = findViewById(R.id.btn_back_slide_show);
         slideAdapter = new SliderAdapter(getApplicationContext(),items);
-
         sliderView.setSliderAdapter(slideAdapter);
-
         sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM);
         sliderView.setSliderTransformAnimation(SliderAnimations.DEPTHTRANSFORMATION);
         sliderView.startAutoCycle();

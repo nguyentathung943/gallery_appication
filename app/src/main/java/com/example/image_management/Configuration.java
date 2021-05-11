@@ -23,7 +23,6 @@ public class Configuration {
         return language;
     }
     public int DefaultMode(){return isDefault;}
-
     protected boolean getConfig(){
         String filename = "config.txt";
         FileInputStream fis = null;

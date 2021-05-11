@@ -118,6 +118,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
         headerTitle.setText(getString(R.string.list_faces));
         init();
         config = new Configuration(getApplicationContext());
+        alertDialog.show();
         getFaceRecognition();
     }
 
@@ -131,6 +132,10 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
     }
 
     public void init() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.layout_loading);
+        alertDialog = builder.create();
         slideShowItems = new ArrayList<>();
         listItem = new ArrayList<>();
         displayAdapter = new DisplayAdapter(this);
@@ -159,7 +164,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                 projection,
                 selection,
                 null,
-                MediaStore.Files.FileColumns.DATE_TAKEN + " DESC"
+                MediaStore.Files.FileColumns.DATE_ADDED + " DESC"
         );
         Cursor cursor = cursorLoader.loadInBackground();
         listFacePath = new ArrayList<>();
@@ -215,7 +220,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                         }
                         renderUI();
                     }
-
+                    alertDialog.dismiss();
                 }
             });
         }
@@ -320,9 +325,10 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                                     float[][] embaddingData = get_embaddings(cropped);
                                     listCrop.add(cropped);
                                     listFaceDetection.add(new FaceDetection(embaddingData, path, cropped));
-                                }catch (Exception e){
-                                    
+                                }catch (Exception e){                            
+                                    System.out.println("Path error: " + path);
                                     e.printStackTrace();
+
                                 }
                             }
                         }
@@ -338,8 +344,6 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
             e.printStackTrace();
         }
     }
-
-
 
     public float[][] get_embaddings(Bitmap bitmap){
         TensorImage inputImageBuffer;
@@ -359,7 +363,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
         tflite.run(inputImageBuffer.getBuffer(),embedding);
         return embedding;
     }
-
+    public static AlertDialog alertDialog;
     @Override
     public void onClick(GroupFaceDetection groupFaceDetection) {
         Intent intent = new Intent(this, Archive.class);
