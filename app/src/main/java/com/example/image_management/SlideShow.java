@@ -36,10 +36,15 @@ public class SlideShow extends AppCompatActivity {
         String jsonString = bundle.getString("listSlide");
         Gson gson = new Gson();
         Type listSlide = new TypeToken<List<String>>() {}.getType();
-        ArrayList<String> list = gson.fromJson(jsonString,listSlide);
-        ArrayList<SlideShowItem> items = new ArrayList<>();
+        List<String> list = gson.fromJson(jsonString,listSlide);
+        List<SlideShowItem> items = new ArrayList<>();
         for(int i = 0;i < list.size();i++){
-            items.add(new SlideShowItem(Drawable.createFromPath(list.get(i)), new File(list.get(i)).getName(),String.valueOf(i+1)+"/"+String.valueOf(list.size())));
+            try{
+                items.add(new SlideShowItem(Drawable.createFromPath(list.get(i)), new File(list.get(i)).getName(), (i + 1) +"/"+ list.size()));
+            }
+            catch (Exception e){
+                System.out.println("DRAW ERROR" + e);
+            }
         }
         System.out.println("Slideshow size:"  + list.size());
         sliderView = findViewById(R.id.slide_show);
@@ -53,4 +58,5 @@ public class SlideShow extends AppCompatActivity {
     public void backSlideShow(View view){
         finish();
     }
+
 }
