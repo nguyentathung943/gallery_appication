@@ -160,6 +160,11 @@ public class Video extends AppCompatActivity {
     }
     private void DeleteFile(String path){
         File a = new File(path);
+        likeImage = ((LikeImage)getApplicationContext());
+        if(likeImage.checkLiked(path)){
+            likeImage.removeLikeImage(path);
+            likeImage.saveData();
+        }
         a.delete();
         callScanItent(getApplicationContext(),path);
         finish();

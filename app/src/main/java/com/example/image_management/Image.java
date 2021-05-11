@@ -197,6 +197,11 @@ public class Image extends AppCompatActivity {
         finish();
     }
     private void DeleteFile(String path){
+        likeImage = ((LikeImage)getApplicationContext());
+        if(likeImage.checkLiked(path)){
+            likeImage.removeLikeImage(path);
+            likeImage.saveData();
+        }
         File a = new File(path);
         a.delete();
         callScanItent(getApplicationContext(),path);

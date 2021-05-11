@@ -27,15 +27,10 @@ public class SlideShow extends AppCompatActivity {
     SliderView sliderView;
     ImageView back;
     SliderAdapter slideAdapter;
-
-    ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_show);
-
 //        Init Alert Dialog
         Bundle bundle = getIntent().getExtras();
         String jsonString = bundle.getString("listSlide");
@@ -50,7 +45,6 @@ public class SlideShow extends AppCompatActivity {
         sliderView = findViewById(R.id.slide_show);
         back = findViewById(R.id.btn_back_slide_show);
         slideAdapter = new SliderAdapter(getApplicationContext(),items);
-
         sliderView.setSliderAdapter(slideAdapter);
         sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM);
         sliderView.setSliderTransformAnimation(SliderAnimations.DEPTHTRANSFORMATION);

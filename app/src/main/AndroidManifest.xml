@@ -26,7 +26,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppTheme">
-        <activity android:name=".SlideShow" android:exported="true"></activity>
+        <activity
+            android:name=".SlideShow"
+            android:exported="true" />
         <activity
             android:name=".Security"
             android:exported="true" />
