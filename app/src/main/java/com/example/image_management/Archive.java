@@ -48,6 +48,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     TextView headerTitle;
     int VIEW_REQUEST = 555;
     String album;
+    AlertDialog alertDialog;
     String[] projection = {
             MediaStore.Files.FileColumns._ID,
             MediaStore.Files.FileColumns.DATA,
@@ -70,6 +71,10 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.archive);
         init();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.layout_loading);
+        alertDialog = builder.create();
         isSecure = getIntent().getBooleanExtra("secure",false);
         headerTitle = (TextView) findViewById(R.id.header_title);
         if(isSecure)
@@ -430,15 +435,18 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             recreate();
         }
     }
+
     public void SlideShowOngo(View v){
         if(slideShowItems.size()==0){
             Toast.makeText(this,getString(R.string.list_empty),Toast.LENGTH_SHORT).show();
         }
         else{
+            alertDialog.show();
             Intent slideShow = new Intent(this, SlideShow.class);
             Gson gson = new Gson();
             String listSlide = gson.toJson(slideShowItems);
             slideShow.putExtra("listSlide",listSlide);
+            alertDialog.dismiss();
             startActivity(slideShow);
         }
     }

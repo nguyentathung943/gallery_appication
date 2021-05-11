@@ -80,4 +80,5 @@
     <string name="copyTitle">Copy Image</string>
     <string name="copyMessage">Copy to where?</string>
     <string name="resolution">Resolution</string>
+    <string name="alert">Please wait! This may take a moment...</string>
 </resources>
