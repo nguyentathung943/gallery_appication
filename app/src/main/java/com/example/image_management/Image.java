@@ -359,6 +359,7 @@ public class Image extends AppCompatActivity {
         Intent intent = getIntent();
         String type = intent.getType();
         String action = intent.getAction();
+        path = "";
         if (Intent.ACTION_VIEW.equals(action) && type != null) {
             if (type.startsWith("image/")) {
                 ImageUri = intent.getData();

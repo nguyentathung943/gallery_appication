@@ -321,6 +321,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
                                     listCrop.add(cropped);
                                     listFaceDetection.add(new FaceDetection(embaddingData, path, cropped));
                                 }catch (Exception e){
+                                    
                                     e.printStackTrace();
                                 }
                             }
