@@ -104,6 +104,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
     }
     public void init() {
+        SlideShowData.list = new ArrayList<>();
         slideShowItems = new ArrayList<>();
         listItem = new ArrayList<>();
         displayAdapter = new DisplayAdapter(this);
@@ -427,6 +428,20 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         }
     }
     public void back(View v){
+        if(!SlideShowData.list.isEmpty())
+        {
+            SlideShowData.clearList();
+        }
+        this.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(!SlideShowData.list.isEmpty())
+        {
+            SlideShowData.clearList();
+        }
         this.finish();
     }
     @Override

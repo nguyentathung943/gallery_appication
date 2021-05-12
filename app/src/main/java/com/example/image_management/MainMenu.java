@@ -63,7 +63,7 @@ public class MainMenu extends AppCompatActivity {
         config = new Configuration(getApplicationContext());
         Boolean checkConfig = config.getConfig();
         if (!checkConfig){
-            config.saveConfig(0,"vi",1);
+            config.saveConfig(1,"vi",1);
             ChangeLanguage("vi");
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             config.getConfig();

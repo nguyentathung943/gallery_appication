@@ -13,6 +13,7 @@ import com.smarteist.autoimageslider.SliderView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SlideShow extends AppCompatActivity {
     SliderView sliderView;
@@ -23,7 +24,7 @@ public class SlideShow extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_show);
         ArrayList<String> list = SlideShowData.list;
-        ArrayList<SlideShowItem> items = new ArrayList<>();
+        List<SlideShowItem> items = new ArrayList<>();
         for(int i = 0;i < list.size();i++){
             try{
                 items.add(new SlideShowItem(Drawable.createFromPath(list.get(i)), new File(list.get(i)).getName(), (i + 1) +"/"+ list.size()));
