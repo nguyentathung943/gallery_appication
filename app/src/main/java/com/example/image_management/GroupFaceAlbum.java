@@ -52,7 +52,7 @@ public class GroupFaceAlbum extends AppCompatActivity implements FaceAdapter.Cli
     ArrayList<Item> listItem;
     ArrayList<ArrayList<Item>> listPhotoGroup;
     ArrayList<String> listDate;
-    ArrayList<String> slideShowItems;
+    ArrayList<ImageData> slideShowItems;
     DisplayAdapter displayAdapter;
     Configuration config;
     GroupPhotoAdapter groupPhotoAdapter;

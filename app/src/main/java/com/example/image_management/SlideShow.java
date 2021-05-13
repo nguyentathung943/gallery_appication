@@ -23,20 +23,11 @@ public class SlideShow extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slide_show);
-        ArrayList<String> list = SlideShowData.list;
-        List<SlideShowItem> items = new ArrayList<>();
-        for(int i = 0;i < list.size();i++){
-            try{
-                items.add(new SlideShowItem(Drawable.createFromPath(list.get(i)), new File(list.get(i)).getName(), (i + 1) +"/"+ list.size()));
-            }
-            catch (Exception e){
-                System.out.println("DRAW ERROR" + e);
-            }
-        }
+        ArrayList<ImageData> list = SlideShowData.list;
         System.out.println("Slideshow size:"  + list.size());
         sliderView = findViewById(R.id.slide_show);
         back = findViewById(R.id.btn_back_slide_show);
-        slideAdapter = new SliderAdapter(getApplicationContext(),items);
+        slideAdapter = new SliderAdapter(getApplicationContext(),list);
         sliderView.setSliderAdapter(slideAdapter);
         sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM);
         sliderView.setSliderTransformAnimation(SliderAnimations.DEPTHTRANSFORMATION);

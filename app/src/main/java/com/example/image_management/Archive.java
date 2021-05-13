@@ -39,7 +39,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
     ArrayList<Item> listItem;
     ArrayList<ArrayList<Item>> listPhotoGroup;
     ArrayList<String> listDate;
-    ArrayList<String> slideShowItems;
+    ArrayList<ImageData> slideShowItems;
     DisplayAdapter displayAdapter;
     Configuration config;
     Boolean isSecure;
@@ -121,11 +121,14 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
 
     public void getFaceRecognition(){
         ArrayList<String> listFace = (ArrayList<String>) getIntent().getSerializableExtra("face_path");
+        int i = 1;
         for(String facePath: listFace)
         {
             if(isImageFile(facePath)){
                 listItem.add(new Item(facePath,"",1));// IMAGE
-                slideShowItems.add(facePath);
+
+                slideShowItems.add(new ImageData(String.valueOf(i),facePath,new File(facePath).getName()));
+                i+=1;
             }
             else{
                 long duration = 0;
@@ -172,6 +175,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         String filename = "like.txt";
         FileInputStream fis = null;
         String favouritePath;
+        int i = 1;
         try {
             fis = this.openFileInput(filename);
             InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
@@ -183,7 +187,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
                 }
                 if(isImageFile(favouritePath)){
                     listItem.add(new Item(favouritePath,"",1));// IMAGE
-                    slideShowItems.add(favouritePath);
+                    slideShowItems.add(new ImageData(String.valueOf(i),favouritePath,new File(favouritePath).getName()));
+                    i+=1;
                 }
                 else{
                     long duration = 0;
@@ -235,11 +240,13 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         if(!storageDir.exists()){
             storageDir.mkdirs();
         }
+        int  i = 1;
         for (File media : storageDir.listFiles()){
             System.out.println(media.getAbsolutePath());
             if(isImageFile(media.getAbsolutePath())){
                 listItem.add(new Item(media.getAbsolutePath(),"",1));// IMAGE
-                slideShowItems.add(media.getAbsolutePath());
+                slideShowItems.add(new ImageData(String.valueOf(i),media.getAbsolutePath(),new File(media.getAbsolutePath()).getName()));
+                i+=1;
             }
             else{
                 long duration = 0;
@@ -302,6 +309,7 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
         int columnDuration = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DURATION);
         int curDate = -1, curMonth = -1, curYear = -1;
         ArrayList<Item> listPhotoSameDate = new ArrayList<>();
+        int i  = 1;
         while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             int typeData = cursor.getInt(columnMediaType);
@@ -313,7 +321,8 @@ public class Archive extends AppCompatActivity implements ListAdapter.ClickImage
             if(!absolutePathOfImage.contains(album))
                 continue;
             if(typeData ==1 ){
-                slideShowItems.add(absolutePathOfImage);
+                slideShowItems.add(new ImageData(String.valueOf(i),absolutePathOfImage,new File(absolutePathOfImage).getName()));
+                i+=1;
             }
             Long durationData = cursor.getLong(columnDuration);
             Instant instant = Instant.ofEpochMilli(durationData);

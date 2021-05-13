@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
-    List<SlideShowItem> list;
+    List<ImageData> list;
     private Context context;
     public SliderAdapter(Context context, List list) {
         this.list = list;
@@ -26,9 +27,13 @@ class SliderAdapter extends SliderViewAdapter<SliderAdapter.Holder> {
     }
     @Override
     public void onBindViewHolder(SliderAdapter.Holder viewHolder, int position) {
-        viewHolder.image.setImageDrawable(list.get(position).draw);
+        Glide.with(viewHolder.itemView)
+                .load(list.get(position).path)
+                .fitCenter()
+                .into(viewHolder.image);
+//        viewHolder.image.setImageDrawable(list.get(position).draw);
         viewHolder.title.setText(list.get(position).name);
-        viewHolder.order.setText(list.get(position).order);
+        viewHolder.order.setText(list.get(position).order +"/" +list.size());
     }
     @Override
     public int getCount() {
